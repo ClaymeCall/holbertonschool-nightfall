@@ -5,5 +5,5 @@ COPY package.json package-lock.json .env.example ./
 RUN npm install
 COPY . .
 RUN envsubst < .env.example > .env
-EXPOSE 5000
+EXPOSE 5080
 CMD ["sh", "-c", "envsubst < .env.example > .env && npm start"]
