@@ -53,16 +53,20 @@ connectToDatabase().catch(err => {
   process.exit(1);
 });
 
-// Routes
-app.get('/api/experiences', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT * FROM experiences');
-    res.json(rows);
-  } catch (err) {
-    console.error('Error fetching experiences:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+// Health check route
+app.get('/', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
+
+// Make db available to all routes
+app.use((req, res, next) => {
+  req.db = db;
+  next();
+});
+
+// Routes
+const routes = require('./routes');
+app.use('/api', routes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
