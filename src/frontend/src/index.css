@@ -1,45 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
   font-family: 'Trebuchet MS', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.navbar {
-  align-items: center;
-  background: #111827;
-  display: flex;
-  justify-content: space-between;
-  min-height: 64px;
-  padding: 0 32px;
-}
-
-.navbar__logo {
-  align-items: center;
-  color: #f8fafc;
-  display: flex;
-  font-size: 28px;
-  font-weight: 700;
-  height: 40px;
-  justify-content: center;
-  text-decoration: none;
-  width: 40px;
-}
-
-.navbar__login {
-  background: #f8fafc;
-  border: 0;
-  border-radius: 4px;
-  color: #111827;
-  cursor: pointer;
-  font: inherit;
-  font-weight: 700;
-  padding: 10px 18px;
-}
-
-.navbar__login:hover,
-.navbar__login:focus-visible {
-  background: #cbd5e1;
 }
 
 code {
