@@ -12,3 +12,6 @@ devenv.local.yaml
 # Project
 .env
 node_modules
+
+# Frontend build output
+src/frontend/build/
