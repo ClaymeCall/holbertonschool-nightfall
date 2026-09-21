@@ -4,7 +4,7 @@ info:
   description: API for Nightfall theme park experiences, reservations, and user management
   version: 1.0.0
 servers:
-  - url: http://localhost:5000/api
+  - url: http://localhost:5080/api
     description: Local development server
   - url: https://api.nightfall.example.com
     description: Production server
