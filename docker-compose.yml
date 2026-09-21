@@ -10,7 +10,7 @@ services:
   backend:
     build: ./src/backend
     ports:
-      - "${BACKEND_PORT:-5080}:5000"
+      - "${BACKEND_PORT:-5080}:5080"
     env_file:
       - ./src/backend/.env
     depends_on:
