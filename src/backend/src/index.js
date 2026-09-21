@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 // OpenAPI Docs
-const swaggerDocument = YAML.load('openapi.yaml');
+const swaggerDocument = YAML.load('./openapi.yaml');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Database connection
