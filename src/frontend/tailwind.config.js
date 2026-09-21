@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'night-mauve': 'var(--night-mauve)',
-        'blood-red': 'var(--blood-red)',
-        'deep-black': 'var(--deep-black)',
+        'night-mauve': '#6a5acd',
+        'blood-red': '#8b0000',
+        'deep-black': '#0a0a0a',
       },
     },
   },
