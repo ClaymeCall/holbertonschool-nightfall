@@ -30,6 +30,6 @@ CREATE TABLE IF NOT EXISTS reservations (
     date_time DATETIME NOT NULL,
     participants INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (experience_id) REFERENCES experiences(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (experience_id) REFERENCES experiences(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
