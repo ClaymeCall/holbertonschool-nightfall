@@ -11,7 +11,9 @@ This web application allows visitors to:
 - Enable park administrators to manage content
 
 ## Team Members
-TODO: Add team members names and roles.
+- Haitu
+- Clement
+- Thomas
 
 ## Features
 ### Experience Catalog

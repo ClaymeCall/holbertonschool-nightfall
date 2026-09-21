@@ -1,0 +1,24 @@
+{
+  "name": "holbertonschool-nightfall",
+  "version": "1.0.0",
+  "description": "**Nightfall** is an immersive fictional theme park offering survival, sci-fi, and disaster-themed experiences. Visitors don’t just ride attractions—they participate in them. From contaminated labs to alien invasions, each activity has its own universe, difficulty level, and characteristics.",
+  "homepage": "https://github.com/ClaymeCall/holbertonschool-nightfall#readme",
+  "bugs": {
+    "url": "https://github.com/ClaymeCall/holbertonschool-nightfall/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ClaymeCall/holbertonschool-nightfall.git"
+  },
+  "license": "ISC",
+  "author": "ClemCall",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "react": "^19.3.0"
+  }
+}
