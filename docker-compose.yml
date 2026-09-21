@@ -20,13 +20,13 @@ services:
     restart: unless-stopped
 
   database:
-    image: postgres:15-alpine
+    build: ./src/database
     env_file:
-      - .env
+      - ./src/database/.env.example
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-3306}:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     restart: unless-stopped
 
 volumes:
