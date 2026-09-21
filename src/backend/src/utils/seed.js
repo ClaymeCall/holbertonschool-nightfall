@@ -101,54 +101,64 @@ const seedDatabase = async () => {
         // Seed experiences
         const experiences = [
             {
-                name: 'Spooky Kayaking',
-                description: 'Paddle through calm waters as the sun sets over the horizon. Perfect for beginners and experienced kayakers alike.',
-                image: 'sunset-kayaking.jpg',
-                category: 'Water',
-                duration: 120,
-                intensity_level: 'Moderate',
-                max_participants: 12,
-                price: 45.00
-            },
-            {
-                name: 'Jungle Trekking',
-                description: 'Explore dense jungle trails with a certified guide. Discover hidden waterfalls and exotic wildlife.',
-                image: 'jungle-trekking.jpg',
-                category: 'Adventure',
-                duration: 180,
-                intensity_level: 'High',
-                max_participants: 10,
-                price: 60.00
-            },
-            {
-                name: 'Yoga Retreat',
-                description: 'Join a peaceful yoga session in a serene natural setting. Suitable for all levels.',
-                image: 'yoga-retreat.jpg',
-                category: 'Wellness',
+                name: 'Laboratoire contaminé',
+                description: 'Infiltrez un laboratoire secret où une expérience a mal tourné. Retrouvez l\'antidote avant que la contamination ne se propage.',
+                image: 'laboratoire-contamine.jpg',
+                category: 'Horreur',
                 duration: 90,
-                intensity_level: 'Low',
-                max_participants: 20,
-                price: 30.00
-            },
-            {
-                name: 'Mountain Climbing',
-                description: 'Challenge yourself with a guided climb up steep mountain trails. Equipment provided.',
-                image: 'mountain-climbing.jpg',
-                category: 'Adventure',
-                duration: 240,
-                intensity_level: 'Very High',
+                intensity_level: 'Élevée',
                 max_participants: 8,
-                price: 80.00
+                price: 55.00
             },
             {
-                name: 'Beach Cleanup',
-                description: 'Participate in a community-driven beach cleanup initiative. Great for team building.',
-                image: 'beach-cleanup.jpg',
-                category: 'Community',
-                duration: 150,
-                intensity_level: 'Low',
-                max_participants: 25,
-                price: 0.00
+                name: 'Bunker abandonné',
+                description: 'Descendez dans un bunker militaire oublié depuis des décennies. Percez ses secrets avant que les lumières ne s\'éteignent pour de bon.',
+                image: 'bunker-abandonne.jpg',
+                category: 'Survie',
+                duration: 75,
+                intensity_level: 'Modérée',
+                max_participants: 10,
+                price: 50.00
+            },
+            {
+                name: 'Mission de sauvetage',
+                description: 'Une équipe est portée disparue en terrain hostile. Coordonnez-vous pour la retrouver et l\'exfiltrer avant l\'expiration du délai.',
+                image: 'mission-sauvetage.jpg',
+                category: 'Action',
+                duration: 120,
+                intensity_level: 'Élevée',
+                max_participants: 12,
+                price: 65.00
+            },
+            {
+                name: 'Invasion extraterrestre',
+                description: 'Une forme de vie inconnue s\'est écrasée près de la base. Traquez-la dans l\'obscurité avant qu\'elle ne prenne le dessus.',
+                image: 'invasion-extraterrestre.jpg',
+                category: 'Science-fiction',
+                duration: 100,
+                intensity_level: 'Très élevée',
+                max_participants: 8,
+                price: 70.00
+            },
+            {
+                name: 'Zone radioactive',
+                description: 'Franchissez le périmètre d\'une centrale évacuée en urgence pour récupérer des données critiques, sans dépasser votre seuil d\'exposition.',
+                image: 'zone-radioactive.jpg',
+                category: 'Survie',
+                duration: 90,
+                intensity_level: 'Modérée',
+                max_participants: 10,
+                price: 55.00
+            },
+            {
+                name: 'Escape game grandeur nature',
+                description: 'Un vaste terrain à ciel ouvert transformé en escape game géant. Résolvez des énigmes disséminées dans le décor avant le lever du jour.',
+                image: 'escape-grandeur-nature.jpg',
+                category: 'Escape game',
+                duration: 60,
+                intensity_level: 'Faible',
+                max_participants: 20,
+                price: 35.00
             }
         ];
 
