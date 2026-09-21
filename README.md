@@ -72,7 +72,10 @@ Un administrateur peut :
 TODO : Clarifier les règles d'archivage et de suppression pour les expériences liées à des réservations.
 
 ## Prérequis
-TODO : Lister les prérequis (ex. : Node.js, Docker, outils en ligne de commande de la base de données).
+- Node.js (v18 ou supérieur)
+- npm (v9 ou supérieur)
+- Docker et Docker Compose (pour la base de données et le déploiement)
+- Git
 
 ## Technologies
 
@@ -93,20 +96,103 @@ TODO : Préciser la technologie de base de données choisie (ex. : MySQL, Postgr
 TODO : Préciser l'outil utilisé pour le suivi des tâches (ex. : GitHub Projects, Trello, Notion).
 
 ## Démarrage
-TODO : Ajouter les instructions d'installation pour :
-- Docker Compose
-- Le développement en local (frontend et backend)
-- Les variables d'environnement (modèle de .env)
+### 1. Cloner le dépôt
+```bash
+ git clone <url_du_dépôt>
+ cd holbertonschool-nightfall
+```
+
+### 2. Configurer les variables d'environnement
+Créez un fichier `.env` dans chaque sous-dossier (`src/backend`, `src/frontend`, `src/database`) en vous basant sur les fichiers `.env.example` fournis.
+
+#### Backend (src/backend/.env)
+```env
+DB_HOST=database
+DB_PORT=3306
+DB_NAME=nightfall
+DB_USER=nightfall
+DB_PASSWORD=nightfall
+PORT=5000
+JWT_SECRET=your_jwt_secret_here
+```
+
+#### Frontend (src/frontend/.env)
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+```
+
+#### Database (src/database/.env)
+```env
+MYSQL_DATABASE=nightfall
+MYSQL_USER=nightfall
+MYSQL_PASSWORD=nightfall
+MYSQL_ROOT_PASSWORD=root_password
+DB_PORT=3306
+```
+
+### 3. Installer les dépendances
+Exécutez `npm install` dans chaque sous-dossier (`src/backend`, `src/frontend`) :
+
+```bash
+cd src/backend
+npm install
+cd ../frontend
+npm install
+```
+
+### 4. Démarrer les services
+#### Avec Docker Compose
+```bash
+ docker-compose up --build
+```
+
+#### Développement en local
+##### Backend
+```bash
+cd src/backend
+npm run dev
+```
+
+##### Frontend
+```bash
+cd src/frontend
+npm start
+```
 
 ### Avec Docker Compose
-TODO : Ajouter les instructions Docker Compose.
+1. Assurez-vous que Docker et Docker Compose sont installés et en cours d'exécution.
+2. Construisez et démarrez les services avec la commande suivante :
+```bash
+ docker-compose up --build
+```
+3. L'application sera accessible aux URLs suivantes :
+   - Frontend : http://localhost:3008
+   - Backend : http://localhost:5000
 
 ### Développement en local
 #### Frontend
-TODO : Ajouter les instructions d'installation du frontend.
+1. Installez les dépendances :
+```bash
+cd src/frontend
+npm install
+```
+2. Démarrez l'application en mode développement :
+```bash
+npm start
+```
+3. L'application sera accessible à l'adresse : http://localhost:3000
 
 #### Backend
-TODO : Ajouter les instructions d'installation du backend.
+1. Installez les dépendances :
+```bash
+cd src/backend
+npm install
+```
+2. Démarrez le serveur en mode développement :
+```bash
+npm run dev
+```
+3. Le serveur sera accessible à l'adresse : http://localhost:5000
 ## Comptes de démonstration
 TODO : Ajouter les comptes de démonstration pour :
 - Visiteur (aucune connexion requise)
