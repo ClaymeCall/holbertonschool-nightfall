@@ -2,6 +2,8 @@ const express = require('express');
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 
 dotenv.config();
 
@@ -11,6 +13,10 @@ const PORT = process.env.PORT || 5080;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// OpenAPI Docs
+const swaggerDocument = YAML.load('./src/backend/openapi.yaml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Database connection
 let db;

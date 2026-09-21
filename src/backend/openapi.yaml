@@ -1,0 +1,469 @@
+openapi: 3.0.0
+info:
+  title: Nightfall API
+  description: API for Nightfall theme park experiences, reservations, and user management
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api
+    description: Local development server
+  - url: https://api.nightfall.example.com
+    description: Production server
+
+paths:
+  /experiences:
+    get:
+      summary: Get all experiences
+      description: Retrieve a list of all available experiences for guests and members
+      tags:
+        - Guest
+        - Member
+      responses:
+        '200':
+          description: A list of experiences
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Experience'
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new experience
+      description: Add a new experience to the catalog (Admin only)
+      tags:
+        - Admin
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienceInput'
+      responses:
+        '201':
+          description: Experience created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experience'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+
+  /experiences/{id}:
+    get:
+      summary: Get a specific experience
+      description: Retrieve details of a single experience by ID
+      tags:
+        - Guest
+        - Member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the experience to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Experience details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experience'
+        '404':
+          description: Experience not found
+        '500':
+          description: Internal server error
+
+    patch:
+      summary: Update an experience
+      description: Update details of an existing experience (Admin only)
+      tags:
+        - Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the experience to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienceInput'
+      responses:
+        '200':
+          description: Experience updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experience'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Experience not found
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete an experience
+      description: Remove an experience from the catalog (Admin only)
+      tags:
+        - Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the experience to delete
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Experience deleted successfully
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Experience not found
+        '500':
+          description: Internal server error
+
+  /auth/register:
+    post:
+      summary: Register a new user
+      description: Create a new user account
+      tags:
+        - Guest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+        '409':
+          description: Email already exists
+        '500':
+          description: Internal server error
+
+  /auth/login:
+    post:
+      summary: Login a user
+      description: Authenticate a user and return a JWT token
+      tags:
+        - Member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token for authenticated requests
+        '401':
+          description: Invalid credentials
+        '500':
+          description: Internal server error
+
+  /bookings:
+    get:
+      summary: Get user's bookings
+      description: Retrieve all bookings for the authenticated user
+      tags:
+        - Member
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new booking
+      description: Reserve an experience for the authenticated user
+      tags:
+        - Member
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingInput'
+      responses:
+        '201':
+          description: Booking created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '404':
+          description: Experience not found
+        '409':
+          description: Booking conflict (e.g., capacity exceeded)
+        '500':
+          description: Internal server error
+
+  /bookings/{id}:
+    delete:
+      summary: Cancel a booking
+      description: Cancel a booking for the authenticated user
+      tags:
+        - Member
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the booking to cancel
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Booking cancelled successfully
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden (e.g., not the booking owner)
+        '404':
+          description: Booking not found
+        '409':
+          description: Cancellation not allowed (e.g., too late)
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Experience:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the experience
+        name:
+          type: string
+          description: Name of the experience
+        description:
+          type: string
+          description: Detailed description of the experience
+        image:
+          type: string
+          format: uri
+          description: URL of the experience image
+        category:
+          type: string
+          description: Category of the experience (e.g., Survie, Horreur, Escape Game)
+        duration:
+          type: integer
+          description: Duration in minutes
+        intensity:
+          type: string
+          description: Intensity level (e.g., Low, Medium, High)
+        max_participants:
+          type: integer
+          description: Maximum number of participants
+        price:
+          type: number
+          format: float
+          description: Price in euros
+      required:
+        - id
+        - name
+        - description
+        - category
+        - duration
+        - intensity
+        - max_participants
+        - price
+
+    ExperienceInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the experience
+        description:
+          type: string
+          description: Detailed description of the experience
+        image:
+          type: string
+          format: uri
+          description: URL of the experience image
+        category:
+          type: string
+          description: Category of the experience
+        duration:
+          type: integer
+          description: Duration in minutes
+        intensity:
+          type: string
+          description: Intensity level
+        max_participants:
+          type: integer
+          description: Maximum number of participants
+        price:
+          type: number
+          format: float
+          description: Price in euros
+      required:
+        - name
+        - description
+        - category
+        - duration
+        - intensity
+        - max_participants
+        - price
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the user
+        email:
+          type: string
+          format: email
+          description: User's email address
+        role:
+          type: string
+          description: User's role (guest, member, admin)
+      required:
+        - id
+        - email
+        - role
+
+    UserInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+        password:
+          type: string
+          format: password
+          description: User's password
+        role:
+          type: string
+          description: User's role (default is 'member')
+          enum: [member, admin]
+          default: member
+      required:
+        - email
+        - password
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the booking
+        experience_id:
+          type: integer
+          description: ID of the booked experience
+        user_id:
+          type: integer
+          description: ID of the user who made the booking
+        date:
+          type: string
+          format: date-time
+          description: Date and time of the booking
+        participants:
+          type: integer
+          description: Number of participants
+        status:
+          type: string
+          description: Booking status (e.g., confirmed, cancelled)
+      required:
+        - id
+        - experience_id
+        - user_id
+        - date
+        - participants
+        - status
+
+    BookingInput:
+      type: object
+      properties:
+        experience_id:
+          type: integer
+          description: ID of the experience to book
+        date:
+          type: string
+          format: date-time
+          description: Date and time of the booking
+        participants:
+          type: integer
+          description: Number of participants
+      required:
+        - experience_id
+        - date
+        - participants
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
