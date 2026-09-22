@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -103,13 +104,22 @@ export default function Login() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-3 px-4 mt-2 hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Connexion…" : "Se connecter"}
-          </button>
+          <div className="grid grid-cols-2 gap-3 mt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-3 px-4 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Connexion…" : "Se connecter"}
+            </button>
+
+            <Link
+              to="/register"
+              className="border border-night-mauve text-night-mauve rounded-md font-bold py-3 px-4 text-center no-underline hover:bg-night-mauve hover:text-white"
+            >
+              Inscription
+            </Link>
+          </div>
         </form>
 
         <p role="status" className="text-white text-center mt-6">
