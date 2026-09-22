@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS experiences (
     intensity_level VARCHAR(50) NOT NULL,
     max_participants INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
+    is_archived BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
