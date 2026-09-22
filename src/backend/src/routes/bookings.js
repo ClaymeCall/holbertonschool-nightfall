@@ -34,13 +34,13 @@ router.post('/', async (req, res) => {
     }
     const [result] = await req.db.query(
       'INSERT INTO reservations (experience_id, user_id, date_time, participants) VALUES (?, ?, ?, ?)',
-      [experience_id, req.user.id, bookingDate, participants]
+      [experience_id, req.user.sub, bookingDate, participants]
     );
 
     res.status(201).json({
       id: result.insertId,
       experience_id,
-      user_id: req.user.id,
+      user_id: req.user.sub,
       date: bookingDate.toISOString(),
       participants,
       status: 'confirmed',
