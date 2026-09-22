@@ -1,9 +1,11 @@
 const bcrypt = require("bcryptjs");
+// randomBytes -> genere token aleatoire
+// creataHash -> hash le token pour bdd
 const { randomBytes, createHash } = require("node:crypto");
 
 async function login(db, { email, password }) {
   const [users] = await db.execute(
-    `SELECT id, email, password_hash, role
+    `SELECT id, email, password_hash, is_admin
      FROM users
      WHERE email = ?`,
     [email]
@@ -34,7 +36,7 @@ async function login(db, { email, password }) {
 
   
   await db.execute(
-    `INSERT INTO sessions (user_id, token, max_age)
+    `INSERT INTO sessions (user_id, token, max_age_hours)
      VALUES (?, ?, ?)`,
     [user.id, tokenHash, maxAge]
   );
@@ -46,8 +48,7 @@ async function login(db, { email, password }) {
     user: {
       id: user.id,
       email: user.email,
-      role: user.role
-    }
+      is_admin: user.is_admin === 1    }
   };
 }
 
