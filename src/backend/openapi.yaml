@@ -442,7 +442,7 @@ components:
         duration:
           type: integer
           description: Duration in minutes
-        intensity:
+        intensity_level:
           type: string
           description: Intensity level (e.g., Low, Medium, High)
         max_participants:
@@ -461,7 +461,7 @@ components:
         - description
         - category
         - duration
-        - intensity
+        - intensity_level
         - max_participants
         - price
         - is_archived
@@ -485,7 +485,7 @@ components:
         duration:
           type: integer
           description: Duration in minutes
-        intensity:
+        intensity_level:
           type: string
           description: Intensity level
         max_participants:
@@ -500,7 +500,7 @@ components:
         - description
         - category
         - duration
-        - intensity
+        - intensity_level
         - max_participants
         - price
 

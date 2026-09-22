@@ -4,11 +4,11 @@ const { authenticate, requireAdmin, optionalAuthenticate } = require('../middlew
 
 const EXPERIENCE_COLUMNS = `
   id, name, description, image, category, duration,
-  intensity_level AS intensity, max_participants, price, is_archived
+  intensity_level, max_participants, price, is_archived
 `;
 
 function validateExperienceInput(body) {
-  const { name, description, image, category, duration, intensity, max_participants, price } = body || {};
+  const { name, description, image, category, duration, intensity_level, max_participants, price } = body || {};
 
   if (typeof name !== 'string' || name.trim().length === 0) {
     return 'name is required';
@@ -25,8 +25,8 @@ function validateExperienceInput(body) {
   if (!Number.isInteger(duration) || duration <= 0) {
     return 'duration must be a positive integer';
   }
-  if (typeof intensity !== 'string' || intensity.trim().length === 0) {
-    return 'intensity is required';
+  if (typeof intensity_level !== 'string' || intensity_level.trim().length === 0) {
+    return 'intensity_level is required';
   }
   if (!Number.isInteger(max_participants) || max_participants <= 0) {
     return 'max_participants must be a positive integer';
@@ -69,12 +69,12 @@ router.post('/', authenticate, requireAdmin, async (req, res) => {
     return res.status(400).json({ error: validationError });
   }
 
-  const { name, description, image, category, duration, intensity, max_participants, price } = req.body;
+  const { name, description, image, category, duration, intensity_level, max_participants, price } = req.body;
 
   try {
     const [result] = await req.db.query(
       'INSERT INTO experiences (name, description, image, category, duration, intensity_level, max_participants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [name, description, image ?? null, category, duration, intensity, max_participants, price]
+      [name, description, image ?? null, category, duration, intensity_level, max_participants, price]
     );
 
     const [rows] = await req.db.query(
@@ -134,7 +134,7 @@ router.put('/:id', authenticate, requireAdmin, async (req, res) => {
     return res.status(400).json({ error: validationError });
   }
 
-  const { name, description, image, category, duration, intensity, max_participants, price } = req.body;
+  const { name, description, image, category, duration, intensity_level, max_participants, price } = req.body;
 
   try {
     const [existing] = await req.db.query('SELECT id FROM experiences WHERE id = ?', [id]);
@@ -147,7 +147,7 @@ router.put('/:id', authenticate, requireAdmin, async (req, res) => {
        SET name = ?, description = ?, image = ?, category = ?, duration = ?,
            intensity_level = ?, max_participants = ?, price = ?
        WHERE id = ?`,
-      [name, description, image ?? null, category, duration, intensity, max_participants, price, id]
+      [name, description, image ?? null, category, duration, intensity_level, max_participants, price, id]
     );
 
     const [rows] = await req.db.query(`SELECT ${EXPERIENCE_COLUMNS} FROM experiences WHERE id = ?`, [id]);
