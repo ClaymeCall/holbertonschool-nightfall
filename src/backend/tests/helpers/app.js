@@ -1,9 +1,9 @@
 const express = require('express');
 
 /**
- * Builds a minimal Express app that mounts the given router at /api/users
- * and injects a fake req.db, so routes can be tested without a real
- * MySQL connection.
+ * Builds a minimal Express app that mounts the users and experiences
+ * routers and injects a fake req.db, so routes can be tested without a
+ * real MySQL connection.
  */
 function buildApp(db) {
   const app = express();
@@ -13,6 +13,7 @@ function buildApp(db) {
     next();
   });
   app.use('/api/users', require('../../src/routes/users'));
+  app.use('/api/experiences', require('../../src/routes/experiences'));
   return app;
 }
 
