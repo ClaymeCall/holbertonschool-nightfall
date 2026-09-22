@@ -1,13 +1,21 @@
-import Navbar from './components/common/Navbar';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './components/common/Layout';
+import Home from './pages/Home';
+import AdminDashboard from './pages/AdminDashboard';
 import Login from './pages/Login.jsx';
 
 function App() {
   return (
-    <>
-      <Navbar />
-
-      {window.location.pathname === '/login' && <Login />}
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/login" element={<Login />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -14,20 +14,32 @@ const seedDatabase = async () => {
         const retryDelay = 3000;
         let retries = 0;
 
+        // DB_HOST is normally the docker-compose service name ("database"),
+        // which only resolves inside the compose network. When the script is
+        // run directly on the host, fall back to localhost, which works
+        // because the database port is published to the host.
+        const primaryHost = process.env.DB_HOST || 'localhost';
+        const fallbackHost = primaryHost !== 'localhost' ? 'localhost' : null;
+        let currentHost = primaryHost;
+
         while (retries < maxRetries) {
             try {
                 connection = await mysql.createConnection({
-                    host: process.env.DB_HOST,
+                    host: currentHost,
                     user: process.env.DB_USER,
                     password: process.env.DB_PASSWORD,
                     database: process.env.DB_NAME,
                     port: process.env.DB_PORT,
                 });
-                console.log('Connected to MySQL database');
+                console.log(`Connected to MySQL database at ${currentHost}`);
                 break;
             } catch (err) {
                 retries++;
                 console.error(`Database connection failed (attempt ${retries}/${maxRetries}):`, err);
+                if (err.code === 'ENOTFOUND' && fallbackHost && currentHost !== fallbackHost) {
+                    console.warn(`Host "${currentHost}" could not be resolved, retrying with "${fallbackHost}"`);
+                    currentHost = fallbackHost;
+                }
                 if (retries < maxRetries) {
                     await new Promise(resolve => setTimeout(resolve, retryDelay));
                 } else {
@@ -85,11 +97,11 @@ const seedDatabase = async () => {
         const adminPassword = await bcrypt.hash('admin123', 10);
 
         // Seed users
-        await connection.query(
+        const [user1Result] = await connection.query(
             'INSERT INTO users (email, password_hash, is_admin) VALUES (?, ?, ?)',
             ['user1@nightfall.com', userPassword, false]
         );
-        await connection.query(
+        const [user2Result] = await connection.query(
             'INSERT INTO users (email, password_hash, is_admin) VALUES (?, ?, ?)',
             ['user2@nightfall.com', userPassword, false]
         );
@@ -162,8 +174,9 @@ const seedDatabase = async () => {
             }
         ];
 
+        const experienceIds = [];
         for (const experience of experiences) {
-            await connection.query(
+            const [experienceResult] = await connection.query(
                 'INSERT INTO experiences (name, description, image, category, duration, intensity_level, max_participants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     experience.name,
@@ -175,6 +188,21 @@ const seedDatabase = async () => {
                     experience.max_participants,
                     experience.price
                 ]
+            );
+            experienceIds.push(experienceResult.insertId);
+        }
+
+        // Seed reservations so admin/user1 and admin/user2 relationships have sample data
+        const reservations = [
+            { userId: user1Result.insertId, experienceId: experienceIds[0], date_time: '2026-10-03 20:00:00', participants: 2 },
+            { userId: user1Result.insertId, experienceId: experienceIds[2], date_time: '2026-10-10 21:30:00', participants: 4 },
+            { userId: user2Result.insertId, experienceId: experienceIds[1], date_time: '2026-10-05 19:00:00', participants: 3 },
+        ];
+
+        for (const reservation of reservations) {
+            await connection.query(
+                'INSERT INTO reservations (experience_id, user_id, date_time, participants) VALUES (?, ?, ?, ?)',
+                [reservation.experienceId, reservation.userId, reservation.date_time, reservation.participants]
             );
         }
 
