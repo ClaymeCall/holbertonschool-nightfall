@@ -1,9 +1,9 @@
 import React from 'react';
 import Navbar from '../components/common/Navbar';
-import EndpointsCatalog from '../components/admin/EndpointsCatalog';
 import AdminTokenGate from '../components/admin/AdminTokenGate';
 import UsersPanel from '../components/admin/UsersPanel';
 import ExperiencesPanel from '../components/admin/ExperiencesPanel';
+import ReservationsPanel from '../components/admin/ReservationsPanel';
 import useAdminToken from '../hooks/useAdminToken';
 
 function AdminDashboard() {
@@ -16,8 +16,8 @@ function AdminDashboard() {
 
         <AdminTokenGate token={token} onSetToken={setToken} onClearToken={clearToken} />
 
-        <EndpointsCatalog token={token} />
-        <ExperiencesPanel />
+        <ExperiencesPanel token={token} />
+        <ReservationsPanel token={token} />
         <UsersPanel token={token} />
       </main>
     </div>
