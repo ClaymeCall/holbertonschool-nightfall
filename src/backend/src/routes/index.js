@@ -4,11 +4,11 @@ const router = express.Router();
 const experiencesRouter = require('./experiences');
 const authRouter = require('./auth');
 const usersRouter = require('./users');
-const bookingsRouter = require('./bookings');
+const reservationsRouter = require('./reservations');
 
 router.use('/experiences', experiencesRouter);
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
-router.use('/reservations', bookingsRouter);
+router.use('/reservations', reservationsRouter);
 
 module.exports = router;

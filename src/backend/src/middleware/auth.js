@@ -12,7 +12,7 @@ function authenticate(req, res, next) {
   const token = authHeader.slice('Bearer '.length);
 
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
     next();
   } catch (err) {
     return res.status(401).json({ error: 'Unauthorized' });
