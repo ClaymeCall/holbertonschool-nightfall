@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -37,9 +41,10 @@ export default function Login() {
         return;
       }
 
-      localStorage.setItem("token", data.token);
+      login(data.token, data.user);
       setPassword("");
-      setMessage("Connexion réussie : token enregistré !");
+      setMessage("Connexion réussie !");
+      navigate(data.user?.is_admin ? "/admin" : "/");
     } catch {
       setMessage(
         "Connexion impossible : vérifie l’API et l’accès au stockage du navigateur."
