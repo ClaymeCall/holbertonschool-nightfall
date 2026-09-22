@@ -386,13 +386,13 @@ components:
           type: string
           format: email
           description: User's email address
-        role:
-          type: string
-          description: User's role (guest, member, admin)
+        is_admin:
+          type: boolean
+          description: Whether the user has admin privileges
       required:
         - id
         - email
-        - role
+        - is_admin
 
     UserInput:
       type: object
@@ -405,11 +405,10 @@ components:
           type: string
           format: password
           description: User's password
-        role:
-          type: string
-          description: User's role (default is 'member')
-          enum: [member, admin]
-          default: member
+        is_admin:
+          type: boolean
+          description: Whether the account should have admin privileges (server-controlled, ignored on public registration)
+          default: false
       required:
         - email
         - password
