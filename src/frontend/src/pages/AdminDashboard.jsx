@@ -17,7 +17,7 @@ function AdminDashboard() {
 
         <AdminTokenGate token={token} onSetToken={setToken} onClearToken={clearToken} />
 
-        <EndpointsCatalog />
+        <EndpointsCatalog token={token} />
         <ExperiencesPanel />
         <UsersPanel token={token} />
       </main>

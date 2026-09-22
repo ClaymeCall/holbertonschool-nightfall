@@ -3,6 +3,10 @@
  * planned but not built yet. Kept in sync by hand with the backend's
  * route files and openapi.yaml — there is no automatic source of truth
  * yet, so update this list alongside any route change.
+ *
+ * `auth: true` means the dashboard's "Try it" console sends the stored
+ * admin token as a Bearer header. `bodyExample` pre-fills the request
+ * body editor for methods that take one.
  */
 export const API_ENDPOINTS = [
   {
@@ -11,6 +15,7 @@ export const API_ENDPOINTS = [
     description: 'List all experiences',
     access: 'Public',
     status: 'implemented',
+    auth: false,
   },
   {
     method: 'POST',
@@ -18,6 +23,16 @@ export const API_ENDPOINTS = [
     description: 'Create a new experience',
     access: 'Admin',
     status: 'planned',
+    auth: true,
+    bodyExample: {
+      name: 'Laboratoire contaminé',
+      description: 'Infiltrez un laboratoire secret...',
+      category: 'Horreur',
+      duration: 90,
+      intensity: 'Élevée',
+      max_participants: 8,
+      price: 55,
+    },
   },
   {
     method: 'GET',
@@ -25,6 +40,7 @@ export const API_ENDPOINTS = [
     description: 'Get a single experience',
     access: 'Public',
     status: 'planned',
+    auth: false,
   },
   {
     method: 'PUT',
@@ -32,6 +48,16 @@ export const API_ENDPOINTS = [
     description: 'Replace an experience',
     access: 'Admin',
     status: 'planned',
+    auth: true,
+    bodyExample: {
+      name: 'Laboratoire contaminé',
+      description: 'Infiltrez un laboratoire secret...',
+      category: 'Horreur',
+      duration: 90,
+      intensity: 'Élevée',
+      max_participants: 8,
+      price: 55,
+    },
   },
   {
     method: 'DELETE',
@@ -39,6 +65,7 @@ export const API_ENDPOINTS = [
     description: 'Delete an experience',
     access: 'Admin',
     status: 'planned',
+    auth: true,
   },
   {
     method: 'POST',
@@ -46,7 +73,9 @@ export const API_ENDPOINTS = [
     description: 'Register a new account',
     access: 'Public',
     status: 'planned',
+    auth: false,
     issue: 17,
+    bodyExample: { email: 'new.user@nightfall.com', password: 'password123' },
   },
   {
     method: 'POST',
@@ -54,7 +83,9 @@ export const API_ENDPOINTS = [
     description: 'Log in and obtain a JWT',
     access: 'Public',
     status: 'planned',
+    auth: false,
     issue: 20,
+    bodyExample: { email: 'admin@nightfall.com', password: 'admin123' },
   },
   {
     method: 'POST',
@@ -62,6 +93,7 @@ export const API_ENDPOINTS = [
     description: 'Log out the current session',
     access: 'Private',
     status: 'planned',
+    auth: true,
     issue: 19,
   },
   {
@@ -70,6 +102,7 @@ export const API_ENDPOINTS = [
     description: 'Get the currently authenticated user',
     access: 'Private',
     status: 'planned',
+    auth: true,
   },
   {
     method: 'POST',
@@ -77,7 +110,9 @@ export const API_ENDPOINTS = [
     description: 'Create a user account',
     access: 'Admin',
     status: 'implemented',
+    auth: true,
     issue: 21,
+    bodyExample: { email: 'new.user@nightfall.com', password: 'password123', is_admin: false },
   },
   {
     method: 'GET',
@@ -85,6 +120,7 @@ export const API_ENDPOINTS = [
     description: "List all users, with each user's reservations nested under it",
     access: 'Admin',
     status: 'implemented',
+    auth: true,
     issue: 29,
   },
   {
@@ -93,6 +129,7 @@ export const API_ENDPOINTS = [
     description: 'Get a single user',
     access: 'Admin',
     status: 'planned',
+    auth: true,
   },
   {
     method: 'PUT',
@@ -100,7 +137,9 @@ export const API_ENDPOINTS = [
     description: 'Replace a user',
     access: 'Admin',
     status: 'planned',
+    auth: true,
     issue: 22,
+    bodyExample: { email: 'user1@nightfall.com', password: 'password123', is_admin: false },
   },
   {
     method: 'PATCH',
@@ -108,14 +147,17 @@ export const API_ENDPOINTS = [
     description: 'Update a user',
     access: 'Admin',
     status: 'planned',
+    auth: true,
     issue: 23,
+    bodyExample: { email: 'user1@nightfall.com' },
   },
   {
     method: 'DELETE',
     path: '/api/users/:id',
     description: 'Delete a user',
     access: 'Admin',
-    status: 'planned',
+    status: 'implemented',
+    auth: true,
     issue: 24,
   },
   {
@@ -124,6 +166,7 @@ export const API_ENDPOINTS = [
     description: "List the current user's reservations",
     access: 'Private',
     status: 'planned',
+    auth: true,
     issue: 27,
   },
   {
@@ -132,7 +175,9 @@ export const API_ENDPOINTS = [
     description: 'Create a reservation for an experience',
     access: 'Private',
     status: 'planned',
+    auth: true,
     issue: 26,
+    bodyExample: { experience_id: 1, date_time: '2026-10-03T20:00:00.000Z', participants: 2 },
   },
   {
     method: 'PATCH',
@@ -140,7 +185,9 @@ export const API_ENDPOINTS = [
     description: 'Update a reservation',
     access: 'Private',
     status: 'planned',
+    auth: true,
     issue: 25,
+    bodyExample: { participants: 3 },
   },
   {
     method: 'DELETE',
@@ -148,6 +195,7 @@ export const API_ENDPOINTS = [
     description: 'Cancel a reservation',
     access: 'Private',
     status: 'planned',
+    auth: true,
     issue: 28,
   },
 ];

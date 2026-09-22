@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { API_ENDPOINTS } from '../../data/apiEndpoints';
+import EndpointTryIt from './EndpointTryIt';
 
 const METHOD_STYLES = {
   GET: 'bg-sky-900/60 text-sky-300',
@@ -36,7 +37,8 @@ function StatusBadge({ status }) {
   );
 }
 
-function EndpointsCatalog() {
+function EndpointsCatalog({ token }) {
+  const [openKey, setOpenKey] = useState(null);
   const implementedCount = API_ENDPOINTS.filter((e) => e.status === 'implemented').length;
 
   return (
@@ -69,28 +71,51 @@ function EndpointsCatalog() {
               <th scope="col" className="px-4 py-2 font-medium">
                 Status
               </th>
+              <th scope="col" className="px-4 py-2 font-medium">
+                <span className="sr-only">Try it</span>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {API_ENDPOINTS.map((endpoint) => (
-              <tr
-                key={`${endpoint.method} ${endpoint.path}`}
-                className="border-t border-gray-800 align-top"
-              >
-                <td className="px-4 py-2">
-                  <MethodBadge method={endpoint.method} />
-                </td>
-                <td className="px-4 py-2 font-mono text-gray-200">{endpoint.path}</td>
-                <td className="px-4 py-2 text-gray-300">{endpoint.description}</td>
-                <td className="px-4 py-2 text-gray-400">{endpoint.access}</td>
-                <td className="px-4 py-2">
-                  <StatusBadge status={endpoint.status} />
-                  {endpoint.issue && (
-                    <span className="ml-2 text-xs text-gray-500">#{endpoint.issue}</span>
+            {API_ENDPOINTS.map((endpoint) => {
+              const key = `${endpoint.method} ${endpoint.path}`;
+              const isOpen = openKey === key;
+              return (
+                <React.Fragment key={key}>
+                  <tr className="border-t border-gray-800 align-top">
+                    <td className="px-4 py-2">
+                      <MethodBadge method={endpoint.method} />
+                    </td>
+                    <td className="px-4 py-2 font-mono text-gray-200">{endpoint.path}</td>
+                    <td className="px-4 py-2 text-gray-300">{endpoint.description}</td>
+                    <td className="px-4 py-2 text-gray-400">{endpoint.access}</td>
+                    <td className="px-4 py-2">
+                      <StatusBadge status={endpoint.status} />
+                      {endpoint.issue && (
+                        <span className="ml-2 text-xs text-gray-500">#{endpoint.issue}</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2">
+                      <button
+                        type="button"
+                        onClick={() => setOpenKey(isOpen ? null : key)}
+                        aria-expanded={isOpen}
+                        className="rounded-md border border-gray-700 px-2.5 py-1 text-xs font-semibold text-gray-300 hover:bg-gray-800"
+                      >
+                        {isOpen ? 'Close' : 'Try it'}
+                      </button>
+                    </td>
+                  </tr>
+                  {isOpen && (
+                    <tr className="border-t border-gray-800 bg-gray-900/20">
+                      <td colSpan={6} className="px-4 py-2">
+                        <EndpointTryIt endpoint={endpoint} token={token} />
+                      </td>
+                    </tr>
                   )}
-                </td>
-              </tr>
-            ))}
+                </React.Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>
