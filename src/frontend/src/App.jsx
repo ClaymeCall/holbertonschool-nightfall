@@ -4,9 +4,7 @@ import Login from './pages/Login.jsx';
 function App() {
   return (
     <>
-      <Navbar
-        onLoginClick={() => window.location.assign('/login')}
-      />
+      <Navbar />
 
       {window.location.pathname === '/login' && <Login />}
     </>
