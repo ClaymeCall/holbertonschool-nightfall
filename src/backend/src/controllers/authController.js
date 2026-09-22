@@ -1,6 +1,8 @@
 //verifie email et mdp login 
 const authServices = require("../services/authServices");
 
+// req = demande client
+// res = reponse a envoyer
 async function login(req, res) {
   try {
     const { email, password } = req.body ?? {};
@@ -16,6 +18,7 @@ async function login(req, res) {
 
     const cleanEmail = email.trim();
 
+    // nom@domaine.com -> email valide
     if (
       !cleanEmail ||
       cleanEmail.length > 255 ||

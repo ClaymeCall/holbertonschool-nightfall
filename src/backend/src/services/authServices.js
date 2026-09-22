@@ -30,8 +30,9 @@ async function login(db, { email, password }) {
     .update(token)
     .digest("hex");
 
-  const maxAge = 3600;
+  const maxAge = 168;
 
+  
   await db.execute(
     `INSERT INTO sessions (user_id, token, max_age)
      VALUES (?, ?, ?)`,

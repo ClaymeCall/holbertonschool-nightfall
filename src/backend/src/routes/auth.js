@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs"
 const authController = require("../controllers/authController");
 
 const express = require('express');
