@@ -7,7 +7,13 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "seed": "node src/utils/seed.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/tests/setup.js"
+    ]
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -20,6 +26,8 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "jest": "^30.5.2",
+    "nodemon": "^3.0.2",
+    "supertest": "^7.2.2"
   }
 }
