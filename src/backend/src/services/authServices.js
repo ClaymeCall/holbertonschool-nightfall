@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
-// randomBytes -> genere token aleatoire
-// creataHash -> hash le token pour bdd
-const { randomBytes, createHash } = require("node:crypto");
+const jwt = require("jsonwebtoken");
+
+const TOKEN_MAX_AGE_HOURS = 168;
 
 async function login(db, { email, password }) {
   const [users] = await db.execute(
@@ -26,29 +26,31 @@ async function login(db, { email, password }) {
     return null;
   }
 
-  const token = randomBytes(32).toString("hex");
+  const token = jwt.sign(
+    {
+      sub: user.id,
+      email: user.email,
+      is_admin: user.is_admin === 1
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: `${TOKEN_MAX_AGE_HOURS}h` }
+  );
 
-  const tokenHash = createHash("sha256")
-    .update(token)
-    .digest("hex");
-
-  const maxAge = 168;
-
-  
   await db.execute(
     `INSERT INTO sessions (user_id, token, max_age_hours)
      VALUES (?, ?, ?)`,
-    [user.id, tokenHash, maxAge]
+    [user.id, token, TOKEN_MAX_AGE_HOURS]
   );
 
   return {
     token,
     token_type: "Bearer",
-    expires_in: maxAge,
+    expires_in: TOKEN_MAX_AGE_HOURS,
     user: {
       id: user.id,
       email: user.email,
-      is_admin: user.is_admin === 1    }
+      is_admin: user.is_admin === 1
+    }
   };
 }
 
