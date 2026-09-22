@@ -64,7 +64,7 @@ function EndpointTryIt({ endpoint, token }) {
       });
       setResult(res);
     } catch (err) {
-      setResult({ networkError: err.message });
+      setResult({ networkError: `${err.name || 'Error'}: ${err.message}` });
     } finally {
       setSending(false);
     }

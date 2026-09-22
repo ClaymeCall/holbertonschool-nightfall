@@ -1,12 +1,20 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5080/api';
 
-async function doFetch(path, { token, ...options } = {}) {
+async function doFetch(path, { token, body: requestBody, ...options } = {}) {
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const fetchOptions = { ...options, headers };
+  // Some fetch implementations reject GET/HEAD requests that carry a `body`
+  // key at all, even when its value is undefined, so only set it when there
+  // really is one.
+  if (requestBody !== undefined) {
+    fetchOptions.body = requestBody;
+  }
+
+  const res = await fetch(`${API_URL}${path}`, fetchOptions);
 
   let body = null;
   let parseError = null;

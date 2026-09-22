@@ -58,9 +58,11 @@ function NewReservationForm({ user, token }) {
             onChange={(e) => setExperienceId(e.target.value)}
             className="rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
           >
-            <option value="">Select…</option>
+            <option className="bg-deep-black text-white" value="">
+              Select…
+            </option>
             {(experiences || []).map((experience) => (
-              <option key={experience.id} value={experience.id}>
+              <option className="bg-deep-black text-white" key={experience.id} value={experience.id}>
                 {experience.name}
               </option>
             ))}
