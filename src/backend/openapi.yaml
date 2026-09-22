@@ -267,7 +267,7 @@ paths:
       summary: Login a user
       description: Authenticate a user and return a JWT token
       tags:
-        - Member
+        - Guest
       requestBody:
         required: true
         content:
