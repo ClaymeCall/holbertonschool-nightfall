@@ -18,9 +18,7 @@ router.post("/login", authController.login);
  * @description Register a new user
  * @access Public
  */
-router.post('/register', async (req, res) => {
-  res.status(501).json({ error: 'Not implemented' });
-});
+router.post("/register", authController.register);
 
 /**
  * @route POST /api/auth/logout

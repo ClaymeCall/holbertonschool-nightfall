@@ -54,4 +54,31 @@ async function login(db, { email, password }) {
   };
 }
 
-module.exports = { login };
+async function register(db, { email, password }) {
+  const [users] = await db.execute(
+    `SELECT id
+     FROM users
+     WHERE email = ?`,
+    [email]
+  );
+
+  if (users.length > 0) {
+    return null;
+  }
+
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const [result] = await db.execute(
+    `INSERT INTO users (email, password_hash, is_admin)
+     VALUES (?, ?, ?)`,
+    [email, passwordHash, false]
+  );
+
+  return {
+    id: result.insertId,
+    email,
+    is_admin: false
+  };
+}
+
+module.exports = { login, register };
