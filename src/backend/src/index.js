@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 
@@ -13,6 +14,9 @@ const PORT = process.env.PORT || 5080;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Static assets (experience images, etc.)
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
 // OpenAPI Docs
 const swaggerDocument = YAML.load('./openapi.yaml');
