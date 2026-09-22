@@ -14,20 +14,32 @@ const seedDatabase = async () => {
         const retryDelay = 3000;
         let retries = 0;
 
+        // DB_HOST is normally the docker-compose service name ("database"),
+        // which only resolves inside the compose network. When the script is
+        // run directly on the host, fall back to localhost, which works
+        // because the database port is published to the host.
+        const primaryHost = process.env.DB_HOST || 'localhost';
+        const fallbackHost = primaryHost !== 'localhost' ? 'localhost' : null;
+        let currentHost = primaryHost;
+
         while (retries < maxRetries) {
             try {
                 connection = await mysql.createConnection({
-                    host: process.env.DB_HOST,
+                    host: currentHost,
                     user: process.env.DB_USER,
                     password: process.env.DB_PASSWORD,
                     database: process.env.DB_NAME,
                     port: process.env.DB_PORT,
                 });
-                console.log('Connected to MySQL database');
+                console.log(`Connected to MySQL database at ${currentHost}`);
                 break;
             } catch (err) {
                 retries++;
                 console.error(`Database connection failed (attempt ${retries}/${maxRetries}):`, err);
+                if (err.code === 'ENOTFOUND' && fallbackHost && currentHost !== fallbackHost) {
+                    console.warn(`Host "${currentHost}" could not be resolved, retrying with "${fallbackHost}"`);
+                    currentHost = fallbackHost;
+                }
                 if (retries < maxRetries) {
                     await new Promise(resolve => setTimeout(resolve, retryDelay));
                 } else {
