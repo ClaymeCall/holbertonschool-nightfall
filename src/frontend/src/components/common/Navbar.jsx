@@ -6,9 +6,9 @@ function Navbar() {
       <a className="flex items-center justify-center h-10 w-10 text-night-mauve text-3xl font-bold no-underline" href="/" aria-label="Nightfall, accueil">
         N
       </a>
-      <button className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-2 px-4" type="button">
+      <a className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-2 px-4 no-underline inline-block" href="/login">
         Connexion
-      </button>
+      </a>
     </nav>
   );
 }
