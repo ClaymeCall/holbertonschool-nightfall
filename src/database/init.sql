@@ -10,6 +10,15 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS sessions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token VARCHAR(600) NOT NULL UNIQUE,
+    max_age_hours INT NOT NULL DEFAULT 168,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS experiences (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -30,6 +39,6 @@ CREATE TABLE IF NOT EXISTS reservations (
     date_time DATETIME NOT NULL,
     participants INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (experience_id) REFERENCES experiences(id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (experience_id) REFERENCES experiences(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

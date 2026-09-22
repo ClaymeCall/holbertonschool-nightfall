@@ -1,14 +1,17 @@
+const authController = require("../controllers/authController");
+
 const express = require('express');
 const router = express.Router();
+
+// @todo middleware d'authentification: verifier le token JWT (jwt.verify)
+// envoye par le client, l'expiration est deja geree par jsonwebtoken
 
 /**
  * @route POST /api/auth/login
  * @description Log in a user
  * @access Public
  */
-router.post('/login', async (req, res) => {
-  res.status(501).json({ error: 'Not implemented' });
-});
+router.post("/login", authController.login);
 
 /**
  * @route POST /api/auth/register
