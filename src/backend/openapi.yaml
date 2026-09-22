@@ -212,30 +212,30 @@ paths:
         '500':
           description: Internal server error
 
-  /bookings:
+  /reservations:
     get:
-      summary: Get user's bookings
-      description: Retrieve all bookings for the authenticated user
+      summary: Get user's reservations
+      description: Retrieve all reservations for the authenticated user
       tags:
         - Member
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: A list of bookings
+          description: A list of reservations
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Booking'
+                  $ref: '#/components/schemas/Reservation'
         '401':
           description: Unauthorized
         '500':
           description: Internal server error
 
     post:
-      summary: Create a new booking
+      summary: Create a new reservation
       description: Reserve an experience for the authenticated user
       tags:
         - Member
@@ -246,14 +246,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookingInput'
+              $ref: '#/components/schemas/ReservationInput'
       responses:
         '201':
-          description: Booking created successfully
+          description: Reservation created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Booking'
+                $ref: '#/components/schemas/Reservation'
         '400':
           description: Invalid input
         '401':
@@ -261,14 +261,14 @@ paths:
         '404':
           description: Experience not found
         '409':
-          description: Booking conflict (e.g., capacity exceeded)
+          description: Reservation conflict (e.g., capacity exceeded)
         '500':
           description: Internal server error
 
-  /bookings/{id}:
+  /reservations/{id}:
     delete:
-      summary: Cancel a booking
-      description: Cancel a booking for the authenticated user
+      summary: Cancel a reservation
+      description: Cancel a reservation for the authenticated user
       tags:
         - Member
       security:
@@ -277,18 +277,18 @@ paths:
         - name: id
           in: path
           required: true
-          description: ID of the booking to cancel
+          description: ID of the reservation to cancel
           schema:
             type: integer
       responses:
         '204':
-          description: Booking cancelled successfully
+          description: Reservation cancelled successfully
         '401':
           description: Unauthorized
         '403':
-          description: Forbidden (e.g., not the booking owner)
+          description: Forbidden (e.g., not the reservation owner)
         '404':
-          description: Booking not found
+          description: Reservation not found
         '409':
           description: Cancellation not allowed (e.g., too late)
         '500':
@@ -414,28 +414,28 @@ components:
         - email
         - password
 
-    Booking:
+    Reservation:
       type: object
       properties:
         id:
           type: integer
-          description: Unique identifier for the booking
+          description: Unique identifier for the reservation
         experience_id:
           type: integer
-          description: ID of the booked experience
+          description: ID of the reserved experience
         user_id:
           type: integer
-          description: ID of the user who made the booking
+          description: ID of the user who made the reservation
         date:
           type: string
           format: date-time
-          description: Date and time of the booking
+          description: Date and time of the reservation
         participants:
           type: integer
           description: Number of participants
         status:
           type: string
-          description: Booking status (e.g., confirmed, cancelled)
+          description: Reservation status (e.g., confirmed, cancelled)
       required:
         - id
         - experience_id
@@ -444,16 +444,16 @@ components:
         - participants
         - status
 
-    BookingInput:
+    ReservationInput:
       type: object
       properties:
         experience_id:
           type: integer
-          description: ID of the experience to book
+          description: ID of the experience to reserve
         date:
           type: string
           format: date-time
-          description: Date and time of the booking
+          description: Date and time of the reservation
         participants:
           type: integer
           description: Number of participants
