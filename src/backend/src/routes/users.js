@@ -130,12 +130,30 @@ router.put('/:id', async (req, res) => {
 
 /**
  * @route DELETE /api/users/:id
- * @description Delete a user by ID
+ * @description Delete a user by ID (Admin only)
  * @access Private (Admin)
- * @todo Implement authentication middleware
  */
-router.delete('/:id', async (req, res) => {
-  res.status(501).json({ error: 'Not implemented' });
+router.delete('/:id', authenticate, requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({ error: 'id must be a positive integer' });
+  }
+
+  try {
+    const [existing] = await req.db.query('SELECT id FROM users WHERE id = ?', [id]);
+    if (existing.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    await req.db.query('DELETE FROM users WHERE id = ?', [id]);
+    res.status(204).send();
+  } catch (err) {
+    if (err.code === 'ER_ROW_IS_REFERENCED_2' || err.code === 'ER_ROW_IS_REFERENCED') {
+      return res.status(409).json({ error: 'Cannot delete a user with existing reservations' });
+    }
+    console.error('Error deleting user:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 module.exports = router;
