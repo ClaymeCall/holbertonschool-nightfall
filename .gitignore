@@ -15,3 +15,4 @@ node_modules
 
 # Frontend build output
 src/frontend/build/
+src/frontend/dist/

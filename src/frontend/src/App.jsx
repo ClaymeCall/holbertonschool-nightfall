@@ -1,11 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Navbar from './components/common/Navbar';
+import Home from './pages/Home';
 import AdminDashboard from './pages/AdminDashboard';
-
-function Home() {
-  return <Navbar />;
-}
 
 function App() {
   return (
