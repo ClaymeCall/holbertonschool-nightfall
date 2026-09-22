@@ -11,9 +11,9 @@ function Navbar() {
         <Link to="/admin" className="text-sm text-gray-300 no-underline hover:text-white">
           Admin
         </Link>
-        <button className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-2 px-4" type="button">
+        <Link to="/login" className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-2 px-4 no-underline inline-block">
           Connexion
-        </button>
+        </Link>
       </div>
     </nav>
   );
