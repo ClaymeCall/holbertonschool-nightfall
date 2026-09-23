@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { experienceImageUrl, formatPrice } from '../../lib/format';
+import { intensityLabel } from '../../lib/intensity';
 import { themeForExperience } from '../../lib/themes';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
@@ -18,6 +19,7 @@ function ExperienceCard({ experience }) {
   } = experience;
 
   const imageUrl = experienceImageUrl(image);
+  const intensityText = intensityLabel(intensityLevel);
 
   return (
     <article
@@ -61,11 +63,11 @@ function ExperienceCard({ experience }) {
           </Button>
         </div>
 
-        {(duration || intensityLevel) && (
+        {(duration || intensityText) && (
           <p className="mt-3 text-right text-[11px] uppercase tracking-widest text-ink-muted">
             {duration ? `${duration} min` : null}
-            {duration && intensityLevel ? ' · ' : null}
-            {intensityLevel}
+            {duration && intensityText ? ' · ' : null}
+            {intensityText}
           </p>
         )}
       </Link>
