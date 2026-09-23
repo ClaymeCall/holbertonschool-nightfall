@@ -67,7 +67,7 @@ const seedDatabase = async () => {
                 image VARCHAR(255),
                 category VARCHAR(255) NOT NULL,
                 duration INT NOT NULL,
-                intensity_level VARCHAR(50) NOT NULL,
+                intensity_level TINYINT NOT NULL CHECK (intensity_level BETWEEN 1 AND 5),
                 max_participants INT NOT NULL,
                 price DECIMAL(10, 2) NOT NULL,
                 is_archived BOOLEAN NOT NULL DEFAULT FALSE,
@@ -119,7 +119,7 @@ const seedDatabase = async () => {
                 image: 'laboratoire-contamine.jpg',
                 category: 'Horreur',
                 duration: 90,
-                intensity_level: 'Élevée',
+                intensity_level: 3,
                 max_participants: 8,
                 price: 55.00
             },
@@ -129,7 +129,7 @@ const seedDatabase = async () => {
                 image: 'bunker-abandonne.jpg',
                 category: 'Survie',
                 duration: 75,
-                intensity_level: 'Modérée',
+                intensity_level: 2,
                 max_participants: 10,
                 price: 50.00
             },
@@ -139,7 +139,7 @@ const seedDatabase = async () => {
                 image: 'asile-abandonne.jpg',
                 category: 'Horreur',
                 duration: 100,
-                intensity_level: 'Élevée',
+                intensity_level: 3,
                 max_participants: 8,
                 price: 65.00
             },
@@ -149,7 +149,7 @@ const seedDatabase = async () => {
                 image: 'invasion-extraterrestre.jpg',
                 category: 'Science-fiction',
                 duration: 100,
-                intensity_level: 'Très élevée',
+                intensity_level: 4,
                 max_participants: 8,
                 price: 70.00
             },
@@ -159,7 +159,7 @@ const seedDatabase = async () => {
                 image: 'zone-radioactive.jpg',
                 category: 'Survie',
                 duration: 90,
-                intensity_level: 'Modérée',
+                intensity_level: 2,
                 max_participants: 10,
                 price: 55.00
             },
@@ -169,7 +169,7 @@ const seedDatabase = async () => {
                 image: 'foret-maudite.jpg',
                 category: 'Horreur',
                 duration: 75,
-                intensity_level: 'Modérée',
+                intensity_level: 2,
                 max_participants: 12,
                 price: 45.00,
                 is_archived: true

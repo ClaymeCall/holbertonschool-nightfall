@@ -15,7 +15,7 @@ const VALID_BODY = {
   image: 'zone-radioactive.jpg',
   category: 'Survie',
   duration: 90,
-  intensity_level: 'Modérée',
+  intensity_level: 2,
   max_participants: 10,
   price: 55,
 };

@@ -15,7 +15,7 @@ const ACTIVE_EXPERIENCE = {
   image: 'bunker-abandonne.jpg',
   category: 'Survie',
   duration: 75,
-  intensity_level: 'Modérée',
+  intensity_level: 2,
   max_participants: 10,
   price: '50.00',
   is_archived: 0,
@@ -96,21 +96,21 @@ describe('GET /api/experiences/search', () => {
     expect(res.status).toBe(400);
   });
 
-  it('filters by max_intensity_level, expanding to all levels at or below it', async () => {
+  it('filters by max_intensity_level', async () => {
     const db = createMockDb();
     db.query.mockResolvedValueOnce([[ACTIVE_EXPERIENCE]]);
 
     const app = buildApp(db);
-    const res = await request(app).get('/api/experiences/search').query({ max_intensity_level: 'Élevée' });
+    const res = await request(app).get('/api/experiences/search').query({ max_intensity_level: '3' });
 
     expect(res.status).toBe(200);
-    expect(db.query.mock.calls[0][0]).toMatch(/intensity_level IN \(\?, \?, \?\)/);
-    expect(db.query.mock.calls[0][1]).toEqual(['Faible', 'Modérée', 'Élevée']);
+    expect(db.query.mock.calls[0][0]).toMatch(/intensity_level <= \?/);
+    expect(db.query.mock.calls[0][1]).toEqual([3]);
   });
 
-  it('rejects an unknown max_intensity_level', async () => {
+  it('rejects a max_intensity_level outside 1-5', async () => {
     const app = buildApp(createMockDb());
-    const res = await request(app).get('/api/experiences/search').query({ max_intensity_level: 'Extreme' });
+    const res = await request(app).get('/api/experiences/search').query({ max_intensity_level: '6' });
     expect(res.status).toBe(400);
   });
 
@@ -158,7 +158,7 @@ describe('GET /api/experiences/search', () => {
       q: 'bunker',
       category: 'Survie',
       max_duration: '90',
-      max_intensity_level: 'Élevée',
+      max_intensity_level: '3',
       participants: '4',
       min_price: '10',
       max_price: '90',
@@ -166,7 +166,7 @@ describe('GET /api/experiences/search', () => {
 
     expect(res.status).toBe(200);
     expect(db.query.mock.calls[0][1]).toEqual([
-      '%bunker%', '%bunker%', 'Survie', 90, 'Faible', 'Modérée', 'Élevée', 4, 10, 90,
+      '%bunker%', '%bunker%', 'Survie', 90, 3, 4, 10, 90,
     ]);
   });
 

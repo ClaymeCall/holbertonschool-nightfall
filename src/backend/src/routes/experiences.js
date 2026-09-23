@@ -7,9 +7,8 @@ const EXPERIENCE_COLUMNS = `
   intensity_level, max_participants, price, is_archived
 `;
 
-// No numeric intensity column exists in the database; this order is the
-// team-agreed scale used to resolve "max_intensity_level" into a range.
-const INTENSITY_LEVELS = ['Faible', 'Modérée', 'Élevée', 'Très élevée'];
+const MIN_INTENSITY_LEVEL = 1;
+const MAX_INTENSITY_LEVEL = 5;
 
 function parsePositiveInt(value) {
   const num = Number(value);
@@ -39,8 +38,8 @@ function validateExperienceInput(body) {
   if (!Number.isInteger(duration) || duration <= 0) {
     return 'duration must be a positive integer';
   }
-  if (typeof intensity_level !== 'string' || intensity_level.trim().length === 0) {
-    return 'intensity_level is required';
+  if (!Number.isInteger(intensity_level) || intensity_level < MIN_INTENSITY_LEVEL || intensity_level > MAX_INTENSITY_LEVEL) {
+    return `intensity_level must be an integer between ${MIN_INTENSITY_LEVEL} and ${MAX_INTENSITY_LEVEL}`;
   }
   if (!Number.isInteger(max_participants) || max_participants <= 0) {
     return 'max_participants must be a positive integer';
@@ -79,8 +78,8 @@ router.get('/', optionalAuthenticate, async (req, res) => {
  * @queryparam {string} q - Matched against name and description (substring, case-insensitive).
  * @queryparam {string} category - Exact category match.
  * @queryparam {number} max_duration - Maximum duration, in minutes.
- * @queryparam {string} max_intensity_level - One of: Faible, Modérée, Élevée, Très élevée.
- *   Matches experiences at or below this level on that scale.
+ * @queryparam {number} max_intensity_level - Integer from 1 to 5. Matches experiences
+ *   with an intensity_level at or below this value.
  * @queryparam {number} participants - Minimum max_participants an experience must support.
  * @queryparam {number} min_price - Minimum price.
  * @queryparam {number} max_price - Maximum price.
@@ -124,13 +123,14 @@ router.get('/search', optionalAuthenticate, async (req, res) => {
   }
 
   if (max_intensity_level !== undefined) {
-    const maxIndex = INTENSITY_LEVELS.indexOf(max_intensity_level);
-    if (maxIndex === -1) {
-      return res.status(400).json({ error: `max_intensity_level must be one of: ${INTENSITY_LEVELS.join(', ')}` });
+    const value = Number(max_intensity_level);
+    if (!Number.isInteger(value) || value < MIN_INTENSITY_LEVEL || value > MAX_INTENSITY_LEVEL) {
+      return res.status(400).json({
+        error: `max_intensity_level must be an integer between ${MIN_INTENSITY_LEVEL} and ${MAX_INTENSITY_LEVEL}`,
+      });
     }
-    const allowedLevels = INTENSITY_LEVELS.slice(0, maxIndex + 1);
-    conditions.push(`intensity_level IN (${allowedLevels.map(() => '?').join(', ')})`);
-    params.push(...allowedLevels);
+    conditions.push('intensity_level <= ?');
+    params.push(value);
   }
 
   if (participants !== undefined) {

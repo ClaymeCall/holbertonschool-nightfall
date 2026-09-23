@@ -92,15 +92,12 @@ paths:
         - name: max_intensity_level
           in: query
           description: >-
-            Maximum intensity level. Matches experiences at or below this
-            level on the scale Faible < Modérée < Élevée < Très élevée.
+            Maximum intensity level. Matches experiences with an
+            intensity_level at or below this value.
           schema:
-            type: string
-            enum:
-              - Faible
-              - Modérée
-              - Élevée
-              - Très élevée
+            type: integer
+            minimum: 1
+            maximum: 5
         - name: participants
           in: query
           description: Minimum number of participants an experience must be able to accommodate
@@ -518,8 +515,12 @@ components:
           type: integer
           description: Duration in minutes
         intensity_level:
-          type: string
-          description: Intensity level (e.g., Low, Medium, High)
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: >-
+            Intensity level, from 1 (Faible) to 5 (Extrême). The frontend
+            maps this integer to a word label for display.
         max_participants:
           type: integer
           description: Maximum number of participants
@@ -561,8 +562,10 @@ components:
           type: integer
           description: Duration in minutes
         intensity_level:
-          type: string
-          description: Intensity level
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Intensity level, from 1 (Faible) to 5 (Extrême)
         max_participants:
           type: integer
           description: Maximum number of participants

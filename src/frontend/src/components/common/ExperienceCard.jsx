@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { API_ORIGIN } from '../../lib/api';
+import { intensityLabel } from '../../lib/intensity';
 
 const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
 
@@ -19,6 +20,7 @@ function ExperienceCard({ experience }) {
   } = experience;
 
   const imageUrl = image ? `${IMAGE_BASE_URL}${image}` : null;
+  const intensityLabelText = intensityLabel(intensityLevel);
 
   return (
     <article className="group relative isolate overflow-hidden rounded-xl border border-gray-800 bg-deep-black shadow-lg shadow-black/50 transition-transform duration-300 hover:-translate-y-1">
@@ -63,11 +65,11 @@ function ExperienceCard({ experience }) {
           </span>
         </div>
 
-        {(duration || intensityLevel) && (
+        {(duration || intensityLabelText) && (
           <p className="mt-3 text-right text-[11px] uppercase tracking-widest text-gray-500">
             {duration ? `${duration} min` : null}
-            {duration && intensityLevel ? ' · ' : null}
-            {intensityLevel}
+            {duration && intensityLabelText ? ' · ' : null}
+            {intensityLabelText}
           </p>
         )}
       </Link>
