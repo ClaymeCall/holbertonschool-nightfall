@@ -81,5 +81,41 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id < 1) {
+      return res.status(400).json({ error: 'id must be a positive integer' });
+    }
+
+    const [reservations] = await req.db.query(
+      'SELECT id, user_id, date_time FROM reservations WHERE id = ?',
+      [id]
+    );
+
+    if (reservations.length === 0) {
+      return res.status(404).json({ error: 'Reservation not found' });
+    }
+    // id is a primary key, so the query returns at most one row — extract it directly
+    const reservation = reservations[0];
+
+    if (reservation.user_id !== req.user.sub) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    const hoursUntilReservation = (reservation.date_time - new Date()) / (1000 * 60 * 60);
+    if (hoursUntilReservation <= 48) {
+      return res.status(403).json({ error: 'Cancellation not allowed less than 48 hours before the reservation' });
+    }
+
+    await req.db.query('DELETE FROM reservations WHERE id = ?', [id]);
+
+    res.status(204).send();
+
+  } catch (err) {
+    console.error('Error cancelling reservation:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 module.exports = router;
