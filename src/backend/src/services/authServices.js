@@ -54,4 +54,39 @@ async function login(db, { email, password }) {
   };
 }
 
-module.exports = { login };
+async function register(db, { email, password }) {
+  const [users] = await db.execute(
+    `SELECT id
+     FROM users
+     WHERE email = ?`,
+    [email]
+  );
+
+  if (users.length > 0) {
+    return null;
+  }
+
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const [result] = await db.execute(
+    `INSERT INTO users (email, password_hash, is_admin)
+     VALUES (?, ?, ?)`,
+    [email, passwordHash, false]
+  );
+
+  return {
+    id: result.insertId,
+    email,
+    is_admin: false
+  };
+}
+
+async function logout(db, token) {
+  const [result] = await db.execute(
+    "DELETE FROM sessions WHERE token = ?",
+    [token]
+  );
+
+  return result.affectedRows === 1;
+}
+module.exports = { login, register, logout };

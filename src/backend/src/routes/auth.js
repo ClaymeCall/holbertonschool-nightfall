@@ -1,4 +1,5 @@
 const authController = require("../controllers/authController");
+const { authenticate } = require("../middleware/auth");
 
 const express = require('express');
 const router = express.Router();
@@ -18,9 +19,7 @@ router.post("/login", authController.login);
  * @description Register a new user
  * @access Public
  */
-router.post('/register', async (req, res) => {
-  res.status(501).json({ error: 'Not implemented' });
-});
+router.post("/register", authController.register);
 
 /**
  * @route POST /api/auth/logout
@@ -28,9 +27,7 @@ router.post('/register', async (req, res) => {
  * @access Private
  * @todo Implement authentication middleware
  */
-router.post('/logout', async (req, res) => {
-  res.status(501).json({ error: 'Not implemented' });
-});
+router.post("/logout", authenticate, authController.logout);
 
 /**
  * @route GET /api/auth/me

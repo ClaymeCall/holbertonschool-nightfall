@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { Link,useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -37,9 +39,8 @@ export default function Login() {
         return;
       }
 
-      localStorage.setItem("token", data.token);
-      setPassword("");
-      setMessage("Connexion réussie : token enregistré !");
+    localStorage.setItem("token", data.token);
+    window.location.assign("/");
     } catch {
       setMessage(
         "Connexion impossible : vérifie l’API et l’accès au stockage du navigateur."
@@ -103,13 +104,22 @@ export default function Login() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-3 px-4 mt-2 hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Connexion…" : "Se connecter"}
-          </button>
+          <div className="grid grid-cols-2 gap-3 mt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-3 px-4 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Connexion…" : "Se connecter"}
+            </button>
+
+            <Link
+              to="/register"
+              className="border border-night-mauve text-night-mauve rounded-md font-bold py-3 px-4 text-center no-underline hover:bg-night-mauve hover:text-white"
+            >
+              Inscription
+            </Link>
+          </div>
         </form>
 
         <p role="status" className="text-white text-center mt-6">
