@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useApiResource from '../../hooks/useApiResource';
 import { apiRequest } from '../../lib/api';
+import { INTENSITY_OPTIONS } from '../../lib/intensity';
 
 const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
 
@@ -48,7 +49,7 @@ function ExperienceForm({ initialValues, submitLabel, submittingLabel, onSubmit,
         image: values.image || undefined,
         category: values.category,
         duration: Number(values.duration),
-        intensity_level: values.intensity_level,
+        intensity_level: Number(values.intensity_level),
         max_participants: Number(values.max_participants),
         price: Number(values.price),
       });
@@ -86,13 +87,21 @@ function ExperienceForm({ initialValues, submitLabel, submittingLabel, onSubmit,
 
         <label className="text-xs text-gray-400">
           <span className="mb-1 block">Intensity level</span>
-          <input
-            type="text"
+          <select
             required
             value={values.intensity_level}
             onChange={handleChange('intensity_level')}
             className="rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          />
+          >
+            <option value="" disabled>
+              Select…
+            </option>
+            {INTENSITY_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label className="text-xs text-gray-400">

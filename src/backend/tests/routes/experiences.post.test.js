@@ -15,7 +15,7 @@ const VALID_BODY = {
   image: 'zone-radioactive.jpg',
   category: 'Survie',
   duration: 90,
-  intensity_level: 'Modérée',
+  intensity_level: 2,
   max_participants: 10,
   price: 55,
 };
@@ -45,7 +45,7 @@ describe('POST /api/experiences', () => {
     ['description', { ...VALID_BODY, description: '' }],
     ['category', { ...VALID_BODY, category: '' }],
     ['duration', { ...VALID_BODY, duration: 0 }],
-    ['intensity_level', { ...VALID_BODY, intensity_level: '' }],
+    ['intensity_level', { ...VALID_BODY, intensity_level: 0 }],
     ['max_participants', { ...VALID_BODY, max_participants: -1 }],
     ['price', { ...VALID_BODY, price: -5 }],
   ])('returns 400 for an invalid %s', async (_field, body) => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import useApiResource from '../hooks/useApiResource';
 import { apiRequest, API_ORIGIN } from '../lib/api';
+import { intensityLabel } from '../lib/intensity';
 
 const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
 
@@ -55,6 +56,7 @@ function ExperienceDetailsContent({ experience }) {
   } = experience;
 
   const imageUrl = image ? `${IMAGE_BASE_URL}${image}` : null;
+  const intensityLabelText = intensityLabel(intensityLevel);
 
   return (
     <article className="mt-6">
@@ -78,12 +80,12 @@ function ExperienceDetailsContent({ experience }) {
           {name}
         </h1>
 
-        {(duration || intensityLevel || maxParticipants) && (
+        {(duration || intensityLabelText || maxParticipants) && (
           <p className="relative mt-3 text-sm uppercase tracking-widest text-gray-300">
             {duration ? `${duration} min` : null}
-            {duration && intensityLevel ? ' · ' : null}
-            {intensityLevel}
-            {(duration || intensityLevel) && maxParticipants ? ' · ' : null}
+            {duration && intensityLabelText ? ' · ' : null}
+            {intensityLabelText}
+            {(duration || intensityLabelText) && maxParticipants ? ' · ' : null}
             {maxParticipants ? `${maxParticipants} participants max` : null}
           </p>
         )}

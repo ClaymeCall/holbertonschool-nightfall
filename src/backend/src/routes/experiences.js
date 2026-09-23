@@ -7,6 +7,19 @@ const EXPERIENCE_COLUMNS = `
   intensity_level, max_participants, price, is_archived
 `;
 
+const MIN_INTENSITY_LEVEL = 1;
+const MAX_INTENSITY_LEVEL = 5;
+
+function parsePositiveInt(value) {
+  const num = Number(value);
+  return Number.isInteger(num) && num > 0 ? num : null;
+}
+
+function parseNonNegativeNumber(value) {
+  const num = Number(value);
+  return Number.isFinite(num) && num >= 0 ? num : null;
+}
+
 function validateExperienceInput(body) {
   const { name, description, image, category, duration, intensity_level, max_participants, price } = body || {};
 
@@ -25,8 +38,8 @@ function validateExperienceInput(body) {
   if (!Number.isInteger(duration) || duration <= 0) {
     return 'duration must be a positive integer';
   }
-  if (typeof intensity_level !== 'string' || intensity_level.trim().length === 0) {
-    return 'intensity_level is required';
+  if (!Number.isInteger(intensity_level) || intensity_level < MIN_INTENSITY_LEVEL || intensity_level > MAX_INTENSITY_LEVEL) {
+    return `intensity_level must be an integer between ${MIN_INTENSITY_LEVEL} and ${MAX_INTENSITY_LEVEL}`;
   }
   if (!Number.isInteger(max_participants) || max_participants <= 0) {
     return 'max_participants must be a positive integer';
@@ -54,6 +67,111 @@ router.get('/', optionalAuthenticate, async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error('Error fetching experiences:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
+ * @route GET /api/experiences/search
+ * @description Search experiences. Archived experiences are omitted unless
+ *   the caller is authenticated as an admin.
+ * @queryparam {string} q - Matched against name and description (substring, case-insensitive).
+ * @queryparam {string} category - Exact category match.
+ * @queryparam {number} max_duration - Maximum duration, in minutes.
+ * @queryparam {number} max_intensity_level - Integer from 1 to 5. Matches experiences
+ *   with an intensity_level at or below this value.
+ * @queryparam {number} participants - Minimum max_participants an experience must support.
+ * @queryparam {number} min_price - Minimum price.
+ * @queryparam {number} max_price - Maximum price.
+ * @access Public
+ */
+router.get('/search', optionalAuthenticate, async (req, res) => {
+  const { q, category, max_duration, max_intensity_level, participants, min_price, max_price } = req.query;
+
+  const conditions = [];
+  const params = [];
+
+  const includeArchived = Boolean(req.user && req.user.is_admin);
+  if (!includeArchived) {
+    conditions.push('is_archived = FALSE');
+  }
+
+  if (q !== undefined) {
+    if (typeof q !== 'string' || q.trim().length === 0) {
+      return res.status(400).json({ error: 'q must be a non-empty string' });
+    }
+    const pattern = `%${q.trim()}%`;
+    conditions.push('(name LIKE ? OR description LIKE ?)');
+    params.push(pattern, pattern);
+  }
+
+  if (category !== undefined) {
+    if (typeof category !== 'string' || category.trim().length === 0) {
+      return res.status(400).json({ error: 'category must be a non-empty string' });
+    }
+    conditions.push('category = ?');
+    params.push(category.trim());
+  }
+
+  if (max_duration !== undefined) {
+    const value = parsePositiveInt(max_duration);
+    if (value === null) {
+      return res.status(400).json({ error: 'max_duration must be a positive integer' });
+    }
+    conditions.push('duration <= ?');
+    params.push(value);
+  }
+
+  if (max_intensity_level !== undefined) {
+    const value = Number(max_intensity_level);
+    if (!Number.isInteger(value) || value < MIN_INTENSITY_LEVEL || value > MAX_INTENSITY_LEVEL) {
+      return res.status(400).json({
+        error: `max_intensity_level must be an integer between ${MIN_INTENSITY_LEVEL} and ${MAX_INTENSITY_LEVEL}`,
+      });
+    }
+    conditions.push('intensity_level <= ?');
+    params.push(value);
+  }
+
+  if (participants !== undefined) {
+    const value = parsePositiveInt(participants);
+    if (value === null) {
+      return res.status(400).json({ error: 'participants must be a positive integer' });
+    }
+    conditions.push('max_participants >= ?');
+    params.push(value);
+  }
+
+  let minPriceValue = null;
+  if (min_price !== undefined) {
+    minPriceValue = parseNonNegativeNumber(min_price);
+    if (minPriceValue === null) {
+      return res.status(400).json({ error: 'min_price must be a non-negative number' });
+    }
+    conditions.push('price >= ?');
+    params.push(minPriceValue);
+  }
+
+  let maxPriceValue = null;
+  if (max_price !== undefined) {
+    maxPriceValue = parseNonNegativeNumber(max_price);
+    if (maxPriceValue === null) {
+      return res.status(400).json({ error: 'max_price must be a non-negative number' });
+    }
+    conditions.push('price <= ?');
+    params.push(maxPriceValue);
+  }
+
+  if (minPriceValue !== null && maxPriceValue !== null && minPriceValue > maxPriceValue) {
+    return res.status(400).json({ error: 'min_price must not be greater than max_price' });
+  }
+
+  try {
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    const [rows] = await req.db.query(`SELECT ${EXPERIENCE_COLUMNS} FROM experiences ${whereClause}`, params);
+    res.json(rows);
+  } catch (err) {
+    console.error('Error searching experiences:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

@@ -16,7 +16,7 @@ const ACTIVE_EXPERIENCE = {
   image: 'bunker-abandonne.jpg',
   category: 'Survie',
   duration: 75,
-  intensity_level: 'Modérée',
+  intensity_level: 2,
   max_participants: 10,
   price: '50.00',
   is_archived: 0,
