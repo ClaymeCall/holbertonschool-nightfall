@@ -1,7 +1,7 @@
 import React from 'react';
 import ExperienceCard from '../common/ExperienceCard';
 
-function ExperiencesList({ experiences }) {
+function ExperiencesList({ experiences , hasFilters}) {
   if (!experiences || experiences.length === 0) {
     return (
       <p className="text-sm text-gray-400">

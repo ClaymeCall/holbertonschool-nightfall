@@ -81,7 +81,7 @@ function Home() {
   const params = new URLSearchParams();
 
   if (search.trim()) {
-    params.set('search', search.trim());
+    params.set('q', search.trim());
   }
 
   if (minPrice !== '') {
@@ -105,13 +105,13 @@ function Home() {
   }
 
   if (intensity) {
-    params.set('intensity_level', intensity);
+    params.set('max_intensity_level', intensity);
   }
 
   const query = params.toString();
 
   const path = query
-    ? `/experiences?${query}`
+    ? `/experiences/search?${query}`
     : '/experiences';
 
   /*
