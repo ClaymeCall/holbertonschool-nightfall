@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
 function Navbar() {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { token, isAdmin, logout } = useAuth();
 
   const [isConnected, setIsConnected] = useState(
     Boolean(localStorage.getItem('token'))
@@ -48,7 +50,7 @@ function Navbar() {
         N
       </a>
       <div className="flex items-center gap-4">
-        {isAdmin && (
+        {token && isAdmin && (
           <Link to="/admin" className="text-sm text-gray-300 no-underline hover:text-white">
             Admin
           </Link>

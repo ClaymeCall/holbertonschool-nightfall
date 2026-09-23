@@ -44,7 +44,7 @@ export default function Login() {
       login(data.token, data.user);
       setPassword("");
       setMessage("Connexion réussie !");
-      navigate(data.user?.is_admin ? "/admin" : "/dashboard");
+      window.location.assign(data.user?.is_admin ? "/admin" : "/dashboard")
     } catch {
       setMessage(
         "Connexion impossible : vérifie l’API et l’accès au stockage du navigateur."
