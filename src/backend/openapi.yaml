@@ -60,6 +60,81 @@ paths:
         '500':
           description: Internal server error
 
+  /experiences/search:
+    get:
+      summary: Search experiences
+      description: >-
+        Search experiences by free text (matched against name and
+        description simultaneously), category, duration, intensity level,
+        participant capacity, and price range. All parameters are optional
+        and combine with AND. Archived experiences are omitted unless the
+        caller is authenticated with an admin Bearer token.
+      tags:
+        - Guest
+        - Member
+      parameters:
+        - name: q
+          in: query
+          description: Free text matched against name and description (substring, case-insensitive)
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Exact category match
+          schema:
+            type: string
+        - name: max_duration
+          in: query
+          description: Maximum duration, in minutes
+          schema:
+            type: integer
+            minimum: 1
+        - name: max_intensity_level
+          in: query
+          description: >-
+            Maximum intensity level. Matches experiences at or below this
+            level on the scale Faible < Modérée < Élevée < Très élevée.
+          schema:
+            type: string
+            enum:
+              - Faible
+              - Modérée
+              - Élevée
+              - Très élevée
+        - name: participants
+          in: query
+          description: Minimum number of participants an experience must be able to accommodate
+          schema:
+            type: integer
+            minimum: 1
+        - name: min_price
+          in: query
+          description: Minimum price, in euros
+          schema:
+            type: number
+            format: float
+            minimum: 0
+        - name: max_price
+          in: query
+          description: Maximum price, in euros
+          schema:
+            type: number
+            format: float
+            minimum: 0
+      responses:
+        '200':
+          description: A list of experiences matching the given filters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Experience'
+        '400':
+          description: Invalid query parameter
+        '500':
+          description: Internal server error
+
   /experiences/{id}:
     get:
       summary: Get a specific experience
