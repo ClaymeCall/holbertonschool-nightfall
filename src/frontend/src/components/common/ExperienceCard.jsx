@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { API_ORIGIN } from '../../lib/api';
-
-const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
-
-const IMAGE_BASE_URL = `${API_ORIGIN}/images/experiences/`;
+import { experienceImageUrl, formatPrice } from '../../lib/format';
+import { themeForExperience } from '../../lib/themes';
+import Badge from '../ui/Badge';
+import Button from '../ui/Button';
 
 function ExperienceCard({ experience }) {
   const {
@@ -18,53 +17,52 @@ function ExperienceCard({ experience }) {
     price,
   } = experience;
 
-  const imageUrl = image ? `${IMAGE_BASE_URL}${image}` : null;
+  const imageUrl = experienceImageUrl(image);
 
   return (
-    <article className="group relative isolate overflow-hidden rounded-xl border border-gray-800 bg-deep-black shadow-lg shadow-black/50 transition-transform duration-300 hover:-translate-y-1">
+    <article
+      data-theme={themeForExperience(experience)}
+      className="motion-safe:animate-fade-up group relative isolate overflow-hidden rounded-xl border border-t-2 border-line border-t-accent bg-canvas shadow-lg shadow-black/50 transition duration-300 hover:-translate-y-1 hover:border-accent/60 hover:border-t-accent focus-within:border-highlight focus-within:border-t-accent"
+    >
       <Link
         to={`/experiences/${id}`}
         aria-label={`Découvrir l'expérience ${name}`}
         className="relative flex min-h-[420px] flex-col justify-end p-6 no-underline"
       >
-        {/* Backdrop: real photo when available, gothic gradient fallback otherwise */}
+        {/* Backdrop: real photo when available, themed gradient fallback otherwise */}
         <div
           className="absolute inset-0 -z-10 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
           style={{
             backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
-            backgroundColor: '#0a0a0a',
+            backgroundColor: 'rgb(var(--color-canvas))',
           }}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgba(139,0,0,0.35),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgb(var(--color-accent)/0.45),transparent_55%)]" />
         </div>
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-deep-black via-deep-black/70 to-transparent" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-canvas via-canvas/70 to-transparent" />
 
-        {category && (
-          <span className="mb-3 w-fit rounded-full border border-blood-red/60 bg-black/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-blood-red">
-            {category}
-          </span>
-        )}
+        {category && <Badge className="mb-3">{category}</Badge>}
 
-        <h3 className="text-2xl font-bold leading-tight text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+        <h3 className="font-display text-3xl font-semibold leading-tight text-ink drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
           {name}
         </h3>
 
         {description && (
-          <p className="mt-2 line-clamp-2 text-sm text-gray-300">{description}</p>
+          <p className="mt-2 line-clamp-2 text-sm text-ink-muted">{description}</p>
         )}
 
         <div className="mt-5 flex items-center justify-between">
-          <span className="text-lg font-bold text-white">
-            {currencyFormatter.format(Number(price))}
+          <span className="text-lg font-bold text-ink">
+            {formatPrice(price)}
           </span>
-          <span className="flex items-center gap-2 rounded-md bg-blood-red px-4 py-2 text-sm font-bold text-white transition-opacity group-hover:opacity-90">
+          <Button as="span" className="group-hover:brightness-110">
             Explorer
             <span aria-hidden="true">→</span>
-          </span>
+          </Button>
         </div>
 
         {(duration || intensityLevel) && (
-          <p className="mt-3 text-right text-[11px] uppercase tracking-widest text-gray-500">
+          <p className="mt-3 text-right text-[11px] uppercase tracking-widest text-ink-muted">
             {duration ? `${duration} min` : null}
             {duration && intensityLevel ? ' · ' : null}
             {intensityLevel}

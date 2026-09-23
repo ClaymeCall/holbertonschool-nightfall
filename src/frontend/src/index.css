@@ -18,9 +18,82 @@
     --color-highlight: 118 137 245;
   }
 
+  /* Ambiances, set with data-theme on a wrapper (see src/lib/themes.js). */
+  [data-theme='horreur'] {
+    --color-canvas: 13 13 15;
+    --color-surface: 28 28 34;
+    --color-line: 42 42 51;
+    --color-ink: 242 237 230;
+    --color-ink-muted: 176 171 181;
+    --color-accent: 185 28 28;
+    --color-accent-fg: 255 255 255;
+    --color-highlight: 192 128 85;
+  }
+
+  [data-theme='paranormal'] {
+    --color-canvas: 16 13 24;
+    --color-surface: 36 26 51;
+    --color-line: 58 44 82;
+    --color-ink: 241 234 251;
+    --color-ink-muted: 185 174 201;
+    --color-accent: 124 58 237;
+    --color-accent-fg: 255 255 255;
+    --color-highlight: 232 121 249;
+  }
+
+  [data-theme='laboratoire'] {
+    --color-canvas: 12 18 16;
+    --color-surface: 27 41 34;
+    --color-line: 43 63 52;
+    --color-ink: 238 242 230;
+    --color-ink-muted: 173 188 174;
+    --color-accent: 163 230 53;
+    --color-accent-fg: 12 18 16;
+    --color-highlight: 212 184 76;
+  }
+
+  [data-theme='bunker'] {
+    --color-canvas: 17 18 13;
+    --color-surface: 31 33 23;
+    --color-line: 52 55 42;
+    --color-ink: 236 233 218;
+    --color-ink-muted: 180 178 155;
+    --color-accent: 168 153 104;
+    --color-accent-fg: 17 18 13;
+    --color-highlight: 216 197 138;
+  }
+
+  [data-theme='radioactif'] {
+    --color-canvas: 18 14 8;
+    --color-surface: 36 27 15;
+    --color-line: 61 46 25;
+    --color-ink: 246 238 221;
+    --color-ink-muted: 191 179 155;
+    --color-accent: 255 106 19;
+    --color-accent-fg: 18 14 8;
+    --color-highlight: 255 214 10;
+  }
+
+  [data-theme='asile'] {
+    --color-canvas: 12 18 20;
+    --color-surface: 23 34 38;
+    --color-line: 38 56 64;
+    --color-ink: 230 238 240;
+    --color-ink-muted: 168 185 189;
+    --color-accent: 53 182 174;
+    --color-accent-fg: 12 18 20;
+    --color-highlight: 224 115 107;
+  }
+
   :focus-visible {
     outline: 2px solid rgb(var(--color-highlight));
     outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 }
 

@@ -33,6 +33,20 @@ export default {
         'blood-red': '#c34e63',
         'deep-black': '#020415',
       },
+      fontFamily: {
+        display: ['"Cormorant Garamond"', 'Georgia', '"Times New Roman"', 'serif'],
+      },
+      keyframes: {
+        'fade-up': {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      // "backwards" (not "both"): once finished, the element goes back to its own
+      // styles, so hover transforms keep working.
+      animation: {
+        'fade-up': 'fade-up 0.5s ease-out backwards',
+      },
     },
   },
   plugins: [],

@@ -3,9 +3,11 @@ import { Link, useParams } from 'react-router-dom';
 import Alert from '../components/ui/Alert';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
+import Skeleton from '../components/ui/Skeleton';
 import useApiResource from '../hooks/useApiResource';
 import { apiRequest } from '../lib/api';
 import { experienceImageUrl, formatPrice } from '../lib/format';
+import { themeForExperience } from '../lib/themes';
 
 function ExperienceDetails() {
   const { id } = useParams();
@@ -14,13 +16,13 @@ function ExperienceDetails() {
   const experience = experiences?.find((item) => String(item.id) === id);
 
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="min-h-screen bg-canvas" data-theme={themeForExperience(experience)}>
       <main className="mx-auto max-w-4xl px-6 py-10">
         <Link to="/" className="text-sm text-ink-muted hover:text-ink">
           ← Retour aux expériences
         </Link>
 
-        {loading && <p className="mt-6 text-sm text-ink-muted">Chargement de l'expérience…</p>}
+        {loading && <ExperienceDetailsSkeleton />}
 
         {error && (
           <Alert variant="error" className="mt-6">
@@ -42,6 +44,19 @@ function ExperienceDetails() {
   );
 }
 
+function ExperienceDetailsSkeleton() {
+  return (
+    <div role="status" className="mt-6">
+      <span className="sr-only">Chargement de l'expérience…</span>
+      <Skeleton className="min-h-[320px] rounded-xl" />
+      <Skeleton className="mt-6 h-4 w-11/12" />
+      <Skeleton className="mt-3 h-4 w-10/12" />
+      <Skeleton className="mt-3 h-4 w-8/12" />
+      <Skeleton className="mt-8 h-28 rounded-xl" />
+    </div>
+  );
+}
+
 function ExperienceDetailsContent({ experience }) {
   const {
     name,
@@ -57,7 +72,7 @@ function ExperienceDetailsContent({ experience }) {
   const imageUrl = experienceImageUrl(image);
 
   return (
-    <article className="mt-6">
+    <article className="mt-6 motion-safe:animate-fade-up">
       <div
         className="relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-xl border border-line bg-cover bg-center p-8"
         style={{
@@ -70,7 +85,7 @@ function ExperienceDetailsContent({ experience }) {
 
         {category && <Badge className="relative mb-3">{category}</Badge>}
 
-        <h1 className="relative text-4xl font-bold leading-tight text-ink drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+        <h1 className="relative font-display text-5xl font-semibold leading-tight text-ink drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
           {name}
         </h1>
 
