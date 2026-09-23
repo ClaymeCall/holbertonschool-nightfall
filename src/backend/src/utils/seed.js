@@ -133,13 +133,13 @@ const seedDatabase = async () => {
                 price: 50.00
             },
             {
-                name: 'Mission de sauvetage',
-                description: 'Une équipe est portée disparue en terrain hostile. Coordonnez-vous pour la retrouver et l\'exfiltrer avant l\'expiration du délai.',
-                image: 'mission-sauvetage.jpg',
-                category: 'Action',
-                duration: 120,
+                name: 'Asile abandonné',
+                description: 'Pénétrez dans un ancien asile psychiatrique où les cris des patients résonnent encore. Découvrez ce qui a provoqué leur folie et échappez aux entités qui errent dans les couloirs.',
+                image: 'asile-abandonne.jpg',
+                category: 'Horreur',
+                duration: 100,
                 intensity_level: 'Élevée',
-                max_participants: 12,
+                max_participants: 8,
                 price: 65.00
             },
             {
@@ -163,14 +163,14 @@ const seedDatabase = async () => {
                 price: 55.00
             },
             {
-                name: 'Escape game grandeur nature',
-                description: 'Un vaste terrain à ciel ouvert transformé en escape game géant. Résolvez des énigmes disséminées dans le décor avant le lever du jour.',
-                image: 'escape-grandeur-nature.jpg',
-                category: 'Escape game',
-                duration: 60,
-                intensity_level: 'Faible',
-                max_participants: 20,
-                price: 35.00
+                name: 'Forêt maudite',
+                description: 'Une forêt où les arbres murmurent et les ombres prennent vie. Trouvez la sortie avant que la nuit ne vous engloutisse, mais méfiez-vous des légendes locales...',
+                image: 'foret-maudite.jpg',
+                category: 'Horreur',
+                duration: 75,
+                intensity_level: 'Modérée',
+                max_participants: 12,
+                price: 45.00
             }
         ];
 
