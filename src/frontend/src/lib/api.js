@@ -1,4 +1,6 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5080/api';
+// Backend origin without the /api suffix, used to build static asset URLs (e.g. experience images).
+const API_ORIGIN = API_URL.replace(/\/api\/?$/, '');
 
 async function doFetch(path, { token, body: requestBody, ...options } = {}) {
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
@@ -60,4 +62,4 @@ async function rawRequest(path, options = {}) {
   };
 }
 
-export { apiRequest, rawRequest, API_URL };
+export { apiRequest, rawRequest, API_URL, API_ORIGIN };

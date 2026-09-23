@@ -319,6 +319,8 @@ paths:
                   $ref: '#/components/schemas/Reservation'
         '401':
           description: Unauthorized
+        '404': 
+          description: No reservations found
         '500':
           description: Internal server error
 
@@ -371,14 +373,14 @@ paths:
       responses:
         '204':
           description: Reservation cancelled successfully
+        '400':
+          description: Invalid id
         '401':
           description: Unauthorized
         '403':
-          description: Forbidden (e.g., not the reservation owner)
+          description: Forbidden (e.g., not the reservation owner, or cancellation window has passed)
         '404':
           description: Reservation not found
-        '409':
-          description: Cancellation not allowed (e.g., too late)
         '500':
           description: Internal server error
 
@@ -520,16 +522,13 @@ components:
         participants:
           type: integer
           description: Number of participants
-        status:
-          type: string
-          description: Reservation status (e.g., confirmed, cancelled)
+
       required:
         - id
         - experience_id
         - user_id
         - date
         - participants
-        - status
 
     ReservationInput:
       type: object

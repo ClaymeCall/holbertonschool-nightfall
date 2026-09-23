@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { API_ORIGIN } from '../../lib/api';
 
 const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
 
-const IMAGE_BASE_URL = import.meta.env.VITE_EXPERIENCE_IMAGE_URL || '/images/experiences/';
+const IMAGE_BASE_URL = `${API_ORIGIN}/images/experiences/`;
 
 function ExperienceCard({ experience }) {
   const {
@@ -20,7 +21,7 @@ function ExperienceCard({ experience }) {
   const imageUrl = image ? `${IMAGE_BASE_URL}${image}` : null;
 
   return (
-    <article className="group relative overflow-hidden rounded-xl border border-gray-800 bg-deep-black shadow-lg shadow-black/50 transition-transform duration-300 hover:-translate-y-1">
+    <article className="group relative isolate overflow-hidden rounded-xl border border-gray-800 bg-deep-black shadow-lg shadow-black/50 transition-transform duration-300 hover:-translate-y-1">
       <Link
         to={`/experiences/${id}`}
         aria-label={`Découvrir l'expérience ${name}`}
