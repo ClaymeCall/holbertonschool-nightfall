@@ -52,4 +52,34 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    // Only return the authenticated user's own reservations — never trust a
+    // user_id from the client, always take it from the verified JWT (req.user.sub)
+    const [reservations] = await req.db.query(
+      'SELECT id, experience_id, user_id, date_time, participants FROM reservations WHERE user_id = ? ORDER BY date_time DESC',
+      [req.user.sub]
+    );
+
+    if (reservations.length === 0) {
+      return res.status(404).json({ error: 'No reservations found' });
+    }
+
+    const formatted = reservations.map((reservation) => ({
+      id: reservation.id,
+      experience_id: reservation.experience_id,
+      user_id: reservation.user_id,
+      date: reservation.date_time.toISOString(),
+      participants: reservation.participants,
+    }));
+
+    res.status(200).json(formatted);
+
+  } catch (err) {
+    console.error('Error fetching reservations:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 module.exports = router;
