@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { apiRequest } from "../lib/api";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -19,55 +20,18 @@ export default function Register() {
       /*
        * 1. Création du compte
        */
-      const registerResponse = await fetch(
-        "http://localhost:5080/api/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            email,
-            password
-          })
-        }
-      );
-
-      const registerData = await registerResponse.json();
-
-      if (!registerResponse.ok) {
-        setMessage(
-          registerData.message || "Impossible de créer le compte"
-        );
-        return;
-      }
+      await apiRequest("/auth/register", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
 
       /*
        * 2. Connexion automatique
        */
-      const loginResponse = await fetch(
-        "http://localhost:5080/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            email,
-            password
-          })
-        }
-      );
-
-      const loginData = await loginResponse.json();
-
-      if (!loginResponse.ok) {
-        setMessage(
-          loginData.message ||
-          "Compte créé, mais connexion impossible"
-        );
-        return;
-      }
+      const loginData = await apiRequest("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
 
       /*
        * 3. Vérification du token
@@ -87,14 +51,8 @@ export default function Register() {
        */
       localStorage.setItem("token", loginData.token);
       window.location.assign("/");
-      /*
-       * 5. Retour à l'accueil
-       */
-      //navigate("/");
-    } catch {
-      setMessage(
-        "Impossible de contacter le serveur"
-      );
+    } catch (err) {
+      setMessage(err.message || "Impossible de contacter le serveur");
     } finally {
       setLoading(false);
     }

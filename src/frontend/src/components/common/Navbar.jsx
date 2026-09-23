@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import { apiRequest } from '../../lib/api';
 
 function Navbar() {
 
@@ -21,27 +22,15 @@ function Navbar() {
     }
 
     try {
-      const response = await fetch(
-        'http://localhost:5080/api/auth/logout',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      if (!response.ok) {
-        console.error('Erreur pendant la déconnexion');
-      }
+      await apiRequest('/auth/logout', { method: 'POST', token });
     } catch (error) {
-      console.error('Impossible de contacter le serveur', error);
+      console.error('Erreur pendant la déconnexion', error);
     }
 
     localStorage.removeItem('token');
     setIsConnected(false);
 
-    navigate('/');
+    window.location.assign('/');
   }
 
   return (

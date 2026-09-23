@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
+import { apiRequest } from "../lib/api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,23 +17,10 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://localhost:5080/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email, password })
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setMessage(data.message || "Connexion refusée");
-        return;
-      }
+      const data = await apiRequest("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
 
       if (typeof data.token !== "string" || !data.token) {
         setMessage(
@@ -45,10 +33,8 @@ export default function Login() {
       setPassword("");
       setMessage("Connexion réussie !");
       window.location.assign(data.user?.is_admin ? "/admin" : "/dashboard")
-    } catch {
-      setMessage(
-        "Connexion impossible : vérifie l’API et l’accès au stockage du navigateur."
-      );
+    } catch (err) {
+      setMessage(err.message || "Connexion refusée");
     } finally {
       setLoading(false);
     }
