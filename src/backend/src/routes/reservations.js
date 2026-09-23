@@ -105,7 +105,7 @@ router.delete('/:id', async (req, res) => {
 
     const hoursUntilReservation = (reservation.date_time - new Date()) / (1000 * 60 * 60);
     if (hoursUntilReservation <= 48) {
-      return res.status(409).json({ error: 'Cancellation not allowed less than 48 hours before the reservation' });
+      return res.status(403).json({ error: 'Cancellation not allowed less than 48 hours before the reservation' });
     }
 
     await req.db.query('DELETE FROM reservations WHERE id = ?', [id]);
