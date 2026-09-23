@@ -81,4 +81,12 @@ async function register(db, { email, password }) {
   };
 }
 
-module.exports = { login, register };
+async function logout(db, token) {
+  const [result] = await db.execute(
+    "DELETE FROM sessions WHERE token = ?",
+    [token]
+  );
+
+  return result.affectedRows === 1;
+}
+module.exports = { login, register, logout };

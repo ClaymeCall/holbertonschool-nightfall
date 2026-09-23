@@ -99,4 +99,27 @@ async function register(req, res) {
     });
   }
 }
-module.exports = { login, register };
+
+async function logout(req, res) {
+  try {
+    const deleted = await authServices.logout(
+      req.db,
+      req.token
+    );
+
+    if (!deleted) {
+      return res.status(401).json({
+        error: "Session invalide"
+      });
+    }
+
+    return res.status(204).send();
+  } catch (error) {
+    console.error("Logout error:", error);
+
+    return res.status(500).json({
+      error: "Erreur serveur"
+    });
+  }
+}
+module.exports = { login, register, logout };
