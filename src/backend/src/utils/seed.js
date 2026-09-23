@@ -70,6 +70,7 @@ const seedDatabase = async () => {
                 intensity_level VARCHAR(50) NOT NULL,
                 max_participants INT NOT NULL,
                 price DECIMAL(10, 2) NOT NULL,
+                is_archived BOOLEAN NOT NULL DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
@@ -170,14 +171,15 @@ const seedDatabase = async () => {
                 duration: 75,
                 intensity_level: 'Modérée',
                 max_participants: 12,
-                price: 45.00
+                price: 45.00,
+                is_archived: true
             }
         ];
 
         const experienceIds = [];
         for (const experience of experiences) {
             const [experienceResult] = await connection.query(
-                'INSERT INTO experiences (name, description, image, category, duration, intensity_level, max_participants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                'INSERT INTO experiences (name, description, image, category, duration, intensity_level, max_participants, price, is_archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     experience.name,
                     experience.description,
@@ -186,7 +188,8 @@ const seedDatabase = async () => {
                     experience.duration,
                     experience.intensity_level,
                     experience.max_participants,
-                    experience.price
+                    experience.price,
+                    Boolean(experience.is_archived)
                 ]
             );
             experienceIds.push(experienceResult.insertId);

@@ -1,4 +1,4 @@
-//verifie email et mdp login 
+//verifie email et mdp login
 const authServices = require("../services/authServices");
 
 // req = demande client

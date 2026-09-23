@@ -56,24 +56,35 @@ router.get('/', async (req, res) => {
   try {
     // Only return the authenticated user's own reservations — never trust a
     // user_id from the client, always take it from the verified JWT (req.user.sub)
-    const [reservations] = await req.db.query(
-      'SELECT id, experience_id, user_id, date_time, participants FROM reservations WHERE user_id = ? ORDER BY date_time DESC',
+    const [rows] = await req.db.query(
+      `SELECT
+         r.id, r.date_time, r.participants, r.created_at,
+         e.id AS experience_id, e.name AS experience_name, e.image AS experience_image,
+         e.category AS experience_category, e.duration AS experience_duration,
+         e.price AS experience_price
+       FROM reservations r
+       JOIN experiences e ON e.id = r.experience_id
+       WHERE r.user_id = ?
+       ORDER BY r.date_time DESC`,
       [req.user.sub]
     );
 
-    if (reservations.length === 0) {
-      return res.status(404).json({ error: 'No reservations found' });
-    }
-
-    const formatted = reservations.map((reservation) => ({
-      id: reservation.id,
-      experience_id: reservation.experience_id,
-      user_id: reservation.user_id,
-      date: reservation.date_time.toISOString(),
-      participants: reservation.participants,
+    const reservations = rows.map((row) => ({
+      id: row.id,
+      date_time: row.date_time,
+      participants: row.participants,
+      created_at: row.created_at,
+      experience: {
+        id: row.experience_id,
+        name: row.experience_name,
+        image: row.experience_image,
+        category: row.experience_category,
+        duration: row.experience_duration,
+        price: row.experience_price,
+      },
     }));
 
-    res.status(200).json(formatted);
+    res.status(200).json(reservations);
 
   } catch (err) {
     console.error('Error fetching reservations:', err);

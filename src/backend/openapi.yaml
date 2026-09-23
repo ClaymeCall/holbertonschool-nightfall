@@ -13,7 +13,9 @@ paths:
   /experiences:
     get:
       summary: Get all experiences
-      description: Retrieve a list of all available experiences for guests and members
+      description: >-
+        Retrieve a list of available experiences. Archived experiences are
+        omitted unless the caller is authenticated with an admin Bearer token.
       tags:
         - Guest
         - Member
@@ -61,7 +63,10 @@ paths:
   /experiences/{id}:
     get:
       summary: Get a specific experience
-      description: Retrieve details of a single experience by ID
+      description: >-
+        Retrieve details of a single experience by ID. Returns 404 for an
+        archived experience unless the caller is authenticated with an admin
+        Bearer token.
       tags:
         - Guest
         - Member
@@ -84,7 +89,7 @@ paths:
         '500':
           description: Internal server error
 
-    patch:
+    put:
       summary: Update an experience
       description: Update details of an existing experience (Admin only)
       tags:
@@ -139,6 +144,37 @@ paths:
       responses:
         '204':
           description: Experience deleted successfully
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Experience not found
+        '500':
+          description: Internal server error
+
+  /experiences/{id}/toggle-archive:
+    patch:
+      summary: Toggle an experience's archived state
+      description: Flips is_archived on the given experience (Admin only)
+      tags:
+        - Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the experience to toggle
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Archived state toggled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experience'
         '401':
           description: Unauthorized
         '403':
@@ -310,17 +346,15 @@ paths:
         - bearerAuth: []
       responses:
         '200':
-          description: A list of reservations
+          description: A list of the authenticated user's reservations, with each experience nested
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Reservation'
+                  $ref: '#/components/schemas/ReservationWithExperience'
         '401':
           description: Unauthorized
-        '404': 
-          description: No reservations found
         '500':
           description: Internal server error
 
@@ -408,7 +442,7 @@ components:
         duration:
           type: integer
           description: Duration in minutes
-        intensity:
+        intensity_level:
           type: string
           description: Intensity level (e.g., Low, Medium, High)
         max_participants:
@@ -418,15 +452,19 @@ components:
           type: number
           format: float
           description: Price in euros
+        is_archived:
+          type: boolean
+          description: Whether the experience is active or archived
       required:
         - id
         - name
         - description
         - category
         - duration
-        - intensity
+        - intensity_level
         - max_participants
         - price
+        - is_archived
 
     ExperienceInput:
       type: object
@@ -447,7 +485,7 @@ components:
         duration:
           type: integer
           description: Duration in minutes
-        intensity:
+        intensity_level:
           type: string
           description: Intensity level
         max_participants:
@@ -462,7 +500,7 @@ components:
         - description
         - category
         - duration
-        - intensity
+        - intensity_level
         - max_participants
         - price
 
@@ -547,6 +585,44 @@ components:
         - experience_id
         - date
         - participants
+
+    ReservationWithExperience:
+      type: object
+      properties:
+        id:
+          type: integer
+        date_time:
+          type: string
+          format: date-time
+        participants:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        experience:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            image:
+              type: string
+              nullable: true
+            category:
+              type: string
+            duration:
+              type: integer
+            price:
+              type: string
+          required:
+            - id
+            - name
+      required:
+        - id
+        - date_time
+        - participants
+        - experience
 
   securitySchemes:
     bearerAuth:

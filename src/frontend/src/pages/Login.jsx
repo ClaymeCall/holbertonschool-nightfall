@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -39,8 +41,10 @@ export default function Login() {
         return;
       }
 
-    localStorage.setItem("token", data.token);
-    window.location.assign("/");
+      login(data.token, data.user);
+      setPassword("");
+      setMessage("Connexion réussie !");
+      window.location.assign(data.user?.is_admin ? "/admin" : "/dashboard")
     } catch {
       setMessage(
         "Connexion impossible : vérifie l’API et l’accès au stockage du navigateur."
