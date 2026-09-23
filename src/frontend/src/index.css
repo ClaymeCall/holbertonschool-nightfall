@@ -2,15 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /* Default theme. Values are space-separated RGB channels so Tailwind can
+     apply opacity to them. A theme is just another set of these variables. */
+  :root {
+    color-scheme: dark;
 
+    --color-canvas: 2 4 21;
+    --color-surface: 10 14 38;
+    --color-line: 31 37 73;
+    --color-ink: 241 242 251;
+    --color-ink-muted: 163 169 201;
+    --color-accent: 195 78 99;
+    --color-accent-fg: 255 255 255;
+    --color-highlight: 118 137 245;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-highlight));
+    outline-offset: 2px;
+  }
+}
 
 body {
+  @apply bg-canvas text-ink;
   margin: 0;
   font-family: 'Trebuchet MS', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--deep-black);
-  color: white;
 }
 
 code {

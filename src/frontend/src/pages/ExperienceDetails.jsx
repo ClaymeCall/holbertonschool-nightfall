@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import Alert from '../components/ui/Alert';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
 import useApiResource from '../hooks/useApiResource';
-import { apiRequest, API_ORIGIN } from '../lib/api';
-
-const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
-
-const IMAGE_BASE_URL = `${API_ORIGIN}/images/experiences/`;
+import { apiRequest } from '../lib/api';
+import { experienceImageUrl, formatPrice } from '../lib/format';
 
 function ExperienceDetails() {
   const { id } = useParams();
@@ -14,24 +14,24 @@ function ExperienceDetails() {
   const experience = experiences?.find((item) => String(item.id) === id);
 
   return (
-    <div className="min-h-screen bg-deep-black">
+    <div className="min-h-screen bg-canvas">
       <main className="mx-auto max-w-4xl px-6 py-10">
-        <Link to="/" className="text-sm text-gray-400 hover:text-white">
+        <Link to="/" className="text-sm text-ink-muted hover:text-ink">
           ← Retour aux expériences
         </Link>
 
-        {loading && <p className="mt-6 text-sm text-gray-400">Chargement de l'expérience…</p>}
+        {loading && <p className="mt-6 text-sm text-ink-muted">Chargement de l'expérience…</p>}
 
         {error && (
-          <p role="alert" className="mt-6 text-sm text-red-400">
+          <Alert variant="error" className="mt-6">
             Impossible de charger l'expérience : {error.message}
-          </p>
+          </Alert>
         )}
 
         {!loading && !error && experiences && !experience && (
-          <p role="alert" className="mt-6 text-sm text-red-400">
+          <Alert variant="error" className="mt-6">
             Cette expérience n'existe pas ou n'est plus disponible.
-          </p>
+          </Alert>
         )}
 
         {experience && (
@@ -54,32 +54,28 @@ function ExperienceDetailsContent({ experience }) {
     price,
   } = experience;
 
-  const imageUrl = image ? `${IMAGE_BASE_URL}${image}` : null;
+  const imageUrl = experienceImageUrl(image);
 
   return (
     <article className="mt-6">
       <div
-        className="relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-xl border border-gray-800 bg-cover bg-center p-8"
+        className="relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-xl border border-line bg-cover bg-center p-8"
         style={{
           backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
-          backgroundColor: '#0a0a0a',
+          backgroundColor: 'rgb(var(--color-canvas))',
         }}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgba(139,0,0,0.35),transparent_55%)]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-deep-black/70 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgb(var(--color-accent)/0.35),transparent_55%)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-canvas via-canvas/70 to-transparent" />
 
-        {category && (
-          <span className="relative mb-3 w-fit rounded-full border border-blood-red/60 bg-black/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-blood-red">
-            {category}
-          </span>
-        )}
+        {category && <Badge className="relative mb-3">{category}</Badge>}
 
-        <h1 className="relative text-4xl font-bold leading-tight text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+        <h1 className="relative text-4xl font-bold leading-tight text-ink drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
           {name}
         </h1>
 
         {(duration || intensityLevel || maxParticipants) && (
-          <p className="relative mt-3 text-sm uppercase tracking-widest text-gray-300">
+          <p className="relative mt-3 text-sm uppercase tracking-widest text-ink-muted">
             {duration ? `${duration} min` : null}
             {duration && intensityLevel ? ' · ' : null}
             {intensityLevel}
@@ -90,15 +86,15 @@ function ExperienceDetailsContent({ experience }) {
       </div>
 
       {description && (
-        <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-gray-300">
+        <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-ink-muted">
           {description}
         </p>
       )}
 
-      <div className="mt-8 rounded-xl border border-gray-800 bg-black/40 p-6">
+      <div className="mt-8 rounded-xl border border-line bg-surface/60 p-6">
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-white">
-            {currencyFormatter.format(Number(price))}
+          <span className="text-2xl font-bold text-ink">
+            {formatPrice(price)}
           </span>
         </div>
 
@@ -107,6 +103,9 @@ function ExperienceDetailsContent({ experience }) {
     </article>
   );
 }
+
+const INPUT_CLASSES =
+  'rounded border border-line bg-surface px-3 py-2 text-sm text-ink focus:border-highlight focus:outline-none focus:ring-2 focus:ring-highlight/40';
 
 function ReservationForm({ experience }) {
   const token = localStorage.getItem('token');
@@ -117,8 +116,8 @@ function ReservationForm({ experience }) {
 
   if (!token) {
     return (
-      <p className="mt-6 text-sm text-gray-400">
-        <Link to="/login" className="text-night-mauve hover:underline">
+      <p className="mt-6 text-sm text-ink-muted">
+        <Link to="/login" className="text-highlight hover:underline">
           Connecte-toi
         </Link>{' '}
         pour réserver cette expérience.
@@ -168,17 +167,17 @@ function ReservationForm({ experience }) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-6 flex flex-wrap items-end gap-4">
-      <label className="text-xs text-gray-400">
+      <label className="text-xs text-ink-muted">
         <span className="mb-1 block">Date &amp; heure</span>
         <input
           type="datetime-local"
           value={dateTime}
           onChange={(e) => setDateTime(e.target.value)}
-          className="rounded border border-gray-700 bg-deep-black px-3 py-2 text-sm text-white focus:border-night-mauve focus:outline-none"
+          className={INPUT_CLASSES}
         />
       </label>
 
-      <label className="text-xs text-gray-400">
+      <label className="text-xs text-ink-muted">
         <span className="mb-1 block">Participants</span>
         <input
           type="number"
@@ -186,26 +185,17 @@ function ReservationForm({ experience }) {
           max={experience.max_participants || undefined}
           value={participants}
           onChange={(e) => setParticipants(e.target.value)}
-          className="w-20 rounded border border-gray-700 bg-deep-black px-3 py-2 text-sm text-white focus:border-night-mauve focus:outline-none"
+          className={`w-20 ${INPUT_CLASSES}`}
         />
       </label>
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="rounded-md bg-blood-red px-6 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-      >
+      <Button type="submit" disabled={submitting}>
         {submitting ? 'Réservation…' : 'Réserver'}
-      </button>
+      </Button>
 
-      {feedback && (
-        <p
-          role={feedback.type === 'error' ? 'alert' : 'status'}
-          className={`w-full text-sm ${feedback.type === 'error' ? 'text-red-400' : 'text-emerald-400'}`}
-        >
-          {feedback.message}
-        </p>
-      )}
+      <Alert variant={feedback?.type === 'error' ? 'error' : 'success'} className="w-full">
+        {feedback?.message}
+      </Alert>
     </form>
   );
 }
