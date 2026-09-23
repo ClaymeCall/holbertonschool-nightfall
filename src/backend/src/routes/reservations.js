@@ -61,14 +61,16 @@ router.get('/', async (req, res) => {
       [req.user.sub]
     );
 
+    if (reservations.length === 0) {
+      return res.status(404).json({ error: 'No reservations found' });
+    }
+
     const formatted = reservations.map((reservation) => ({
       id: reservation.id,
       experience_id: reservation.experience_id,
       user_id: reservation.user_id,
       date: reservation.date_time.toISOString(),
       participants: reservation.participants,
-      // Hardcoded: the reservations table has no `status` column yet (added in #28)
-      status: 'confirmed',
     }));
 
     res.status(200).json(formatted);

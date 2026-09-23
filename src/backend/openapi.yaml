@@ -319,6 +319,8 @@ paths:
                   $ref: '#/components/schemas/Reservation'
         '401':
           description: Unauthorized
+        '404': 
+          description: No reservations found
         '500':
           description: Internal server error
 
@@ -520,16 +522,13 @@ components:
         participants:
           type: integer
           description: Number of participants
-        status:
-          type: string
-          description: Reservation status (e.g., confirmed, cancelled)
+
       required:
         - id
         - experience_id
         - user_id
         - date
         - participants
-        - status
 
     ReservationInput:
       type: object
