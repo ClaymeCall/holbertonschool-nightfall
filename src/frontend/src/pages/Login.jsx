@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -38,9 +39,8 @@ export default function Login() {
         return;
       }
 
-      localStorage.setItem("token", data.token);
-      setPassword("");
-      setMessage("Connexion réussie : token enregistré !");
+    localStorage.setItem("token", data.token);
+    window.location.assign("/");
     } catch {
       setMessage(
         "Connexion impossible : vérifie l’API et l’accès au stockage du navigateur."

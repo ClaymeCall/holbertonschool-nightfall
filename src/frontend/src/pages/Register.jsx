@@ -86,11 +86,11 @@ export default function Register() {
        * 4. Sauvegarde du token
        */
       localStorage.setItem("token", loginData.token);
-
+      window.location.assign("/");
       /*
        * 5. Retour à l'accueil
        */
-      navigate("/");
+      //navigate("/");
     } catch {
       setMessage(
         "Impossible de contacter le serveur"
