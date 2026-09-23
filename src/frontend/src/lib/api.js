@@ -37,7 +37,7 @@ async function apiRequest(path, options = {}) {
   const { res, body } = await doFetch(path, options);
 
   if (!res.ok) {
-    const message = body?.error || `Request failed with status ${res.status}`;
+    const message = body?.error || body?.message || `Request failed with status ${res.status}`;
     const error = new Error(message);
     error.status = res.status;
     throw error;
