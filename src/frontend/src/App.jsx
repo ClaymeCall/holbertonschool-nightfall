@@ -7,7 +7,9 @@ import Home from './pages/Home';
 import AdminDashboard from './pages/AdminDashboard';
 import UserDashboard from './pages/UserDashboard';
 import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
 import ExperienceDetails from './pages/ExperienceDetails';
+
 
 function App() {
   return (
@@ -33,6 +35,7 @@ function App() {
             }
           />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Route>
       </Routes>
     </BrowserRouter>

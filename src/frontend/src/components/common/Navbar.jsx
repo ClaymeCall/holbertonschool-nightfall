@@ -1,14 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
 
 function Navbar() {
-  const navigate = useNavigate();
-  const { token, isAdmin, logout } = useAuth();
 
-  function handleLogout() {
-    logout();
-    navigate('/login');
+    const navigate = useNavigate();
+
+  const [isConnected, setIsConnected] = useState(
+    Boolean(localStorage.getItem('token'))
+  );
+
+  async function handleLogout() {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      setIsConnected(false);
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        'http://localhost:5080/api/auth/logout',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        console.error('Erreur pendant la déconnexion');
+      }
+    } catch (error) {
+      console.error('Impossible de contacter le serveur', error);
+    }
+
+    localStorage.removeItem('token');
+    setIsConnected(false);
+
+    navigate('/');
   }
 
   return (
@@ -27,16 +58,20 @@ function Navbar() {
             Mes réservations
           </Link>
         )}
-        {token ? (
+
+        {isConnected ? (
           <button
             type="button"
             onClick={handleLogout}
-            className="bg-transparent border-0 cursor-pointer text-sm text-gray-300 hover:text-white"
+            className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-2 px-4"
           >
             Déconnexion
           </button>
         ) : (
-          <Link to="/login" className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-2 px-4 no-underline inline-block">
+          <Link
+            to="/login"
+            className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-2 px-4 no-underline inline-block"
+          >
             Connexion
           </Link>
         )}
