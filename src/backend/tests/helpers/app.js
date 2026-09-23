@@ -14,6 +14,7 @@ function buildApp(db) {
   });
   app.use('/api/users', require('../../src/routes/users'));
   app.use('/api/experiences', require('../../src/routes/experiences'));
+  app.use('/api/reservations', require('../../src/routes/reservations'));
   return app;
 }
 
