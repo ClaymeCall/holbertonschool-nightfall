@@ -39,7 +39,8 @@ function useExperienceFilters(allExperiences) {
   }, [allExperiences]);
 
   /*
-   * Catégories uniques présentes dans les expériences.
+   * Catégories uniques présentes dans les expériences, triées par ordre
+   * alphabétique pour un menu stable.
    */
   const categories = useMemo(() => {
     if (!allExperiences) {
@@ -52,11 +53,12 @@ function useExperienceFilters(allExperiences) {
           (experience) => experience.category
         )
       )
-    ];
+    ].sort((a, b) => a.localeCompare(b, 'fr'));
   }, [allExperiences]);
 
   /*
-   * Intensités uniques présentes dans les expériences.
+   * Niveaux d'intensité uniques présentes dans les expériences, triés du
+   * plus faible au plus fort.
    */
   const intensities = useMemo(() => {
     if (!allExperiences) {
@@ -69,7 +71,7 @@ function useExperienceFilters(allExperiences) {
           (experience) => experience.intensity_level
         )
       )
-    ];
+    ].sort((a, b) => a - b);
   }, [allExperiences]);
 
   const debouncedFilters = useDebouncedValue(
@@ -126,6 +128,16 @@ function useExperienceFilters(allExperiences) {
     debouncedFilters.maxDuration !== '' ||
     debouncedFilters.intensity !== '';
 
+  function resetFilters() {
+    setSearch('');
+    setMinPrice('');
+    setMaxPrice('');
+    setCategory('');
+    setIntensity('');
+    setMinDuration('');
+    setMaxDuration('');
+  }
+
   return {
     search,
     setSearch,
@@ -145,7 +157,8 @@ function useExperienceFilters(allExperiences) {
     intensities,
     durationLimits,
     path,
-    hasFilters
+    hasFilters,
+    resetFilters
   };
 }
 

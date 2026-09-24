@@ -109,3 +109,46 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Themed range slider used by the experience filters (duration). The filled
+   portion of the track is set inline per-input via a linear-gradient. */
+.nf-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  width: 100%;
+  border-radius: 9999px;
+  background: rgb(var(--color-line));
+  cursor: pointer;
+}
+
+.nf-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 9999px;
+  background: rgb(var(--color-accent));
+  border: 2px solid rgb(var(--color-canvas));
+  box-shadow: 0 0 0 1px rgb(var(--color-accent) / 0.5);
+  transition: transform 0.15s ease;
+}
+
+.nf-range::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.nf-range::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border: 2px solid rgb(var(--color-canvas));
+  border-radius: 9999px;
+  background: rgb(var(--color-accent));
+  box-shadow: 0 0 0 1px rgb(var(--color-accent) / 0.5);
+}
+
+.nf-range::-moz-range-track {
+  height: 4px;
+  border-radius: 9999px;
+  background: rgb(var(--color-line));
+}

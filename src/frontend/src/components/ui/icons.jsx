@@ -87,3 +87,20 @@ export function CalendarIcon(props) {
     </Icon>
   );
 }
+
+export function SearchIcon(props) {
+  return (
+    <Icon {...props}>
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="M20 20l-4.8-4.8" />
+    </Icon>
+  );
+}
+
+export function ChevronDownIcon(props) {
+  return (
+    <Icon {...props}>
+      <path d="M6 9l6 6 6-6" />
+    </Icon>
+  );
+}

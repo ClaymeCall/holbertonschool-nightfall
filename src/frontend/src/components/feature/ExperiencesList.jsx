@@ -4,7 +4,7 @@ import ExperienceCard from '../common/ExperienceCard';
 function ExperiencesList({ experiences , hasFilters}) {
   if (!experiences || experiences.length === 0) {
     return (
-      <p className="text-sm text-gray-400">
+      <p className="text-sm text-ink-muted">
         {hasFilters
           ? 'Aucune expérience ne correspond à vos critères.'
           : 'Aucune expérience disponible.'}
