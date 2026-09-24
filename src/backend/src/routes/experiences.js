@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate, requireAdmin, optionalAuthenticate } = require('../middleware/auth');
+const { parsePositiveInt, parseIdParam } = require('../utils/validation');
 
 const EXPERIENCE_COLUMNS = `
   id, name, description, image, category, duration,
@@ -9,11 +10,6 @@ const EXPERIENCE_COLUMNS = `
 
 const MIN_INTENSITY_LEVEL = 1;
 const MAX_INTENSITY_LEVEL = 5;
-
-function parsePositiveInt(value) {
-  const num = Number(value);
-  return Number.isInteger(num) && num > 0 ? num : null;
-}
 
 function parseNonNegativeNumber(value) {
   const num = Number(value);
@@ -230,10 +226,8 @@ router.post('/', authenticate, requireAdmin, async (req, res) => {
  * @access Public
  */
 router.get('/:id', optionalAuthenticate, async (req, res) => {
-  const id = Number(req.params.id);
-  if (!Number.isInteger(id) || id <= 0) {
-    return res.status(400).json({ error: 'id must be a positive integer' });
-  }
+  const id = parseIdParam(req, res);
+  if (id === null) return;
 
   try {
     const [rows] = await req.db.query(`SELECT ${EXPERIENCE_COLUMNS} FROM experiences WHERE id = ?`, [id]);
@@ -258,10 +252,8 @@ router.get('/:id', optionalAuthenticate, async (req, res) => {
  * @access Private (Admin)
  */
 router.put('/:id', authenticate, requireAdmin, async (req, res) => {
-  const id = Number(req.params.id);
-  if (!Number.isInteger(id) || id <= 0) {
-    return res.status(400).json({ error: 'id must be a positive integer' });
-  }
+  const id = parseIdParam(req, res);
+  if (id === null) return;
 
   const validationError = validateExperienceInput(req.body);
   if (validationError) {
@@ -298,10 +290,8 @@ router.put('/:id', authenticate, requireAdmin, async (req, res) => {
  * @access Private (Admin)
  */
 router.patch('/:id/toggle-archive', authenticate, requireAdmin, async (req, res) => {
-  const id = Number(req.params.id);
-  if (!Number.isInteger(id) || id <= 0) {
-    return res.status(400).json({ error: 'id must be a positive integer' });
-  }
+  const id = parseIdParam(req, res);
+  if (id === null) return;
 
   try {
     const [existing] = await req.db.query('SELECT id FROM experiences WHERE id = ?', [id]);
@@ -325,10 +315,8 @@ router.patch('/:id/toggle-archive', authenticate, requireAdmin, async (req, res)
  * @access Private (Admin)
  */
 router.delete('/:id', authenticate, requireAdmin, async (req, res) => {
-  const id = Number(req.params.id);
-  if (!Number.isInteger(id) || id <= 0) {
-    return res.status(400).json({ error: 'id must be a positive integer' });
-  }
+  const id = parseIdParam(req, res);
+  if (id === null) return;
 
   try {
     const [existing] = await req.db.query('SELECT id FROM experiences WHERE id = ?', [id]);

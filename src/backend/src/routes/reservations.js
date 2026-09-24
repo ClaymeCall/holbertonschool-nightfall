@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth');
+const { parseIdParam } = require('../utils/validation');
 
 router.use(authenticate);
 
@@ -94,10 +95,8 @@ router.get('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    const id = Number(req.params.id);
-    if (!Number.isInteger(id) || id < 1) {
-      return res.status(400).json({ error: 'id must be a positive integer' });
-    }
+    const id = parseIdParam(req, res);
+    if (id === null) return;
 
     const [reservations] = await req.db.query(
       'SELECT id, user_id, date_time FROM reservations WHERE id = ?',

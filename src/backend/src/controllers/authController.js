@@ -1,30 +1,34 @@
 //verifie email et mdp login
 const authServices = require("../services/authServices");
+const { isValidEmail } = require("../utils/validation");
+
+// Login and register both start by reading two strings from the body.
+function readCredentials(body) {
+  const { email, password } = body ?? {};
+
+  if (typeof email !== "string" || typeof password !== "string") {
+    return null;
+  }
+
+  return { email: email.trim(), password };
+}
 
 // req = demande client
 // res = reponse a envoyer
 async function login(req, res) {
   try {
-    const { email, password } = req.body ?? {};
+    const credentials = readCredentials(req.body);
 
-    if (
-      typeof email !== "string" ||
-      typeof password !== "string"
-    ) {
+    if (!credentials) {
       return res.status(400).json({
         message: "Email et mot de passe obligatoires"
       });
     }
 
-    const cleanEmail = email.trim();
+    const { email: cleanEmail, password } = credentials;
 
     // nom@domaine.com -> email valide
-    if (
-      !cleanEmail ||
-      cleanEmail.length > 255 ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail) ||
-      !password
-    ) {
+    if (!isValidEmail(cleanEmail) || !password) {
       return res.status(400).json({
         message: "Email ou mot de passe invalide"
       });
@@ -55,25 +59,17 @@ async function login(req, res) {
 
 async function register(req, res) {
   try {
-    const { email, password } = req.body ?? {};
+    const credentials = readCredentials(req.body);
 
-    if (
-      typeof email !== "string" ||
-      typeof password !== "string"
-    ) {
+    if (!credentials) {
       return res.status(400).json({
         message: "Email et mot de passe obligatoires"
       });
     }
 
-    const cleanEmail = email.trim();
+    const { email: cleanEmail, password } = credentials;
 
-    if (
-      !cleanEmail ||
-      cleanEmail.length > 255 ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail) ||
-      password.length < 8
-    ) {
+    if (!isValidEmail(cleanEmail) || password.length < 8) {
       return res.status(400).json({
         message: "Email invalide ou mot de passe trop court"
       });
