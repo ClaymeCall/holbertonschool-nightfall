@@ -5,12 +5,7 @@ import Alert from '../ui/Alert';
 import Button from '../ui/Button';
 import Field from '../ui/Field';
 
-/**
- * Creates a reservation for a given user. POST /api/reservations doesn't
- * exist yet (issue #26, owned by a teammate) — this form is wired to the
- * endpoint as designed so it starts working the moment that route ships;
- * until then it surfaces the real "not implemented" response.
- */
+/** Creates a reservation for a given user. */
 function NewReservationForm({ user, token }) {
   const { data: experiences } = useApiResource('/experiences');
   const [experienceId, setExperienceId] = useState('');
@@ -41,11 +36,7 @@ function NewReservationForm({ user, token }) {
       });
       setFeedback({ type: 'success', message: 'Réservation créée.' });
     } catch (err) {
-      const message =
-        err.status === 404
-          ? "POST /api/reservations n'est pas encore implémenté (voir l'issue #26)."
-          : err.message;
-      setFeedback({ type: 'error', message });
+      setFeedback({ type: 'error', message: err.message });
     } finally {
       setSubmitting(false);
     }
