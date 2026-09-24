@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '../ui/Button';
+import NightfallLogo from '../ui/NightfallLogo';
 import ParkConcept from './ParkConcept';
 
 // Static, decorative star field: a few tiny radial dots, no animation.
@@ -43,36 +44,42 @@ function Hero({
           className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-canvas to-transparent"
         />
 
-        <p
+        <NightfallLogo
           style={delay(0)}
-          className="text-xs font-semibold uppercase tracking-[0.35em] text-highlight motion-safe:animate-fade-up"
+          className="h-16 w-16 motion-safe:animate-fade-up sm:h-20 sm:w-20"
+          title=""
+        />
+
+        <p
+          style={delay(0.1)}
+          className="mt-5 text-xs font-semibold uppercase tracking-[0.35em] text-highlight motion-safe:animate-fade-up"
         >
           {eyebrow}
         </p>
 
         <h1
-          style={delay(0.1)}
+          style={delay(0.2)}
           className="mt-5 font-display text-[2.6rem] font-semibold uppercase tracking-[0.1em] text-ink drop-shadow-[0_2px_18px_rgba(0,0,0,0.9)] motion-safe:animate-fade-up sm:text-7xl md:text-8xl"
         >
           {title}
         </h1>
 
         <p
-          style={delay(0.2)}
+          style={delay(0.3)}
           className="mt-4 font-display text-2xl italic text-ink motion-safe:animate-fade-up sm:text-4xl"
         >
           {tagline}
         </p>
 
         <p
-          style={delay(0.3)}
+          style={delay(0.4)}
           className="mt-6 max-w-xl text-sm uppercase tracking-widest text-ink-muted motion-safe:animate-fade-up sm:text-base"
         >
           {subtitle}
         </p>
 
         <div
-          style={delay(0.4)}
+          style={delay(0.5)}
           className="mt-10 flex flex-wrap items-center justify-center gap-4 motion-safe:animate-fade-up"
         >
           <Button as="a" href={ctaHref} size="lg">

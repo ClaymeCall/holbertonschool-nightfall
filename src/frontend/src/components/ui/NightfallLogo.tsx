@@ -1,6 +1,6 @@
-import { useId } from "react";
+import { useId, type SVGAttributes } from "react";
 
-type NightfallLogoProps = {
+type NightfallLogoProps = SVGAttributes<SVGSVGElement> & {
   className?: string;
   /** Texte accessible ; passer "" si le logo est décoratif (ex. à côté du nom écrit). */
   title?: string;
@@ -11,7 +11,7 @@ type NightfallLogoProps = {
  * Couleurs pilotées par les variables CSS --nf-ink et --nf-accent :
  * changez-les sur un parent (ou :root) pour suivre le thème du site.
  */
-export function NightfallLogo({ className = "size-12", title = "Nightfall" }: NightfallLogoProps) {
+export function NightfallLogo({ className = "size-12", title = "Nightfall", ...props }: NightfallLogoProps) {
   const maskId = `nf-crescent-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const decorative = title === "";
 
@@ -22,6 +22,7 @@ export function NightfallLogo({ className = "size-12", title = "Nightfall" }: Ni
       role={decorative ? undefined : "img"}
       aria-hidden={decorative || undefined}
       aria-label={decorative ? undefined : title}
+      {...props}
     >
       <defs>
         <mask id={maskId}>
