@@ -82,7 +82,7 @@ function ReservationPanel({ experience }) {
   return (
     <div className="rounded-2xl border border-line bg-surface p-6 shadow-2xl shadow-black/40">
       <p className="flex items-baseline gap-2">
-        <span className="font-display text-5xl font-bold leading-none text-highlight lining-nums">{formatPrice(unitPrice)}</span>
+        <span className="text-5xl leading-none text-highlight lining-nums">{formatPrice(unitPrice)}</span>
         <span className="text-sm text-ink-muted">par personne</span>
       </p>
 

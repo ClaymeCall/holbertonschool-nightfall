@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { apiRequest } from '../../lib/api';
 import useApiResource from '../../hooks/useApiResource';
+import Alert from '../ui/Alert';
+import Button from '../ui/Button';
+import Field from '../ui/Field';
 
 /**
  * Creates a reservation for a given user. POST /api/reservations doesn't
@@ -19,7 +22,7 @@ function NewReservationForm({ user, token }) {
   async function handleSubmit(event) {
     event.preventDefault();
     if (!experienceId || !dateTime) {
-      setFeedback({ type: 'error', message: 'Pick an experience and a date/time.' });
+      setFeedback({ type: 'error', message: 'Choisissez une expérience, une date et une heure.' });
       return;
     }
 
@@ -36,11 +39,11 @@ function NewReservationForm({ user, token }) {
           participants: Number(participants),
         }),
       });
-      setFeedback({ type: 'success', message: 'Reservation created.' });
+      setFeedback({ type: 'success', message: 'Réservation créée.' });
     } catch (err) {
       const message =
         err.status === 404
-          ? 'POST /api/reservations is not implemented yet (see issue #26).'
+          ? "POST /api/reservations n'est pas encore implémenté (voir l'issue #26)."
           : err.message;
       setFeedback({ type: 'error', message });
     } finally {
@@ -49,63 +52,46 @@ function NewReservationForm({ user, token }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-3 rounded-md border border-gray-800 bg-black/30 p-3">
-      <div className="flex flex-wrap items-end gap-2">
-        <label className="text-xs text-gray-400">
-          <span className="mb-1 block">Experience</span>
-          <select
-            value={experienceId}
-            onChange={(e) => setExperienceId(e.target.value)}
-            className="rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          >
-            <option className="bg-deep-black text-white" value="">
-              Select…
-            </option>
-            {(experiences || []).map((experience) => (
-              <option className="bg-deep-black text-white" key={experience.id} value={experience.id}>
-                {experience.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="text-xs text-gray-400">
-          <span className="mb-1 block">Date &amp; time</span>
-          <input
-            type="datetime-local"
-            value={dateTime}
-            onChange={(e) => setDateTime(e.target.value)}
-            className="rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          />
-        </label>
-
-        <label className="text-xs text-gray-400">
-          <span className="mb-1 block">Participants</span>
-          <input
-            type="number"
-            min={1}
-            value={participants}
-            onChange={(e) => setParticipants(e.target.value)}
-            className="w-20 rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          />
-        </label>
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-md bg-night-mauve px-3 py-1.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+    <form onSubmit={handleSubmit} className="mt-4 rounded-xl border border-line bg-canvas/60 p-4">
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Field
+          label="Expérience"
+          as="select"
+          value={experienceId}
+          onChange={(e) => setExperienceId(e.target.value)}
         >
-          {submitting ? 'Booking…' : 'Book for this user'}
-        </button>
+          <option value="">Choisir…</option>
+          {(experiences || []).map((experience) => (
+            <option key={experience.id} value={experience.id}>
+              {experience.name}
+            </option>
+          ))}
+        </Field>
+
+        <Field
+          label="Date et heure"
+          type="datetime-local"
+          value={dateTime}
+          onChange={(e) => setDateTime(e.target.value)}
+        />
+
+        <Field
+          label="Participants"
+          type="number"
+          min={1}
+          value={participants}
+          onChange={(e) => setParticipants(e.target.value)}
+        />
       </div>
 
+      <Button type="submit" className="mt-4 min-h-10" disabled={submitting}>
+        {submitting ? 'Réservation…' : 'Réserver pour cet utilisateur'}
+      </Button>
+
       {feedback && (
-        <p
-          role={feedback.type === 'error' ? 'alert' : 'status'}
-          className={`mt-2 text-sm ${feedback.type === 'error' ? 'text-red-400' : 'text-emerald-400'}`}
-        >
+        <Alert variant={feedback.type} className="mt-3">
           {feedback.message}
-        </p>
+        </Alert>
       )}
     </form>
   );

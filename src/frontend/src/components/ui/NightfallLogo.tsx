@@ -36,7 +36,7 @@ export function NightfallLogo({ className = "size-12", title = "Nightfall", ...p
         cy="100"
         r="86"
         mask={`url(#${maskId})`}
-        className="fill-[var(--nf-accent,#6f8cff)] transition-colors duration-500 motion-reduce:transition-none"
+        className="fill-[var(--nf-accent,#c34e63)] transition-colors duration-500 motion-reduce:transition-none"
       />
 
       <g

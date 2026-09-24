@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { CANCELLATION_WINDOW_HOURS, getCancellationInfo } from '../../lib/cancellation';
 import { experienceImageUrl, formatDateTime, formatPrice, formatTimeUntil } from '../../lib/format';
-import { themeForExperience } from '../../lib/themes';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 import { CalendarIcon, ClockIcon } from '../ui/icons';
@@ -79,41 +79,44 @@ function ReservationCard({ reservation, now, confirming, busy, onAskCancel, onKe
   }
 
   return (
-    <li
-      data-theme={themeForExperience(experience)}
-      className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-4 sm:flex-row"
-    >
-      {imageUrl ? (
-        <img src={imageUrl} alt="" loading="lazy" className="h-44 w-full flex-none rounded-xl object-cover sm:h-36 sm:w-36" />
-      ) : (
-        <div aria-hidden="true" className="h-44 w-full flex-none rounded-xl bg-canvas sm:h-36 sm:w-36" />
-      )}
+    <li className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-4 sm:flex-row">
+      <Link
+        to={`/experiences/${experience?.id}`}
+        aria-label={`Voir l'expérience ${name}`}
+        className="flex flex-1 flex-col gap-4 no-underline sm:flex-row"
+      >
+        {imageUrl ? (
+          <img src={imageUrl} alt="" loading="lazy" className="h-44 w-full flex-none rounded-xl object-cover sm:h-36 sm:w-36" />
+        ) : (
+          <div aria-hidden="true" className="h-44 w-full flex-none rounded-xl bg-canvas sm:h-36 sm:w-36" />
+        )}
 
-      <div className="flex min-w-0 flex-1 flex-col justify-between gap-3">
-        <div>
-          {experience?.category && <Badge>{experience.category}</Badge>}
-          <h3 className="mt-2 font-display text-3xl font-semibold leading-tight text-ink">{name}</h3>
-          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-muted">
-            <CalendarIcon size={16} className="flex-none" />
-            <span>{formatDateTime(dateTime)}</span>
-            <span aria-hidden="true">·</span>
-            <span>
-              {participants} participant{participants > 1 ? 's' : ''}
-            </span>
+        <div className="flex min-w-0 flex-1 flex-col justify-between gap-3">
+          <div>
+            {experience?.category && <Badge>{experience.category}</Badge>}
+            <h3 className="mt-2 font-display text-3xl font-semibold leading-tight text-ink">{name}</h3>
+            <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-muted">
+              <CalendarIcon size={16} className="flex-none" />
+              <span>{formatDateTime(dateTime)}</span>
+              <span aria-hidden="true">·</span>
+              <span>
+                {participants} participant{participants > 1 ? 's' : ''}
+              </span>
+            </p>
+          </div>
+
+          <p id={statusId} className={`flex items-center gap-2 text-sm font-bold ${STATUS_COLORS[cancellation.state]}`}>
+            <ClockIcon size={16} className="flex-none" />
+            {statusText}
           </p>
         </div>
-
-        <p id={statusId} className={`flex items-center gap-2 text-sm font-bold ${STATUS_COLORS[cancellation.state]}`}>
-          <ClockIcon size={16} className="flex-none" />
-          {statusText}
-        </p>
-      </div>
+      </Link>
 
       <div className="flex flex-none flex-col justify-between gap-3 sm:w-56 sm:items-end sm:text-right">
         <div>
           {unitPrice != null && (
             <>
-              <p className="font-display text-3xl font-bold text-highlight lining-nums">{formatPrice(unitPrice * participants)}</p>
+              <p className="text-3xl text-highlight lining-nums">{formatPrice(unitPrice * participants)}</p>
               <p className="text-xs text-ink-muted">
                 {participants} × {formatPrice(unitPrice)}
               </p>

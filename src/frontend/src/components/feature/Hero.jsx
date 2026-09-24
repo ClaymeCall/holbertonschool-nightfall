@@ -11,6 +11,10 @@ const STARS = [
   .map(([x, y, r]) => `radial-gradient(${r}px ${r}px at ${x}% ${y}%, rgb(var(--color-ink) / 0.85), transparent)`)
   .join(',');
 
+// Neon glow built from the theme accent, so it follows the active data-theme.
+const NEON_GLOW =
+  '[text-shadow:0_0_8px_rgb(var(--color-accent)),0_0_26px_rgb(var(--color-accent)),0_0_70px_rgb(var(--color-accent)/0.65)]';
+
 const delay = (seconds) => ({ animationDelay: `${seconds}s` });
 
 // Also renders the "Le parc" section so the landing content stays in one place
@@ -18,7 +22,7 @@ const delay = (seconds) => ({ animationDelay: `${seconds}s` });
 function Hero({
   title = 'Nightfall',
   eyebrow = "Parc d'expériences immersives",
-  tagline = 'Entrez dans la nuit.',
+  tagline = "Entrez si vous l'osez.",
   subtitle = "Explorez l'inconnu. Découvrez l'inexplicable.",
   ctaText = 'Découvrir les expériences',
   ctaHref = '#experiences',
@@ -28,20 +32,13 @@ function Hero({
       <section className="relative isolate flex min-h-[80vh] flex-col items-center justify-center overflow-hidden px-6 py-24 text-center">
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10"
-          style={{ backgroundImage: STARS, backgroundRepeat: 'no-repeat' }}
+          className="absolute inset-0 -z-20 bg-cover bg-center"
+          style={{ backgroundImage: 'url(/assets/nightfall-gates.webp)' }}
         />
+        <div aria-hidden="true" className="absolute inset-0 -z-20 bg-canvas/70" />
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_25%,rgb(var(--color-accent)/0.28),transparent_60%)]"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute right-[10%] top-[12%] -z-10 h-14 w-14 rounded-full bg-ink/85 shadow-[0_0_70px_24px_rgb(var(--color-highlight)/0.35)] sm:h-20 sm:w-20"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-canvas to-transparent"
+          className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-canvas to-transparent"
         />
 
         <NightfallLogo
@@ -59,21 +56,21 @@ function Hero({
 
         <h1
           style={delay(0.2)}
-          className="mt-5 font-display text-[2.6rem] font-semibold uppercase tracking-[0.1em] text-ink drop-shadow-[0_2px_18px_rgba(0,0,0,0.9)] motion-safe:animate-fade-up sm:text-7xl md:text-8xl"
+          className="mt-5 font-display text-[2.8rem] uppercase leading-none tracking-[0.06em] text-ink motion-safe:animate-fade-up sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem]"
         >
-          {title}
+          <span className={`block motion-safe:animate-flicker ${NEON_GLOW}`}>{title}</span>
         </h1>
 
         <p
           style={delay(0.3)}
-          className="mt-4 font-display text-2xl italic text-ink motion-safe:animate-fade-up sm:text-4xl"
+          className="mt-6 text-xl text-ink motion-safe:animate-fade-up sm:text-2xl"
         >
           {tagline}
         </p>
 
         <p
           style={delay(0.4)}
-          className="mt-6 max-w-xl text-sm uppercase tracking-widest text-ink-muted motion-safe:animate-fade-up sm:text-base"
+          className="mt-3 max-w-xl text-sm uppercase tracking-widest text-ink-muted motion-safe:animate-fade-up sm:text-base"
         >
           {subtitle}
         </p>
@@ -82,7 +79,12 @@ function Hero({
           style={delay(0.5)}
           className="mt-10 flex flex-wrap items-center justify-center gap-4 motion-safe:animate-fade-up"
         >
-          <Button as="a" href={ctaHref} size="lg">
+          <Button
+            as="a"
+            href={ctaHref}
+            size="lg"
+            className="shadow-[0_0_30px_rgb(var(--color-accent)/0.4)]"
+          >
             {ctaText}
             <span aria-hidden="true">→</span>
           </Button>
