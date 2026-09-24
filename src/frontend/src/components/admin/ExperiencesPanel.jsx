@@ -2,6 +2,13 @@ import React, { useState } from 'react';
 import useApiResource from '../../hooks/useApiResource';
 import { apiRequest } from '../../lib/api';
 import { INTENSITY_OPTIONS } from '../../lib/intensity';
+import { themeForExperience } from '../../lib/themes';
+import Alert from '../ui/Alert';
+import Button from '../ui/Button';
+import Field from '../ui/Field';
+import Skeleton from '../ui/Skeleton';
+import { useToast } from '../ui/ToastProvider';
+import ConfirmDelete, { focusLater } from './ConfirmDelete';
 
 const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
 
@@ -61,127 +68,81 @@ function ExperienceForm({ initialValues, submitLabel, submittingLabel, onSubmit,
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-3 rounded-md border border-gray-800 bg-black/30 p-3">
-      <div className="flex flex-wrap items-end gap-2">
-        <label className="text-xs text-gray-400">
-          <span className="mb-1 block">Name</span>
-          <input
-            type="text"
-            required
-            value={values.name}
-            onChange={handleChange('name')}
-            className="rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          />
-        </label>
-
-        <label className="text-xs text-gray-400">
-          <span className="mb-1 block">Category</span>
-          <input
-            type="text"
-            required
-            value={values.category}
-            onChange={handleChange('category')}
-            className="rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          />
-        </label>
-
-        <label className="text-xs text-gray-400">
-          <span className="mb-1 block">Intensity level</span>
-          <select
-            required
-            value={values.intensity_level}
-            onChange={handleChange('intensity_level')}
-            className="rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          >
-            <option value="" disabled>
-              Select…
+    <form onSubmit={handleSubmit} className="mt-4 rounded-xl border border-line bg-canvas/60 p-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Field label="Nom" type="text" required value={values.name} onChange={handleChange('name')} />
+        <Field label="Catégorie" type="text" required value={values.category} onChange={handleChange('category')} />
+        <Field
+          label="Intensité"
+          as="select"
+          required
+          value={values.intensity_level}
+          onChange={handleChange('intensity_level')}
+        >
+          <option value="" disabled>
+            Choisir…
+          </option>
+          {INTENSITY_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
             </option>
-            {INTENSITY_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+          ))}
+        </Field>
+        <Field
+          label="Durée (min)"
+          type="number"
+          min={1}
+          required
+          value={values.duration}
+          onChange={handleChange('duration')}
+        />
+        <Field
+          label="Participants max."
+          type="number"
+          min={1}
+          required
+          value={values.max_participants}
+          onChange={handleChange('max_participants')}
+        />
+        <Field
+          label="Prix (€)"
+          type="number"
+          min={0}
+          step="0.01"
+          required
+          value={values.price}
+          onChange={handleChange('price')}
+        />
+        <Field
+          label="Nom du fichier image"
+          type="text"
+          value={values.image}
+          onChange={handleChange('image')}
+        />
+        <Field
+          label="Description"
+          as="textarea"
+          rows={3}
+          required
+          wrapperClassName="sm:col-span-2 lg:col-span-3"
+          value={values.description}
+          onChange={handleChange('description')}
+        />
+      </div>
 
-        <label className="text-xs text-gray-400">
-          <span className="mb-1 block">Duration (min)</span>
-          <input
-            type="number"
-            min={1}
-            required
-            value={values.duration}
-            onChange={handleChange('duration')}
-            className="w-24 rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          />
-        </label>
-
-        <label className="text-xs text-gray-400">
-          <span className="mb-1 block">Max participants</span>
-          <input
-            type="number"
-            min={1}
-            required
-            value={values.max_participants}
-            onChange={handleChange('max_participants')}
-            className="w-24 rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          />
-        </label>
-
-        <label className="text-xs text-gray-400">
-          <span className="mb-1 block">Price (€)</span>
-          <input
-            type="number"
-            min={0}
-            step="0.01"
-            required
-            value={values.price}
-            onChange={handleChange('price')}
-            className="w-24 rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          />
-        </label>
-
-        <label className="text-xs text-gray-400">
-          <span className="mb-1 block">Image filename</span>
-          <input
-            type="text"
-            value={values.image}
-            onChange={handleChange('image')}
-            className="rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          />
-        </label>
-
-        <label className="w-full text-xs text-gray-400">
-          <span className="mb-1 block">Description</span>
-          <textarea
-            required
-            rows={2}
-            value={values.description}
-            onChange={handleChange('description')}
-            className="w-full rounded border border-gray-700 bg-deep-black px-2 py-1.5 text-sm text-white focus:border-night-mauve focus:outline-none"
-          />
-        </label>
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-md bg-night-mauve px-3 py-1.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
-        >
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Button type="submit" className="min-h-10" disabled={submitting}>
           {submitting ? submittingLabel : submitLabel}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-md border border-gray-700 px-3 py-1.5 text-sm font-semibold text-gray-300 hover:bg-gray-800"
-        >
-          Cancel
-        </button>
+        </Button>
+        <Button variant="ghost" className="min-h-10" onClick={onCancel}>
+          Annuler
+        </Button>
       </div>
 
       {feedback && (
-        <p role="alert" className="mt-2 text-sm text-red-400">
+        <Alert variant="error" className="mt-3">
           {feedback.message}
-        </p>
+        </Alert>
       )}
     </form>
   );
@@ -192,35 +153,43 @@ function ExperiencesPanel({ token }) {
     token,
     enabled: Boolean(token),
   });
+  const { notify } = useToast();
   const [creating, setCreating] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [confirmingId, setConfirmingId] = useState(null);
   const [busyId, setBusyId] = useState(null);
   const [rowErrors, setRowErrors] = useState({});
 
   async function handleCreate(body) {
     await apiRequest('/experiences', { method: 'POST', token, body: JSON.stringify(body) });
     setCreating(false);
+    notify({ variant: 'success', title: 'Expérience créée', message: body.name });
     refetch();
   }
 
   async function handleUpdate(id, body) {
     await apiRequest(`/experiences/${id}`, { method: 'PUT', token, body: JSON.stringify(body) });
     setEditingId(null);
+    notify({ variant: 'success', title: 'Expérience modifiée', message: body.name });
     refetch();
   }
 
-  async function handleDelete(experience) {
-    if (!window.confirm(`Delete ${experience.name}? This cannot be undone.`)) {
-      return;
-    }
+  function cancelDelete(experience) {
+    setConfirmingId(null);
+    focusLater(`delete-experience-${experience.id}`);
+  }
 
+  async function handleDelete(experience) {
     setBusyId(experience.id);
     setRowErrors((prev) => ({ ...prev, [experience.id]: null }));
     try {
       await apiRequest(`/experiences/${experience.id}`, { method: 'DELETE', token });
+      notify({ variant: 'success', title: 'Expérience supprimée', message: experience.name });
+      setConfirmingId(null);
       refetch();
     } catch (err) {
       setRowErrors((prev) => ({ ...prev, [experience.id]: err.message }));
+      cancelDelete(experience);
     } finally {
       setBusyId(null);
     }
@@ -240,111 +209,142 @@ function ExperiencesPanel({ token }) {
   }
 
   return (
-    <section aria-labelledby="experiences-heading" className="mb-10">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h2 id="experiences-heading" className="text-xl font-bold text-white">
-          Experiences
+    <section aria-labelledby="experiences-heading" className="mb-12">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h2 id="experiences-heading" className="font-display text-3xl text-ink">
+          Expériences
         </h2>
         {token && (
-          <button
-            type="button"
-            onClick={() => setCreating((current) => !current)}
-            className="rounded-md border border-gray-700 px-2.5 py-1 text-xs font-semibold text-gray-300 hover:bg-gray-800"
-          >
-            {creating ? 'Cancel' : 'New experience'}
-          </button>
+          <Button className="min-h-10" onClick={() => setCreating((current) => !current)}>
+            {creating ? 'Annuler' : 'Nouvelle expérience'}
+          </Button>
         )}
       </div>
 
       {!token && (
-        <p className="text-sm text-gray-500">Provide an admin token above to load experiences.</p>
+        <p className="text-sm text-ink-muted">Connectez-vous en administrateur pour voir les expériences.</p>
       )}
 
       {creating && (
         <ExperienceForm
-          submitLabel="Create"
-          submittingLabel="Creating…"
+          submitLabel="Créer"
+          submittingLabel="Création…"
           onSubmit={handleCreate}
           onCancel={() => setCreating(false)}
         />
       )}
 
-      {token && loading && <p className="text-sm text-gray-400">Loading experiences…</p>}
+      {token && loading && (
+        <div role="status" className="space-y-3">
+          <span className="sr-only">Chargement des expériences…</span>
+          <Skeleton className="h-20" />
+          <Skeleton className="h-20" />
+          <Skeleton className="h-20" />
+        </div>
+      )}
 
       {token && error && (
-        <p role="alert" className="text-sm text-red-400">
-          Failed to load experiences: {error.message}
-          {error.status === 401 && ' (token missing or expired)'}
-          {error.status === 403 && ' (this token is not an admin account)'}
-        </p>
+        <Alert variant="error">
+          Impossible de charger les expériences : {error.message}
+          {error.status === 401 && ' (jeton manquant ou expiré)'}
+          {error.status === 403 && " (ce compte n'est pas administrateur)"}
+        </Alert>
       )}
 
       {token && experiences && experiences.length === 0 && (
-        <p className="text-sm text-gray-400">No experiences yet.</p>
+        <p className="text-sm text-ink-muted">Aucune expérience pour le moment.</p>
       )}
 
       {token && experiences && experiences.length > 0 && (
-        <ul className="mt-3 space-y-4">
-          {experiences.map((experience) => (
-            <li key={experience.id} className="rounded-lg border border-gray-800 bg-gray-900/30 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium text-white">{experience.name}</span>
-                  {Boolean(experience.is_archived) && (
-                    <span className="rounded-full bg-gray-800 px-2 py-0.5 text-xs font-semibold text-gray-400">
-                      Archived
-                    </span>
-                  )}
-                  <span className="text-xs text-gray-500">
-                    {experience.category} · {experience.duration} min ·{' '}
-                    {currencyFormatter.format(Number(experience.price))}
-                  </span>
-                </div>
+        <ul className="mt-4 space-y-3">
+          {experiences.map((experience) => {
+            const confirming = confirmingId === experience.id;
 
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setEditingId((current) => (current === experience.id ? null : experience.id))}
-                    className="rounded-md border border-gray-700 px-2.5 py-1 text-xs font-semibold text-gray-300 hover:bg-gray-800"
-                  >
-                    {editingId === experience.id ? 'Cancel' : 'Edit'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleToggleArchive(experience)}
-                    disabled={busyId === experience.id}
-                    className="rounded-md border border-gray-700 px-2.5 py-1 text-xs font-semibold text-gray-300 hover:bg-gray-800 disabled:opacity-50"
-                  >
-                    {experience.is_archived ? 'Unarchive' : 'Archive'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(experience)}
-                    disabled={busyId === experience.id}
-                    className="rounded-md border border-blood-red/60 px-2.5 py-1 text-xs font-semibold text-red-300 hover:bg-blood-red/20 disabled:opacity-50"
-                  >
-                    {busyId === experience.id ? 'Working…' : 'Delete'}
-                  </button>
-                </div>
-              </div>
+            return (
+              <li
+                key={experience.id}
+                data-theme={themeForExperience(experience)}
+                className={`rounded-xl border border-l-4 border-l-accent bg-surface p-4 ${
+                  confirming ? 'border-red-400/60' : 'border-line'
+                }`}
+              >
+                {confirming ? (
+                  <ConfirmDelete
+                    title={`Supprimer « ${experience.name} » ?`}
+                    detail="Action définitive. Les réservations liées seront supprimées aussi."
+                    busy={busyId === experience.id}
+                    onCancel={() => cancelDelete(experience)}
+                    onConfirm={() => handleDelete(experience)}
+                  />
+                ) : (
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-lg text-ink">{experience.name}</span>
+                        {Boolean(experience.is_archived) && (
+                          <span className="rounded-full border border-line px-2.5 py-0.5 text-[11px] uppercase tracking-widest text-ink-muted">
+                            Archivée
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1 text-sm text-ink-muted">
+                        {experience.category} · {experience.duration} min ·{' '}
+                        {currencyFormatter.format(Number(experience.price))}
+                      </p>
+                    </div>
 
-              {rowErrors[experience.id] && (
-                <p role="alert" className="mt-2 text-sm text-red-400">
-                  {rowErrors[experience.id]}
-                </p>
-              )}
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="ghost"
+                        className="min-h-10"
+                        onClick={() =>
+                          setEditingId((current) => (current === experience.id ? null : experience.id))
+                        }
+                      >
+                        {editingId === experience.id ? 'Annuler' : 'Modifier'}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="min-h-10"
+                        onClick={() => handleToggleArchive(experience)}
+                        disabled={busyId === experience.id}
+                      >
+                        {experience.is_archived ? 'Désarchiver' : 'Archiver'}
+                      </Button>
+                      <Button
+                        id={`delete-experience-${experience.id}`}
+                        variant="danger"
+                        className="min-h-10"
+                        onClick={() => {
+                          setEditingId(null);
+                          setConfirmingId(experience.id);
+                        }}
+                        disabled={busyId === experience.id}
+                      >
+                        Supprimer
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
-              {editingId === experience.id && (
-                <ExperienceForm
-                  initialValues={experienceToFormValues(experience)}
-                  submitLabel="Save"
-                  submittingLabel="Saving…"
-                  onSubmit={(body) => handleUpdate(experience.id, body)}
-                  onCancel={() => setEditingId(null)}
-                />
-              )}
-            </li>
-          ))}
+                {rowErrors[experience.id] && (
+                  <Alert variant="error" className="mt-3">
+                    {rowErrors[experience.id]}
+                  </Alert>
+                )}
+
+                {editingId === experience.id && !confirming && (
+                  <ExperienceForm
+                    initialValues={experienceToFormValues(experience)}
+                    submitLabel="Enregistrer"
+                    submittingLabel="Enregistrement…"
+                    onSubmit={(body) => handleUpdate(experience.id, body)}
+                    onCancel={() => setEditingId(null)}
+                  />
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>
