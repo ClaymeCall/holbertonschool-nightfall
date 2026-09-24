@@ -33,7 +33,7 @@ function ParkConcept() {
       <ol className="mt-12 grid gap-6 md:grid-cols-3">
         {STEPS.map(({ title, text }, index) => (
           <li key={title} className="rounded-xl border border-line bg-surface/60 p-6">
-            <span aria-hidden="true" className="font-display text-4xl font-semibold text-accent">
+            <span aria-hidden="true" className="font-display text-4xl font-semibold text-accent lining-nums">
               {String(index + 1).padStart(2, '0')}
             </span>
             <h3 className="mt-3 font-display text-2xl font-semibold text-ink">{title}</h3>
