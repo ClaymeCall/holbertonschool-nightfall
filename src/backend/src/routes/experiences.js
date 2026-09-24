@@ -77,6 +77,7 @@ router.get('/', optionalAuthenticate, async (req, res) => {
  *   the caller is authenticated as an admin.
  * @queryparam {string} q - Matched against name and description (substring, case-insensitive).
  * @queryparam {string} category - Exact category match.
+ * @queryparam {number} min_duration - Minimum duration, in minutes.
  * @queryparam {number} max_duration - Maximum duration, in minutes.
  * @queryparam {number} max_intensity_level - Integer from 1 to 5. Matches experiences
  *   with an intensity_level at or below this value.
@@ -86,7 +87,7 @@ router.get('/', optionalAuthenticate, async (req, res) => {
  * @access Public
  */
 router.get('/search', optionalAuthenticate, async (req, res) => {
-  const { q, category, max_duration, max_intensity_level, participants, min_price, max_price } = req.query;
+  const { q, category, min_duration, max_duration, max_intensity_level, participants, min_price, max_price } = req.query;
 
   const conditions = [];
   const params = [];
@@ -113,13 +114,28 @@ router.get('/search', optionalAuthenticate, async (req, res) => {
     params.push(category.trim());
   }
 
+  let minDurationValue = null;
+  if (min_duration !== undefined) {
+    minDurationValue = parsePositiveInt(min_duration);
+    if (minDurationValue === null) {
+      return res.status(400).json({ error: 'min_duration must be a positive integer' });
+    }
+    conditions.push('duration >= ?');
+    params.push(minDurationValue);
+  }
+
+  let maxDurationValue = null;
   if (max_duration !== undefined) {
-    const value = parsePositiveInt(max_duration);
-    if (value === null) {
+    maxDurationValue = parsePositiveInt(max_duration);
+    if (maxDurationValue === null) {
       return res.status(400).json({ error: 'max_duration must be a positive integer' });
     }
     conditions.push('duration <= ?');
-    params.push(value);
+    params.push(maxDurationValue);
+  }
+
+  if (minDurationValue !== null && maxDurationValue !== null && minDurationValue > maxDurationValue) {
+    return res.status(400).json({ error: 'min_duration must not be greater than max_duration' });
   }
 
   if (max_intensity_level !== undefined) {
