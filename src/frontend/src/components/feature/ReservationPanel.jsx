@@ -38,7 +38,7 @@ function ReservationPanel({ experience }) {
     event.preventDefault();
 
     if (!dateTime) {
-      setError('Choisis une date et une heure.');
+      setError('Choisissez une date et une heure.');
       return;
     }
 
@@ -72,7 +72,7 @@ function ReservationPanel({ experience }) {
       notify({
         variant: 'error',
         title: expired ? 'Session expirée' : 'Réservation impossible',
-        message: expired ? 'Reconnecte-toi pour réserver cette expérience.' : err.message,
+        message: expired ? 'Reconnectez-vous pour réserver cette expérience.' : err.message,
       });
     } finally {
       setSubmitting(false);

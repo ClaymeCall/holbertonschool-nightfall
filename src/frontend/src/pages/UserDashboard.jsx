@@ -43,7 +43,7 @@ function UserDashboard() {
       notify({
         variant: 'error',
         title: 'Annulation impossible',
-        message: err.status === 401 ? 'Ta session a expiré, reconnecte-toi.' : err.message,
+        message: err.status === 401 ? 'Votre session a expiré, reconnectez-vous.' : err.message,
       });
     } finally {
       setBusyId(null);
@@ -75,14 +75,14 @@ function UserDashboard() {
 
           {error && (
             <Alert variant="error">
-              Impossible de charger tes réservations : {error.message}
-              {error.status === 401 && ' (session expirée, reconnecte-toi)'}
+              Impossible de charger vos réservations : {error.message}
+              {error.status === 401 && ' (session expirée, reconnectez-vous)'}
             </Alert>
           )}
 
           {reservations && reservations.length === 0 && (
             <p className="text-sm text-ink-muted">
-              Tu n&apos;as pas encore de réservation.{' '}
+              Vous n&apos;avez pas encore de réservation.{' '}
               <Link to="/" className="text-highlight hover:underline">
                 Découvrir les expériences
               </Link>

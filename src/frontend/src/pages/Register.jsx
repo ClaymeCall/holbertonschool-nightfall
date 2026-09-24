@@ -92,7 +92,7 @@ export default function Register() {
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="ton@email.fr"
+            placeholder="prenom@exemple.fr"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
