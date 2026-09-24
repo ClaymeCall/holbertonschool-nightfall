@@ -78,6 +78,32 @@ describe('GET /api/experiences/search', () => {
     expect(db.query.mock.calls[0][1]).toEqual(['Survie']);
   });
 
+  it('filters by min_duration', async () => {
+    const db = createMockDb();
+    db.query.mockResolvedValueOnce([[ACTIVE_EXPERIENCE]]);
+
+    const app = buildApp(db);
+    const res = await request(app).get('/api/experiences/search').query({ min_duration: '60' });
+
+    expect(res.status).toBe(200);
+    expect(db.query.mock.calls[0][0]).toMatch(/duration >= \?/);
+    expect(db.query.mock.calls[0][1]).toEqual([60]);
+  });
+
+  it('rejects a non-positive min_duration', async () => {
+    const app = buildApp(createMockDb());
+    const res = await request(app).get('/api/experiences/search').query({ min_duration: '0' });
+    expect(res.status).toBe(400);
+  });
+
+  it('rejects min_duration greater than max_duration', async () => {
+    const app = buildApp(createMockDb());
+    const res = await request(app)
+      .get('/api/experiences/search')
+      .query({ min_duration: '90', max_duration: '60' });
+    expect(res.status).toBe(400);
+  });
+
   it('filters by max_duration', async () => {
     const db = createMockDb();
     db.query.mockResolvedValueOnce([[ACTIVE_EXPERIENCE]]);
