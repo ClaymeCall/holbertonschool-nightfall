@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ReservationPanel from '../components/feature/ReservationPanel';
 import Alert from '../components/ui/Alert';
@@ -9,7 +9,8 @@ import useApiResource from '../hooks/useApiResource';
 import { CANCELLATION_WINDOW_HOURS } from '../lib/cancellation';
 import { experienceImageUrl } from '../lib/format';
 import { intensityLabel } from '../lib/intensity';
-import { themeForExperience } from '../lib/themes';
+import { ambianceForExperience, themeForExperience } from '../lib/themes';
+import { useSiteTheme } from '../context/SiteThemeContext';
 
 const INTENSITY_LEVELS = 5;
 
@@ -18,11 +19,17 @@ function ExperienceDetails() {
   const { data: experiences, loading, error } = useApiResource('/experiences');
 
   const experience = experiences?.find((item) => String(item.id) === id);
+  const setSiteTheme = useSiteTheme();
+  const theme = themeForExperience(experience);
+  useEffect(() => {
+    setSiteTheme(theme ?? null);
+    return () => setSiteTheme(null);
+  }, [theme, setSiteTheme]);
 
   return (
-    <div className="min-h-screen bg-canvas" data-theme={themeForExperience(experience)}>
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        <Link to="/" className="text-sm text-ink-muted hover:text-ink">
+    <div className="experience-detail min-h-screen bg-canvas" data-theme={theme}>
+      <main id="main-content" className="site-container py-10">
+        <Link to="/#experiences" className="back-link text-sm text-ink-muted hover:text-ink">
           ← Retour aux expériences
         </Link>
 
@@ -112,23 +119,26 @@ function ExperienceDetailsContent({ experience }) {
 
   const imageUrl = experienceImageUrl(image);
   const intensityText = intensityLabel(intensityLevel);
+  const ambiance = ambianceForExperience(experience);
 
   return (
-    <article className="mt-6 grid gap-8 motion-safe:animate-fade-up lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+    <article className="detail-article mt-6 grid gap-8 motion-safe:animate-fade-up lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
       <div>
         <div
-          className="relative flex min-h-[340px] flex-col justify-end overflow-hidden rounded-2xl border border-line bg-cover bg-center p-8"
+          className="detail-poster relative flex min-h-[480px] flex-col justify-end overflow-hidden border border-line bg-cover bg-center p-8"
           style={{
             backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
             backgroundColor: 'rgb(var(--color-canvas))',
           }}
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgb(var(--color-accent)/0.35),transparent_55%)]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-canvas via-canvas/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-canvas via-canvas/20 to-transparent" />
+          <p className="detail-status"><span className="signal-dot" />{ambiance.label}<span>{ambiance.code}</span></p>
 
           {category && <Badge className="relative mb-3">{category}</Badge>}
+          <p className="relative mb-3 text-sm uppercase tracking-widest text-highlight">{ambiance.tagline}</p>
 
-          <h1 className="relative font-display text-5xl font-semibold leading-tight text-ink drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)] sm:text-6xl">
+          <h1 className="detail-title relative text-ink">
             {name}
           </h1>
         </div>
@@ -147,20 +157,16 @@ function ExperienceDetailsContent({ experience }) {
           {intensityText ? <IntensityFact label={intensityText} level={Number(intensityLevel)} /> : null}
         </dl>
 
-        {description && (
-          <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-ink-muted">
-            {description}
-          </p>
-        )}
+        <section className="detail-story" aria-labelledby="mission-title"><p className="eyebrow">Votre mission</p><h2 id="mission-title">{ambiance.mission}</h2>{description && <p className="whitespace-pre-line">{description}</p>}<blockquote>{ambiance.atmosphere}</blockquote></section>
 
         <p className="mt-6 flex items-center gap-3 text-sm text-ink">
           <span aria-hidden="true" className="h-1.5 w-1.5 flex-none rounded-full bg-accent" />
-          Annulation possible jusqu'à {CANCELLATION_WINDOW_HOURS} heures avant l'expérience.
+          Annulation possible plus de {CANCELLATION_WINDOW_HOURS} heures avant l'expérience.
         </p>
       </div>
 
-      <aside aria-label="Réserver cette expérience" className="lg:sticky lg:top-6">
-        <ReservationPanel experience={experience} />
+      <aside aria-label="Réserver cette expérience" className="lg:sticky lg:top-28">
+        <ReservationPanel key={experience.id} experience={experience} />
       </aside>
     </article>
   );

@@ -23,6 +23,7 @@ function NotFound() {
 
   return (
     <section
+      id="main-content"
       ref={sceneRef}
       onPointerMove={moveLight}
       data-theme="asile"

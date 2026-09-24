@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { apiRequest } from "../lib/api";
+import AuthLayout from "../components/common/AuthLayout";
+import useAuth from "../hooks/useAuth";
 
 export default function Register() {
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -49,7 +51,7 @@ export default function Register() {
       /*
        * 4. Sauvegarde du token
        */
-      localStorage.setItem("token", loginData.token);
+      login(loginData.token, loginData.user);
       window.location.assign("/");
     } catch (err) {
       setMessage(err.message || "Impossible de contacter le serveur");
@@ -59,20 +61,20 @@ export default function Register() {
   }
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-deep-black text-white flex items-center justify-center px-4 py-12">
+    <AuthLayout>
       <section
-        className="w-full max-w-md rounded-xl border border-gray-700 bg-gray-900 p-8 shadow-xl"
         aria-labelledby="register-title"
       >
+        <p className="eyebrow">Rejoindre l’aventure</p>
         <h1
           id="register-title"
-          className="text-night-mauve text-3xl font-bold text-center mb-2"
+          className="auth-title"
         >
-          Inscription NIGHTFALL
+          Le premier pas<br />vers l’inconnu.
         </h1>
 
-        <p className="text-gray-300 text-center mb-8">
-          Crée ton compte.
+        <p className="text-ink-muted text-sm mb-8">
+          Crée ton compte pour réserver tes expériences et réunir ton équipe.
         </p>
 
         <form
@@ -154,6 +156,6 @@ export default function Register() {
           </Link>
         </p>
       </section>
-    </main>
+    </AuthLayout>
   );
 }

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { apiRequest } from "../lib/api";
+import AuthLayout from "../components/common/AuthLayout";
 
 export default function Login() {
-  const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,20 +41,20 @@ export default function Login() {
   }
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-deep-black text-white flex items-center justify-center px-4 py-12">
+    <AuthLayout>
       <section
-        className="w-full max-w-md rounded-xl border border-gray-700 bg-gray-900 p-8 shadow-xl"
         aria-labelledby="login-title"
       >
+        <p className="eyebrow">L’espace des aventuriers</p>
         <h1
           id="login-title"
-          className="text-night-mauve text-3xl font-bold text-center mb-2"
+          className="auth-title"
         >
-          Connexion NIGHTFALL
+          De retour<br />dans la nuit.
         </h1>
 
-        <p className="text-gray-300 text-center mb-8">
-          Connecte-toi à ton compte.
+        <p className="text-ink-muted text-sm mb-8">
+          Connecte-toi pour retrouver tes réservations et préparer ta prochaine aventure.
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -116,6 +116,6 @@ export default function Login() {
           {message}
         </p>
       </section>
-    </main>
+    </AuthLayout>
   );
 }

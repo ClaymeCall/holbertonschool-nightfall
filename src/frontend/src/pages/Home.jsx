@@ -1,9 +1,11 @@
 import React from 'react';
 import Hero from '../components/feature/Hero';
+import ParkConcept from '../components/feature/ParkConcept';
 import ExperiencesList from '../components/feature/ExperiencesList';
 import ExperienceFilters from '../components/feature/ExperienceFilters';
 import useApiResource from '../hooks/useApiResource';
 import useExperienceFilters from '../hooks/useExperienceFilters';
+import Skeleton from '../components/ui/Skeleton';
 
 function Home() {
   /*
@@ -48,16 +50,18 @@ function Home() {
   } = useApiResource(path);
 
   return (
-    <div className="min-h-screen bg-canvas">
+    <main id="main-content" className="min-h-screen bg-canvas">
       <Hero />
-
-      <main
+      <div className="park-ribbon" aria-hidden="true"><span>Entrez dans l’inconnu</span><span>✦</span><span>Défiez vos peurs</span><span>✦</span><span>Vivez Nightfall</span><span>✦</span></div>
+      <section
         id="experiences"
-        className="mx-auto max-w-6xl px-6 py-10"
+        aria-labelledby="experiences-title"
+        className="site-container catalogue-section"
       >
-        <h1 className="mb-6 font-display text-4xl font-semibold text-ink">
-          Expériences
-        </h1>
+        <div className="section-heading">
+          <div><p className="eyebrow">Le catalogue des cauchemars</p><h2 id="experiences-title" className="section-title">À chaque porte,<br /><em>une autre peur.</em></h2></div>
+          <p className="section-intro">Choisissez votre univers. Préparez votre équipe.<br />Nous nous occupons des frissons.</p>
+        </div>
 
         <ExperienceFilters
           search={search}
@@ -83,9 +87,10 @@ function Home() {
         />
 
         {loading && (
-          <p className="text-sm text-ink-muted">
-            Chargement des expériences…
-          </p>
+          <div role="status" className="experiences-grid mt-6">
+            <span className="sr-only">Chargement des expériences…</span>
+            {[0, 1].map((item) => <Skeleton key={item} className="experience-card h-[475px]" />)}
+          </div>
         )}
 
         {error && (
@@ -97,14 +102,18 @@ function Home() {
           </p>
         )}
 
-        {experiences && (
+        {!loading && !error && experiences && (
+          <p className="catalogue-count" role="status">{experiences.length} expérience{experiences.length > 1 ? 's' : ''} à explorer <span>Osez le premier pas ↘</span></p>
+        )}
+        {!loading && !error && experiences && (
           <ExperiencesList
             experiences={experiences}
             hasFilters={hasFilters}
           />
         )}
-      </main>
-    </div>
+      </section>
+      <ParkConcept />
+    </main>
   );
 }
 

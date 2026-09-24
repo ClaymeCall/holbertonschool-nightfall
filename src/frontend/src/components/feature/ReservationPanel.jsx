@@ -80,7 +80,9 @@ function ReservationPanel({ experience }) {
   }
 
   return (
-    <div className="rounded-2xl border border-line bg-surface p-6 shadow-2xl shadow-black/40">
+    <div className="reservation-ticket border border-line bg-surface p-6 shadow-2xl shadow-black/40">
+      <p className="eyebrow mb-3">Votre billet pour l’inconnu</p>
+      <h2 className="mb-6 font-display text-3xl text-ink">Osez entrer.</h2>
       <p className="flex items-baseline gap-2">
         <span className="font-display text-5xl font-bold leading-none text-highlight lining-nums">{formatPrice(unitPrice)}</span>
         <span className="text-sm text-ink-muted">par personne</span>
@@ -157,7 +159,7 @@ function ReservationPanel({ experience }) {
       )}
 
       <p className="mt-5 text-center text-xs leading-relaxed text-ink-muted">
-        Annulation possible jusqu'à {CANCELLATION_WINDOW_HOURS} heures avant l'expérience.
+        Annulation possible plus de {CANCELLATION_WINDOW_HOURS} heures avant l'expérience.
       </p>
     </div>
   );

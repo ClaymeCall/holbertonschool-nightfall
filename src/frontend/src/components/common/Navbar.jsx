@@ -1,75 +1,58 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { apiRequest } from '../../lib/api';
 import NightfallLogo from '../ui/NightfallLogo';
+import Button from '../ui/Button';
 
 function Navbar() {
-
   const navigate = useNavigate();
+  const location = useLocation();
   const { token, isAdmin, logout } = useAuth();
-
-  const [isConnected, setIsConnected] = useState(
-    Boolean(localStorage.getItem('token'))
-  );
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const menuToggleRef = useRef(null);
+  useEffect(() => { setMenuOpen(false); }, [location.pathname, location.hash]);
 
   async function handleLogout() {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      setIsConnected(false);
-      navigate('/login');
-      return;
-    }
-
+    setLoggingOut(true);
     try {
       await apiRequest('/auth/logout', { method: 'POST', token });
     } catch (error) {
       console.error('Erreur pendant la déconnexion', error);
+    } finally {
+      logout();
+      setLoggingOut(false);
+      setMenuOpen(false);
+      navigate('/');
     }
-
-    localStorage.removeItem('token');
-    setIsConnected(false);
-
-    window.location.assign('/');
   }
 
   return (
-    <nav className="sticky top-0 z-50 flex justify-between items-center min-h-[64px] px-8 bg-canvas" aria-label="Navigation principale">
-      <a className="flex items-center no-underline" href="/" aria-label="Nightfall, accueil">
-        <NightfallLogo className="h-10 w-10" title="" />
-      </a>
-      <div className="flex items-center gap-4">
-        {token && isAdmin && (
-          <Link to="/admin" className="text-sm text-gray-300 no-underline hover:text-white">
-            Admin
-          </Link>
-        )}
-        {token && !isAdmin && (
-          <Link to="/dashboard" className="text-sm text-gray-300 no-underline hover:text-white">
-            Mes réservations
-          </Link>
-        )}
-
-        {isConnected ? (
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="bg-accent text-accent-fg border-0 rounded-md cursor-pointer font-bold py-2 px-4"
-          >
-            Déconnexion
-          </button>
-        ) : (
-          <Link
-            to="/login"
-            className="bg-accent text-accent-fg border-0 rounded-md cursor-pointer font-bold py-2 px-4 no-underline inline-block"
-          >
-            Connexion
-          </Link>
-        )}
-      </div>
-    </nav>
+    <header className="site-header">
+      <nav className="site-container site-nav" aria-label="Navigation principale">
+        <Link className="brand" to="/" aria-label="Nightfall, accueil">
+          <NightfallLogo className="h-10 w-10" title="" />
+          <span>NIGHTFALL<small>Beyond your fears</small></span>
+        </Link>
+        <button ref={menuToggleRef} type="button" className="menu-toggle" aria-expanded={menuOpen} aria-controls="navigation-links" aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'Fermer ×' : 'Menu ☰'}</button>
+        <div id="navigation-links" className={`nav-links ${menuOpen ? 'is-open' : ''}`} onKeyDown={(event) => { if (event.key === 'Escape') { setMenuOpen(false); menuToggleRef.current?.focus(); } }}>
+          <Link to="/#experiences">Les expériences</Link>
+          <Link to="/#concept">Le parc</Link>
+          <Link to="/#prepare">Préparer sa visite</Link>
+          <span className="nav-divider" aria-hidden="true" />
+          {token ? (
+            <>
+              <Link to={isAdmin ? '/admin' : '/dashboard'}>{isAdmin ? 'Administration' : 'Mes réservations'}</Link>
+              <button type="button" onClick={handleLogout} disabled={loggingOut} className="nav-logout">{loggingOut ? 'Déconnexion…' : 'Déconnexion'}</button>
+            </>
+          ) : (
+            <Link to="/login">Mon espace</Link>
+          )}
+          <Button as={Link} to="/#experiences" className="nav-book">Réserver <span aria-hidden="true">↗</span></Button>
+        </div>
+      </nav>
+    </header>
   );
 }
-
 export default Navbar;

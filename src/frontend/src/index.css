@@ -8,19 +8,19 @@
   :root {
     color-scheme: dark;
 
-    --color-canvas: 2 4 21;
-    --color-surface: 10 14 38;
-    --color-line: 31 37 73;
-    --color-ink: 241 242 251;
-    --color-ink-muted: 163 169 201;
-    --color-accent: 195 78 99;
-    --color-accent-fg: 255 255 255;
-    --color-highlight: 118 137 245;
+    --color-canvas: 12 13 14;
+    --color-surface: 21 22 23;
+    --color-line: 53 51 47;
+    --color-ink: 242 236 224;
+    --color-ink-muted: 174 171 163;
+    --color-accent: 227 126 61;
+    --color-accent-fg: 20 13 8;
+    --color-highlight: 236 153 91;
 
     /* Nightfall logo colors (see components/ui/NightfallLogo.tsx). Referencing
        the theme variables here — instead of hardcoding a color — means the
        logo picks up whichever ambiance is active on <html data-theme="...">,
-       including the hover-driven one from SiteThemeContext. */
+       including card previews and experience details from SiteThemeContext. */
     --nf-accent: rgb(var(--color-highlight));
     --nf-ink: rgb(var(--color-ink));
   }
@@ -92,6 +92,17 @@
     --color-highlight: 224 115 107;
   }
 
+  [data-theme='foret'] {
+    --color-canvas: 10 19 15;
+    --color-surface: 19 34 26;
+    --color-line: 43 66 49;
+    --color-ink: 235 241 224;
+    --color-ink-muted: 171 190 169;
+    --color-accent: 159 195 113;
+    --color-accent-fg: 10 19 15;
+    --color-highlight: 183 214 142;
+  }
+
   :focus-visible {
     outline: 2px solid rgb(var(--color-highlight));
     outline-offset: 2px;
@@ -103,7 +114,7 @@
     }
 
     /* Global color transition: lets the theme variables above (set via
-       data-theme on <html> when hovering an experience) fade in and out
+       data-theme on <html> when previewing or opening an experience) fade in and out
        instead of snapping. Scoped to color-ish properties so it never
        fights element-specific transitions for transform/opacity/etc. */
     *,
@@ -120,7 +131,7 @@
 body {
   @apply bg-canvas text-ink;
   margin: 0;
-  font-family: 'Trebuchet MS', sans-serif;
+  font-family: 'Manrope', 'Trebuchet MS', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -129,5 +140,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-

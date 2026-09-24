@@ -34,11 +34,11 @@ function ExperienceFilters({
   onReset
 }) {
   return (
-    <section className="mb-10 rounded-2xl border border-line bg-surface/60 p-6 sm:p-8">
+    <section aria-label="Filtres des expériences" className="experience-filters">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-highlight">
-            Affiner
+            À vous de choisir
           </p>
           <h2 className="mt-1 font-display text-2xl font-semibold text-ink">
             Trouvez votre expérience
@@ -71,7 +71,7 @@ function ExperienceFilters({
             <input
               id="search"
               type="text"
-              placeholder="Ex: contaminé"
+              placeholder="Quel sera votre prochain cauchemar ?"
               value={search}
               onChange={(event) => onSearchChange(event.target.value)}
               className={`${INPUT} pl-10`}
@@ -82,7 +82,7 @@ function ExperienceFilters({
         {/* Catégorie */}
         <div className="flex flex-col gap-2">
           <label htmlFor="category" className={FIELD_LABEL}>
-            Catégorie
+            Univers
           </label>
 
           <div className="relative">
@@ -92,7 +92,7 @@ function ExperienceFilters({
               onChange={(event) => onCategoryChange(event.target.value)}
               className={SELECT}
             >
-              <option value="">Toutes</option>
+              <option value="">Tous les univers</option>
 
               {categories.map((item) => (
                 <option key={item} value={item}>
@@ -110,7 +110,7 @@ function ExperienceFilters({
         {/* Intensité */}
         <div className="flex flex-col gap-2">
           <label htmlFor="intensity" className={FIELD_LABEL}>
-            Intensité
+            Intensité maximum
           </label>
 
           <div className="relative">
@@ -136,6 +136,8 @@ function ExperienceFilters({
         </div>
       </div>
 
+      <details className="advanced-filters">
+      <summary>Budget & durée <span aria-hidden="true">+</span></summary>
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
       <div className="rounded-xl border border-line bg-canvas/40 p-4">
         <p className={FIELD_LABEL}>Prix</p>
@@ -214,6 +216,7 @@ function ExperienceFilters({
         />
       </div>
       </div>
+      </details>
     </section>
   );
 }

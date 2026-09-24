@@ -26,13 +26,13 @@ export default {
         },
         highlight: themeColor('highlight'),
 
-        // Blue-tinted neutrals so existing gray-* classes match the navy palette.
-        gray: colors.slate,
+        // Warm neutrals keep the account and administration screens consistent.
+        gray: colors.stone,
 
         // Legacy names, still used by pages not migrated to the roles above yet.
-        'night-mauve': '#7689f5',
-        'blood-red': '#c34e63',
-        'deep-black': '#020415',
+        'night-mauve': '#ec995b',
+        'blood-red': '#a94234',
+        'deep-black': '#0c0d0e',
       },
       fontFamily: {
         display: ['"Cormorant Garamond"', 'Georgia', '"Times New Roman"', 'serif'],

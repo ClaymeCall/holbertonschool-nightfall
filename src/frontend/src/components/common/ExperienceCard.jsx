@@ -2,94 +2,50 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { experienceImageUrl, formatPrice } from '../../lib/format';
 import { intensityLabel } from '../../lib/intensity';
-import { themeForExperience } from '../../lib/themes';
+import { ambianceForExperience, themeForExperience } from '../../lib/themes';
 import { useSiteTheme } from '../../context/SiteThemeContext';
 import Badge from '../ui/Badge';
-import Button from '../ui/Button';
 
 function ExperienceCard({ experience }) {
-  const {
-    id,
-    name,
-    description,
-    image,
-    category,
-    duration,
-    intensity_level: intensityLevel,
-    price,
-  } = experience;
-
-  const imageUrl = experienceImageUrl(image);
-  const intensityText = intensityLabel(intensityLevel);
+  const { id, name, description, image, category, duration, intensity_level: intensityLevel, price } = experience;
+  const ambiance = ambianceForExperience(experience);
   const theme = themeForExperience(experience);
-
   const setSiteTheme = useSiteTheme();
-  const [isActive, setIsActive] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const isActive = isHovered || isFocused;
 
-  // While this card is hovered/focused, its ambiance takes over the whole
-  // site; the cleanup (on mouse/focus leave, or on unmount) hands it back.
   useEffect(() => {
     if (!theme || !isActive) return undefined;
+
     setSiteTheme(theme);
-    return () => setSiteTheme(null);
+    // Also release the preview when filtering or navigation removes the card.
+    return () => setSiteTheme((current) => current === theme ? null : current);
   }, [theme, isActive, setSiteTheme]);
 
   return (
     <article
       data-theme={theme}
-      onMouseEnter={() => setIsActive(true)}
-      onMouseLeave={() => setIsActive(false)}
-      onFocus={() => setIsActive(true)}
-      onBlur={() => setIsActive(false)}
-      className="motion-safe:animate-fade-up group relative isolate overflow-hidden rounded-xl border border-t-2 border-line border-t-accent bg-canvas shadow-lg shadow-black/50 transition duration-300 hover:-translate-y-1 hover:border-accent/60 hover:border-t-accent focus-within:border-highlight focus-within:border-t-accent"
+      className="experience-card"
+      onPointerEnter={(event) => { if (event.pointerType !== 'touch') setIsHovered(true); }}
+      onPointerLeave={() => setIsHovered(false)}
+      onPointerCancel={() => setIsHovered(false)}
+      onFocus={() => setIsFocused(true)}
+      onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setIsFocused(false); }}
     >
-      <Link
-        to={`/experiences/${id}`}
-        aria-label={`Découvrir l'expérience ${name}`}
-        className="relative flex min-h-[420px] flex-col justify-end p-6 no-underline"
-      >
-        {/* Backdrop: real photo when available, themed gradient fallback otherwise */}
-        <div
-          className="absolute inset-0 -z-10 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-          style={{
-            backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
-            backgroundColor: 'rgb(var(--color-canvas))',
-          }}
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgb(var(--color-accent)/0.45),transparent_55%)]" />
+      <Link to={`/experiences/${id}`} className="experience-card__link" aria-label={`Découvrir l’expérience ${name}`}>
+        {image && <img className="experience-card__image" src={experienceImageUrl(image)} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }} />}
+        <div className="experience-card__shade" aria-hidden="true" />
+        <div className="experience-card__top"><Badge>{category}</Badge><span className="experience-code">{ambiance.code}</span></div>
+        <div className="experience-card__body">
+          <p className="experience-card__tagline">{ambiance.tagline}</p>
+          <h3>{name}</h3>
+          <p className="experience-card__description">{description}</p>
+          <div className="experience-card__facts"><span>{duration} min</span><span className="intensity-meter" aria-label={`Intensité : ${intensityLabel(intensityLevel)}`}><span aria-hidden="true">{Array.from({ length: 5 }, (_, i) => <i key={i} className={i < Number(intensityLevel) ? 'is-lit' : ''} />)}</span>{intensityLabel(intensityLevel)}</span></div>
+          <div className="experience-card__footer"><span><strong>{formatPrice(price)}</strong><small> / personne</small></span><span className="experience-card__explore">Explorer <span aria-hidden="true">↗</span></span></div>
         </div>
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-canvas via-canvas/70 to-transparent" />
-
-        {category && <Badge className="mb-3">{category}</Badge>}
-
-        <h3 className="font-display text-3xl font-semibold leading-tight text-ink drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
-          {name}
-        </h3>
-
-        {description && (
-          <p className="mt-2 line-clamp-2 text-sm text-ink-muted">{description}</p>
-        )}
-
-        <div className="mt-5 flex items-center justify-between">
-          <span className="text-lg font-bold text-ink">
-            {formatPrice(price)}
-          </span>
-          <Button as="span" className="group-hover:brightness-110">
-            Explorer
-            <span aria-hidden="true">→</span>
-          </Button>
-        </div>
-
-        {(duration || intensityText) && (
-          <p className="mt-3 text-right text-[11px] uppercase tracking-widest text-ink-muted">
-            {duration ? `${duration} min` : null}
-            {duration && intensityText ? ' · ' : null}
-            {intensityText}
-          </p>
-        )}
       </Link>
     </article>
   );
 }
-
 export default ExperienceCard;

@@ -4,7 +4,7 @@ import ExperienceCard from '../common/ExperienceCard';
 function ExperiencesList({ experiences , hasFilters}) {
   if (!experiences || experiences.length === 0) {
     return (
-      <p className="text-sm text-ink-muted">
+      <p className="empty-catalogue text-sm text-ink-muted">
         {hasFilters
           ? 'Aucune expérience ne correspond à vos critères.'
           : 'Aucune expérience disponible.'}
@@ -13,7 +13,7 @@ function ExperiencesList({ experiences , hasFilters}) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="experiences-grid">
       {experiences.map((experience) => (
         <ExperienceCard
           key={experience.id}

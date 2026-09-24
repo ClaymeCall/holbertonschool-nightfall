@@ -55,9 +55,10 @@ function UserDashboard() {
 
   return (
     <div className="min-h-screen bg-canvas">
-      <main className="mx-auto max-w-5xl px-6 py-10">
-        <div className="mb-8">
-          <h1 className="font-display text-4xl font-semibold text-ink">Mon espace</h1>
+      <main id="main-content" className="mx-auto max-w-5xl px-6 py-10">
+        <div className="dashboard-header">
+          <p className="eyebrow">L’espace des aventuriers</p>
+          <h1 className="section-title">Vos prochains <em>frissons.</em></h1>
           <p className="mt-1 text-sm text-ink-muted">
             Connecté en tant que <span className="text-ink">{user?.email}</span>
           </p>
