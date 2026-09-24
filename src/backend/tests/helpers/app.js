@@ -19,7 +19,12 @@ function buildApp(db) {
 }
 
 function createMockDb() {
-  return { query: jest.fn() };
+  return {
+    query: jest.fn(),
+    // authenticate() looks the token up in the sessions table; default to
+    // "session found" so route tests don't each need to stub this.
+    execute: jest.fn().mockResolvedValue([[{ id: 1 }]]),
+  };
 }
 
 module.exports = { buildApp, createMockDb };
