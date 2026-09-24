@@ -6,12 +6,8 @@ import { CANCELLATION_WINDOW_HOURS } from '../../lib/cancellation';
 import { formatDateTime, formatPrice } from '../../lib/format';
 import Alert from '../ui/Alert';
 import Button from '../ui/Button';
+import { INPUT_CLASS, LABEL_CLASS } from '../ui/Field';
 import { useToast } from '../ui/ToastProvider';
-
-const FIELD_LABEL = 'text-xs font-semibold uppercase tracking-[0.15em] text-ink-muted';
-
-const INPUT =
-  'w-full rounded-lg border border-line bg-canvas px-3.5 py-3 text-base text-ink focus:border-highlight focus:outline-none focus:ring-2 focus:ring-highlight/40';
 
 const STEP_BUTTON =
   'flex h-11 w-11 items-center justify-center rounded-lg bg-surface text-xl font-bold text-ink transition hover:bg-line disabled:cursor-not-allowed disabled:opacity-40';
@@ -96,7 +92,7 @@ function ReservationPanel({ experience }) {
       ) : (
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
           <div className="flex flex-col gap-2">
-            <label htmlFor={`${fieldId}-date`} className={FIELD_LABEL}>
+            <label htmlFor={`${fieldId}-date`} className={LABEL_CLASS}>
               Date et heure
             </label>
             <input
@@ -105,12 +101,12 @@ function ReservationPanel({ experience }) {
               value={dateTime}
               min={toLocalInputValue(new Date())}
               onChange={(event) => setDateTime(event.target.value)}
-              className={INPUT}
+              className={INPUT_CLASS}
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <span id={`${fieldId}-participants`} className={FIELD_LABEL}>
+            <span id={`${fieldId}-participants`} className={LABEL_CLASS}>
               Participants
             </span>
             <div className="flex items-center justify-between rounded-lg border border-line bg-canvas p-1.5">
