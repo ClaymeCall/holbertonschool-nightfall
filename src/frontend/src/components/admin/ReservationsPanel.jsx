@@ -1,18 +1,7 @@
 import React from 'react';
 import useApiResource from '../../hooks/useApiResource';
-import Alert from '../ui/Alert';
-import Skeleton from '../ui/Skeleton';
-
-const dateTimeFormatter = new Intl.DateTimeFormat('fr-FR', {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-});
-
-function formatDateTime(value) {
-  if (!value) return '—';
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : dateTimeFormatter.format(date);
-}
+import { formatDateTimeShort } from '../../lib/format';
+import PanelStatus from './PanelStatus';
 
 function flattenReservations(users) {
   return users
@@ -35,29 +24,17 @@ function ReservationsPanel({ token }) {
         Réservations
       </h2>
 
-      {!token && (
-        <p className="text-sm text-ink-muted">Connectez-vous en administrateur pour voir les réservations.</p>
-      )}
-
-      {token && loading && (
-        <div role="status" className="space-y-2">
-          <span className="sr-only">Chargement des réservations…</span>
-          <Skeleton className="h-12" />
-          <Skeleton className="h-12" />
-        </div>
-      )}
-
-      {token && error && (
-        <Alert variant="error">
-          Impossible de charger les réservations : {error.message}
-          {error.status === 401 && ' (jeton manquant ou expiré)'}
-          {error.status === 403 && " (ce compte n'est pas administrateur)"}
-        </Alert>
-      )}
-
-      {reservations && reservations.length === 0 && (
-        <p className="text-sm text-ink-muted">Aucune réservation pour le moment.</p>
-      )}
+      <PanelStatus
+        token={token}
+        loading={loading}
+        error={error}
+        isEmpty={reservations?.length === 0}
+        name="réservations"
+        emptyText="Aucune réservation pour le moment."
+        skeletonCount={2}
+        skeletonClass="h-12"
+        skeletonGap="space-y-2"
+      />
 
       {reservations && reservations.length > 0 && (
         <div className="overflow-x-auto rounded-xl border border-line bg-surface">
@@ -82,7 +59,7 @@ function ReservationsPanel({ token }) {
               {reservations.map((reservation) => (
                 <tr key={reservation.id} className="border-t border-line">
                   <td className="px-4 py-3 text-ink">{reservation.experience?.name}</td>
-                  <td className="px-4 py-3 text-ink-muted">{formatDateTime(reservation.date_time)}</td>
+                  <td className="px-4 py-3 text-ink-muted">{formatDateTimeShort(reservation.date_time)}</td>
                   <td className="px-4 py-3 text-ink-muted">{reservation.participants}</td>
                   <td className="px-4 py-3 text-ink-muted">{reservation.userEmail}</td>
                 </tr>
