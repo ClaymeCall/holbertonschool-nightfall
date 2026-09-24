@@ -46,6 +46,12 @@ export default function Login() {
     <main className="relative isolate flex min-h-[calc(100vh-64px)] items-center justify-center overflow-hidden bg-canvas px-4 py-12 text-ink">
       <div
         aria-hidden="true"
+        className="absolute inset-0 -z-20 bg-cover bg-center"
+        style={{ backgroundImage: 'url(/assets/nightfall-gates.webp)' }}
+      />
+      <div aria-hidden="true" className="absolute inset-0 -z-20 bg-canvas/70" />
+      <div
+        aria-hidden="true"
         className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgb(var(--color-accent)/0.22),transparent_55%)]"
       />
 
