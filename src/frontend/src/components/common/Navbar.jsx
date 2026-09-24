@@ -40,6 +40,9 @@ function Navbar() {
         <NightfallLogo className="h-10 w-10" title="" />
       </a>
       <div className="flex items-center gap-4">
+        <Link to="/about" className="text-sm text-gray-300 no-underline hover:text-white">
+          À propos
+        </Link>
         {token && isAdmin && (
           <Link to="/admin" className="text-sm text-gray-300 no-underline hover:text-white">
             Admin
