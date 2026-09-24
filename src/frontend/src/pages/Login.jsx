@@ -78,7 +78,7 @@ export default function Login() {
             name="email"
             type="email"
             autoComplete="username"
-            placeholder="ton@email.fr"
+            placeholder="prenom@exemple.fr"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
@@ -89,7 +89,7 @@ export default function Login() {
             name="password"
             type="password"
             autoComplete="current-password"
-            placeholder="Ton mot de passe"
+            placeholder="Votre mot de passe"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required

@@ -11,13 +11,13 @@ function RequireAdmin({ children }) {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-deep-black">
+      <div className="min-h-screen bg-canvas text-ink">
         <main className="mx-auto max-w-2xl px-6 py-16 text-center">
-          <h1 className="mb-3 text-2xl font-bold text-white">Access denied</h1>
-          <p className="text-sm text-gray-400">
-            This account isn&apos;t an administrator.{' '}
-            <Link to="/" className="text-night-mauve hover:underline">
-              Back to the catalog
+          <h1 className="mb-3 font-display text-4xl text-ink">Accès refusé</h1>
+          <p className="text-ink-muted">
+            Ce compte n&apos;est pas administrateur.{' '}
+            <Link to="/" className="font-bold text-highlight underline hover:brightness-125">
+              Retour au catalogue
             </Link>
           </p>
         </main>
