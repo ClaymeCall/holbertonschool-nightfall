@@ -32,50 +32,10 @@ function Hero({
       <section className="relative isolate flex min-h-[80vh] flex-col items-center justify-center overflow-hidden px-6 py-24 text-center">
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10"
-          style={{ backgroundImage: STARS, backgroundRepeat: 'no-repeat' }}
+          className="absolute inset-0 -z-20 bg-cover bg-center"
+          style={{ backgroundImage: 'url(/assets/nightfall-gates.webp)' }}
         />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_25%,rgb(var(--color-accent)/0.28),transparent_60%)]"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute right-[10%] top-[12%] -z-10 h-14 w-14 rounded-full bg-ink/85 shadow-[0_0_70px_24px_rgb(var(--color-highlight)/0.35)] sm:h-20 sm:w-20"
-        />
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 1280 240"
-          preserveAspectRatio="xMidYMax slice"
-          className="absolute inset-x-0 bottom-0 -z-10 h-40 w-full sm:h-60"
-        >
-          <rect x="0" y="206" width="1280" height="34" className="fill-surface" />
-          <g className="stroke-line" strokeWidth="3" fill="none">
-            <circle cx="300" cy="110" r="96" />
-            <path d="M300 14v192M204 110h192M232 42l136 136M368 42L232 178M300 110L262 206M300 110L338 206" />
-          </g>
-          <g className="fill-accent">
-            <circle cx="300" cy="14" r="4" />
-            <circle cx="368" cy="42" r="4" />
-            <circle cx="396" cy="110" r="4" />
-            <circle cx="368" cy="178" r="4" />
-            <circle cx="300" cy="206" r="4" />
-            <circle cx="232" cy="178" r="4" />
-            <circle cx="204" cy="110" r="4" />
-            <circle cx="232" cy="42" r="4" />
-          </g>
-          <g className="fill-surface">
-            <path d="M1000 206L1024 70L1036 70L1060 206Z" />
-            <rect x="1018" y="44" width="24" height="28" rx="3" />
-            <path d="M1140 206L1152 110L1158 110L1170 206Z" />
-          </g>
-          <path
-            d="M560 206C640 60 720 60 800 206M800 206C860 100 920 100 980 206"
-            className="stroke-line"
-            strokeWidth="4"
-            fill="none"
-          />
-        </svg>
+        <div aria-hidden="true" className="absolute inset-0 -z-20 bg-canvas/70" />
         <div
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-canvas to-transparent"
