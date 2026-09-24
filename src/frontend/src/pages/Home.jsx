@@ -47,7 +47,7 @@ function Home() {
   } = useApiResource(path);
 
   return (
-    <div className="min-h-screen bg-deep-black">
+    <div className="min-h-screen bg-canvas">
       <Hero />
 
       <main

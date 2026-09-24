@@ -94,6 +94,19 @@
     html {
       scroll-behavior: smooth;
     }
+
+    /* Global color transition: lets the theme variables above (set via
+       data-theme on <html> when hovering an experience) fade in and out
+       instead of snapping. Scoped to color-ish properties so it never
+       fights element-specific transitions for transform/opacity/etc. */
+    *,
+    *::before,
+    *::after {
+      transition-property: background-color, border-color, color, fill, stroke,
+        box-shadow, outline-color;
+      transition-timing-function: ease-in-out;
+      transition-duration: 300ms;
+    }
   }
 }
 

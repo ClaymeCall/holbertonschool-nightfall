@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { experienceImageUrl, formatPrice } from '../../lib/format';
 import { intensityLabel } from '../../lib/intensity';
 import { themeForExperience } from '../../lib/themes';
+import { useSiteTheme } from '../../context/SiteThemeContext';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 
@@ -20,10 +21,26 @@ function ExperienceCard({ experience }) {
 
   const imageUrl = experienceImageUrl(image);
   const intensityText = intensityLabel(intensityLevel);
+  const theme = themeForExperience(experience);
+
+  const setSiteTheme = useSiteTheme();
+  const [isActive, setIsActive] = useState(false);
+
+  // While this card is hovered/focused, its ambiance takes over the whole
+  // site; the cleanup (on mouse/focus leave, or on unmount) hands it back.
+  useEffect(() => {
+    if (!theme || !isActive) return undefined;
+    setSiteTheme(theme);
+    return () => setSiteTheme(null);
+  }, [theme, isActive, setSiteTheme]);
 
   return (
     <article
-      data-theme={themeForExperience(experience)}
+      data-theme={theme}
+      onMouseEnter={() => setIsActive(true)}
+      onMouseLeave={() => setIsActive(false)}
+      onFocus={() => setIsActive(true)}
+      onBlur={() => setIsActive(false)}
       className="motion-safe:animate-fade-up group relative isolate overflow-hidden rounded-xl border border-t-2 border-line border-t-accent bg-canvas shadow-lg shadow-black/50 transition duration-300 hover:-translate-y-1 hover:border-accent/60 hover:border-t-accent focus-within:border-highlight focus-within:border-t-accent"
     >
       <Link
