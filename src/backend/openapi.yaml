@@ -83,6 +83,12 @@ paths:
           description: Exact category match
           schema:
             type: string
+        - name: min_duration
+          in: query
+          description: Minimum duration, in minutes
+          schema:
+            type: integer
+            minimum: 1
         - name: max_duration
           in: query
           description: Maximum duration, in minutes

@@ -1,5 +1,7 @@
 import React from 'react';
 import useApiResource from '../../hooks/useApiResource';
+import Alert from '../ui/Alert';
+import Skeleton from '../ui/Skeleton';
 
 const dateTimeFormatter = new Intl.DateTimeFormat('fr-FR', {
   dateStyle: 'medium',
@@ -18,6 +20,8 @@ function flattenReservations(users) {
     .sort((a, b) => new Date(a.date_time) - new Date(b.date_time));
 }
 
+const HEAD_CELL = 'px-4 py-3 text-xs font-normal uppercase tracking-[0.15em]';
+
 function ReservationsPanel({ token }) {
   const { data: users, loading, error } = useApiResource('/users', {
     token,
@@ -26,55 +30,61 @@ function ReservationsPanel({ token }) {
   const reservations = users ? flattenReservations(users) : null;
 
   return (
-    <section aria-labelledby="reservations-heading" className="mb-10">
-      <h2 id="reservations-heading" className="mb-3 text-xl font-bold text-white">
-        Reservations
+    <section aria-labelledby="reservations-heading" className="mb-12">
+      <h2 id="reservations-heading" className="mb-4 font-display text-3xl text-ink">
+        Réservations
       </h2>
 
       {!token && (
-        <p className="text-sm text-gray-500">Provide an admin token above to load reservations.</p>
+        <p className="text-sm text-ink-muted">Connectez-vous en administrateur pour voir les réservations.</p>
       )}
 
-      {token && loading && <p className="text-sm text-gray-400">Loading reservations…</p>}
+      {token && loading && (
+        <div role="status" className="space-y-2">
+          <span className="sr-only">Chargement des réservations…</span>
+          <Skeleton className="h-12" />
+          <Skeleton className="h-12" />
+        </div>
+      )}
 
       {token && error && (
-        <p role="alert" className="text-sm text-red-400">
-          Failed to load reservations: {error.message}
-          {error.status === 401 && ' (token missing or expired)'}
-          {error.status === 403 && ' (this token is not an admin account)'}
-        </p>
+        <Alert variant="error">
+          Impossible de charger les réservations : {error.message}
+          {error.status === 401 && ' (jeton manquant ou expiré)'}
+          {error.status === 403 && " (ce compte n'est pas administrateur)"}
+        </Alert>
       )}
 
       {reservations && reservations.length === 0 && (
-        <p className="text-sm text-gray-400">No reservations yet.</p>
+        <p className="text-sm text-ink-muted">Aucune réservation pour le moment.</p>
       )}
 
       {reservations && reservations.length > 0 && (
-        <div className="overflow-x-auto rounded-lg border border-gray-800">
+        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
           <table className="w-full min-w-[640px] border-collapse text-left text-sm">
             <thead>
-              <tr className="bg-gray-900/60 text-gray-400">
-                <th scope="col" className="px-4 py-2 font-medium">
-                  Experience
+              <tr className="bg-canvas/50 text-ink-muted">
+                <th scope="col" className={HEAD_CELL}>
+                  Expérience
                 </th>
-                <th scope="col" className="px-4 py-2 font-medium">
-                  Date &amp; time
+                <th scope="col" className={HEAD_CELL}>
+                  Date et heure
                 </th>
-                <th scope="col" className="px-4 py-2 font-medium">
+                <th scope="col" className={HEAD_CELL}>
                   Participants
                 </th>
-                <th scope="col" className="px-4 py-2 font-medium">
-                  User
+                <th scope="col" className={HEAD_CELL}>
+                  Utilisateur
                 </th>
               </tr>
             </thead>
             <tbody>
               {reservations.map((reservation) => (
-                <tr key={reservation.id} className="border-t border-gray-800">
-                  <td className="px-4 py-2 text-gray-200">{reservation.experience?.name}</td>
-                  <td className="px-4 py-2 text-gray-400">{formatDateTime(reservation.date_time)}</td>
-                  <td className="px-4 py-2 text-gray-400">{reservation.participants}</td>
-                  <td className="px-4 py-2 text-gray-400">{reservation.userEmail}</td>
+                <tr key={reservation.id} className="border-t border-line">
+                  <td className="px-4 py-3 text-ink">{reservation.experience?.name}</td>
+                  <td className="px-4 py-3 text-ink-muted">{formatDateTime(reservation.date_time)}</td>
+                  <td className="px-4 py-3 text-ink-muted">{reservation.participants}</td>
+                  <td className="px-4 py-3 text-ink-muted">{reservation.userEmail}</td>
                 </tr>
               ))}
             </tbody>

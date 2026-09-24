@@ -1,44 +1,112 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import ReservationPanel from '../components/feature/ReservationPanel';
+import Alert from '../components/ui/Alert';
+import Badge from '../components/ui/Badge';
+import { ClockIcon, UsersIcon } from '../components/ui/icons';
+import Skeleton from '../components/ui/Skeleton';
+import { useSiteTheme } from '../context/SiteThemeContext';
 import useApiResource from '../hooks/useApiResource';
-import { apiRequest, API_ORIGIN } from '../lib/api';
+import { CANCELLATION_WINDOW_HOURS } from '../lib/cancellation';
+import { experienceImageUrl } from '../lib/format';
 import { intensityLabel } from '../lib/intensity';
+import { themeForExperience } from '../lib/themes';
 
-const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
-
-const IMAGE_BASE_URL = `${API_ORIGIN}/images/experiences/`;
+const INTENSITY_LEVELS = 5;
 
 function ExperienceDetails() {
   const { id } = useParams();
   const { data: experiences, loading, error } = useApiResource('/experiences');
+  const setSiteTheme = useSiteTheme();
 
   const experience = experiences?.find((item) => String(item.id) === id);
+  const theme = themeForExperience(experience);
+
+  // The navbar lives outside this page's themed wrapper, so its ambiance
+  // only follows along if we also mirror the theme onto <html> for as
+  // long as this page is mounted (handed back to the default on leave).
+  useEffect(() => {
+    if (!theme) return undefined;
+    setSiteTheme(theme);
+    return () => setSiteTheme(null);
+  }, [theme, setSiteTheme]);
 
   return (
-    <div className="min-h-screen bg-deep-black">
-      <main className="mx-auto max-w-4xl px-6 py-10">
-        <Link to="/" className="text-sm text-gray-400 hover:text-white">
+    <div className="min-h-screen bg-canvas" data-theme={theme}>
+      <main className="mx-auto max-w-6xl px-6 py-10">
+        <Link to="/" className="text-sm text-ink-muted hover:text-ink">
           ← Retour aux expériences
         </Link>
 
-        {loading && <p className="mt-6 text-sm text-gray-400">Chargement de l'expérience…</p>}
+        {loading && <ExperienceDetailsSkeleton />}
 
         {error && (
-          <p role="alert" className="mt-6 text-sm text-red-400">
+          <Alert variant="error" className="mt-6">
             Impossible de charger l'expérience : {error.message}
-          </p>
+          </Alert>
         )}
 
         {!loading && !error && experiences && !experience && (
-          <p role="alert" className="mt-6 text-sm text-red-400">
+          <Alert variant="error" className="mt-6">
             Cette expérience n'existe pas ou n'est plus disponible.
-          </p>
+          </Alert>
         )}
 
         {experience && (
           <ExperienceDetailsContent experience={experience} />
         )}
       </main>
+    </div>
+  );
+}
+
+function ExperienceDetailsSkeleton() {
+  return (
+    <div role="status" className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <span className="sr-only">Chargement de l'expérience…</span>
+      <div>
+        <Skeleton className="min-h-[340px] rounded-2xl" />
+        <Skeleton className="mt-5 h-20 rounded-2xl" />
+        <Skeleton className="mt-6 h-4 w-11/12" />
+        <Skeleton className="mt-3 h-4 w-10/12" />
+        <Skeleton className="mt-3 h-4 w-8/12" />
+      </div>
+      <Skeleton className="h-96 rounded-2xl" />
+    </div>
+  );
+}
+
+function Fact({ icon: Icon, label, children }) {
+  return (
+    <div className="flex items-center gap-4 rounded-2xl border border-line bg-surface p-4">
+      <Icon size={26} strokeWidth={1.8} className="flex-none text-highlight" />
+      <div>
+        <dt className="text-[11px] uppercase tracking-[0.2em] text-ink-muted">{label}</dt>
+        <dd className="mt-0.5 text-lg font-bold text-ink">{children}</dd>
+      </div>
+    </div>
+  );
+}
+
+function IntensityFact({ label, level }) {
+  return (
+    <div className="rounded-2xl border border-line bg-surface p-4">
+      <dt className="text-[11px] uppercase tracking-[0.2em] text-ink-muted">Intensité</dt>
+      <dd className="mt-0.5 text-lg font-bold text-ink">
+        {label}
+        <span className="sr-only">
+          {' '}
+          (niveau {level} sur {INTENSITY_LEVELS})
+        </span>
+        <span aria-hidden="true" className="mt-3 flex gap-1.5">
+          {Array.from({ length: INTENSITY_LEVELS }, (_, index) => (
+            <span
+              key={index}
+              className={`h-2 flex-1 rounded-full ${index < level ? 'bg-accent' : 'bg-line'}`}
+            />
+          ))}
+        </span>
+      </dd>
     </div>
   );
 }
@@ -52,163 +120,61 @@ function ExperienceDetailsContent({ experience }) {
     duration,
     intensity_level: intensityLevel,
     max_participants: maxParticipants,
-    price,
   } = experience;
 
-  const imageUrl = image ? `${IMAGE_BASE_URL}${image}` : null;
-  const intensityLabelText = intensityLabel(intensityLevel);
+  const imageUrl = experienceImageUrl(image);
+  const intensityText = intensityLabel(intensityLevel);
 
   return (
-    <article className="mt-6">
-      <div
-        className="relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-xl border border-gray-800 bg-cover bg-center p-8"
-        style={{
-          backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
-          backgroundColor: '#0a0a0a',
-        }}
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgba(139,0,0,0.35),transparent_55%)]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-deep-black/70 to-transparent" />
+    <article className="mt-6 grid gap-8 motion-safe:animate-fade-up lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+      <div>
+        <div
+          className="relative flex min-h-[340px] flex-col justify-end overflow-hidden rounded-2xl border border-line bg-cover bg-center p-8"
+          style={{
+            backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
+            backgroundColor: 'rgb(var(--color-canvas))',
+          }}
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgb(var(--color-accent)/0.35),transparent_55%)]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-canvas via-canvas/70 to-transparent" />
 
-        {category && (
-          <span className="relative mb-3 w-fit rounded-full border border-blood-red/60 bg-black/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-blood-red">
-            {category}
-          </span>
-        )}
+          {category && <Badge className="relative mb-3">{category}</Badge>}
 
-        <h1 className="relative text-4xl font-bold leading-tight text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
-          {name}
-        </h1>
-
-        {(duration || intensityLabelText || maxParticipants) && (
-          <p className="relative mt-3 text-sm uppercase tracking-widest text-gray-300">
-            {duration ? `${duration} min` : null}
-            {duration && intensityLabelText ? ' · ' : null}
-            {intensityLabelText}
-            {(duration || intensityLabelText) && maxParticipants ? ' · ' : null}
-            {maxParticipants ? `${maxParticipants} participants max` : null}
-          </p>
-        )}
-      </div>
-
-      {description && (
-        <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-gray-300">
-          {description}
-        </p>
-      )}
-
-      <div className="mt-8 rounded-xl border border-gray-800 bg-black/40 p-6">
-        <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-white">
-            {currencyFormatter.format(Number(price))}
-          </span>
+          <h1 className="relative font-display text-5xl font-semibold leading-tight text-ink drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)] sm:text-6xl">
+            {name}
+          </h1>
         </div>
 
-        <ReservationForm experience={experience} />
-      </div>
-    </article>
-  );
-}
+        <dl className="mt-5 grid gap-4 sm:grid-cols-3">
+          {duration ? (
+            <Fact icon={ClockIcon} label="Durée">
+              {duration} min
+            </Fact>
+          ) : null}
+          {maxParticipants ? (
+            <Fact icon={UsersIcon} label="Participants">
+              {maxParticipants} maximum
+            </Fact>
+          ) : null}
+          {intensityText ? <IntensityFact label={intensityText} level={Number(intensityLevel)} /> : null}
+        </dl>
 
-function ReservationForm({ experience }) {
-  const token = localStorage.getItem('token');
-  const [dateTime, setDateTime] = useState('');
-  const [participants, setParticipants] = useState(1);
-  const [submitting, setSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState(null);
+        {description && (
+          <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-ink-muted">
+            {description}
+          </p>
+        )}
 
-  if (!token) {
-    return (
-      <p className="mt-6 text-sm text-gray-400">
-        <Link to="/login" className="text-night-mauve hover:underline">
-          Connecte-toi
-        </Link>{' '}
-        pour réserver cette expérience.
-      </p>
-    );
-  }
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-
-    if (!dateTime) {
-      setFeedback({ type: 'error', message: 'Choisis une date et une heure.' });
-      return;
-    }
-
-    const bookingDate = new Date(dateTime);
-    if (bookingDate <= new Date()) {
-      setFeedback({ type: 'error', message: 'La date doit être dans le futur.' });
-      return;
-    }
-
-    setSubmitting(true);
-    setFeedback(null);
-    try {
-      await apiRequest('/reservations', {
-        method: 'POST',
-        token,
-        body: JSON.stringify({
-          experience_id: experience.id,
-          date: bookingDate.toISOString(),
-          participants: Number(participants),
-        }),
-      });
-      setFeedback({ type: 'success', message: 'Réservation confirmée !' });
-      setDateTime('');
-      setParticipants(1);
-    } catch (err) {
-      const message =
-        err.status === 401
-          ? 'Ta session a expiré, reconnecte-toi pour réserver.'
-          : err.message;
-      setFeedback({ type: 'error', message });
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="mt-6 flex flex-wrap items-end gap-4">
-      <label className="text-xs text-gray-400">
-        <span className="mb-1 block">Date &amp; heure</span>
-        <input
-          type="datetime-local"
-          value={dateTime}
-          onChange={(e) => setDateTime(e.target.value)}
-          className="rounded border border-gray-700 bg-deep-black px-3 py-2 text-sm text-white focus:border-night-mauve focus:outline-none"
-        />
-      </label>
-
-      <label className="text-xs text-gray-400">
-        <span className="mb-1 block">Participants</span>
-        <input
-          type="number"
-          min={1}
-          max={experience.max_participants || undefined}
-          value={participants}
-          onChange={(e) => setParticipants(e.target.value)}
-          className="w-20 rounded border border-gray-700 bg-deep-black px-3 py-2 text-sm text-white focus:border-night-mauve focus:outline-none"
-        />
-      </label>
-
-      <button
-        type="submit"
-        disabled={submitting}
-        className="rounded-md bg-blood-red px-6 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {submitting ? 'Réservation…' : 'Réserver'}
-      </button>
-
-      {feedback && (
-        <p
-          role={feedback.type === 'error' ? 'alert' : 'status'}
-          className={`w-full text-sm ${feedback.type === 'error' ? 'text-red-400' : 'text-emerald-400'}`}
-        >
-          {feedback.message}
+        <p className="mt-6 flex items-center gap-3 text-sm text-ink">
+          <span aria-hidden="true" className="h-1.5 w-1.5 flex-none rounded-full bg-accent" />
+          Annulation possible jusqu'à {CANCELLATION_WINDOW_HOURS} heures avant l'expérience.
         </p>
-      )}
-    </form>
+      </div>
+
+      <aside aria-label="Réserver cette expérience" className="lg:sticky lg:top-6">
+        <ReservationPanel experience={experience} />
+      </aside>
+    </article>
   );
 }
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/common/Navbar';
 import UsersPanel from '../components/admin/UsersPanel';
 import ExperiencesPanel from '../components/admin/ExperiencesPanel';
 import ReservationsPanel from '../components/admin/ReservationsPanel';
+import Button from '../components/ui/Button';
 import useAuth from '../hooks/useAuth';
 
 function AdminDashboard() {
@@ -16,21 +16,20 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-deep-black">
-      <main className="mx-auto max-w-5xl px-6 py-8">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl font-bold text-white">Admin dashboard</h1>
-          <div className="flex items-center gap-3 text-sm text-gray-400">
+    <div className="min-h-screen bg-canvas text-ink">
+      <main className="mx-auto max-w-5xl px-6 py-10">
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-highlight">Administration</p>
+            <h1 className="mt-1 font-display text-4xl text-ink sm:text-5xl">Tableau de bord</h1>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 text-sm text-ink-muted">
             <span>
-              Logged in as <span className="text-gray-200">{user?.email}</span>
+              Connecté : <span className="text-ink">{user?.email}</span>
             </span>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-md border border-gray-700 px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-gray-800"
-            >
-              Log out
-            </button>
+            <Button variant="ghost" size="sm" className="min-h-10" onClick={handleLogout}>
+              Se déconnecter
+            </Button>
           </div>
         </div>
 

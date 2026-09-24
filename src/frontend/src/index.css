@@ -2,18 +2,144 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /* Default theme. Values are space-separated RGB channels so Tailwind can
+     apply opacity to them. A theme is just another set of these variables. */
+  :root {
+    color-scheme: dark;
 
+    --color-canvas: 2 4 21;
+    --color-surface: 10 14 38;
+    --color-line: 31 37 73;
+    --color-ink: 241 242 251;
+    --color-ink-muted: 163 169 201;
+    --color-accent: 195 78 99;
+    --color-accent-fg: 255 255 255;
+    --color-highlight: 118 137 245;
+
+    /* Nightfall logo colors (see components/ui/NightfallLogo.tsx). Referencing
+       the theme variables here — instead of hardcoding a color — means the
+       logo picks up whichever ambiance is active on <html data-theme="...">,
+       including the hover-driven one from SiteThemeContext. */
+    --nf-accent: rgb(var(--color-highlight));
+    --nf-ink: rgb(var(--color-ink));
+  }
+
+  /* Ambiances, set with data-theme on a wrapper (see src/lib/themes.js). */
+  [data-theme='horreur'] {
+    --color-canvas: 13 13 15;
+    --color-surface: 28 28 34;
+    --color-line: 42 42 51;
+    --color-ink: 242 237 230;
+    --color-ink-muted: 176 171 181;
+    --color-accent: 185 28 28;
+    --color-accent-fg: 255 255 255;
+    --color-highlight: 192 128 85;
+  }
+
+  [data-theme='paranormal'] {
+    --color-canvas: 16 13 24;
+    --color-surface: 36 26 51;
+    --color-line: 58 44 82;
+    --color-ink: 241 234 251;
+    --color-ink-muted: 185 174 201;
+    --color-accent: 124 58 237;
+    --color-accent-fg: 255 255 255;
+    --color-highlight: 232 121 249;
+  }
+
+  [data-theme='laboratoire'] {
+    --color-canvas: 12 18 16;
+    --color-surface: 27 41 34;
+    --color-line: 43 63 52;
+    --color-ink: 238 242 230;
+    --color-ink-muted: 173 188 174;
+    --color-accent: 163 230 53;
+    --color-accent-fg: 12 18 16;
+    --color-highlight: 212 184 76;
+  }
+
+  [data-theme='bunker'] {
+    --color-canvas: 17 18 13;
+    --color-surface: 31 33 23;
+    --color-line: 52 55 42;
+    --color-ink: 236 233 218;
+    --color-ink-muted: 180 178 155;
+    --color-accent: 168 153 104;
+    --color-accent-fg: 17 18 13;
+    --color-highlight: 216 197 138;
+  }
+
+  [data-theme='radioactif'] {
+    --color-canvas: 18 14 8;
+    --color-surface: 36 27 15;
+    --color-line: 61 46 25;
+    --color-ink: 246 238 221;
+    --color-ink-muted: 191 179 155;
+    --color-accent: 255 106 19;
+    --color-accent-fg: 18 14 8;
+    --color-highlight: 255 214 10;
+  }
+
+  [data-theme='asile'] {
+    --color-canvas: 12 18 20;
+    --color-surface: 23 34 38;
+    --color-line: 38 56 64;
+    --color-ink: 230 238 240;
+    --color-ink-muted: 168 185 189;
+    --color-accent: 53 182 174;
+    --color-accent-fg: 12 18 20;
+    --color-highlight: 224 115 107;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-highlight));
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Global color transition: lets the theme variables above (set via
+       data-theme on <html> when hovering an experience) fade in and out
+       instead of snapping. Scoped to color-ish properties so it never
+       fights element-specific transitions for transform/opacity/etc. */
+    *,
+    *::before,
+    *::after {
+      transition-property: background-color, border-color, color, fill, stroke,
+        box-shadow, outline-color;
+      transition-timing-function: ease-in-out;
+      transition-duration: 300ms;
+    }
+  }
+}
 
 body {
+  @apply bg-canvas text-ink;
   margin: 0;
-  font-family: 'Trebuchet MS', sans-serif;
+  @apply font-sans;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--deep-black);
-  color: white;
+  /* Special Elite and Metal Mania ship a single weight: without this the
+     browser fakes bold/italic and smears the glyphs. */
+  font-synthesis: none;
+}
+
+/* Form controls stay in a plain sans: the distressed body font is hard to
+   read at input size. */
+input,
+select,
+textarea,
+button {
+  @apply font-ui;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+

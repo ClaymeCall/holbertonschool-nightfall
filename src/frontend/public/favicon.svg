@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <mask id="nf-crescent">
+      <rect width="200" height="200" fill="#fff" />
+      <circle cx="112" cy="90" r="84" fill="#000" />
+    </mask>
+  </defs>
+
+  <rect width="200" height="200" rx="36" fill="#020415" />
+
+  <circle cx="100" cy="100" r="86" mask="url(#nf-crescent)" fill="#7689f5" />
+
+  <g transform="translate(100 100) scale(.62) translate(-101 -100)" fill="#f1f2fb">
+    <path d="M42 28L62 24Q58 100 52 178Q48 100 42 28Z" />
+    <path d="M58 26L80 22Q116 98 152 176Q108 112 58 26Z" />
+    <path d="M138 178L160 176Q156 100 150 22Q144 100 138 178Z" />
+  </g>
+</svg>
