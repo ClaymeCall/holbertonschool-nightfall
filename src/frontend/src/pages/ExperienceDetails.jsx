@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ReservationPanel from '../components/feature/ReservationPanel';
 import Alert from '../components/ui/Alert';
 import Badge from '../components/ui/Badge';
 import { ClockIcon, UsersIcon } from '../components/ui/icons';
 import Skeleton from '../components/ui/Skeleton';
+import { useSiteTheme } from '../context/SiteThemeContext';
 import useApiResource from '../hooks/useApiResource';
 import { CANCELLATION_WINDOW_HOURS } from '../lib/cancellation';
 import { experienceImageUrl } from '../lib/format';
@@ -16,11 +17,22 @@ const INTENSITY_LEVELS = 5;
 function ExperienceDetails() {
   const { id } = useParams();
   const { data: experiences, loading, error } = useApiResource('/experiences');
+  const setSiteTheme = useSiteTheme();
 
   const experience = experiences?.find((item) => String(item.id) === id);
+  const theme = themeForExperience(experience);
+
+  // The navbar lives outside this page's themed wrapper, so its ambiance
+  // only follows along if we also mirror the theme onto <html> for as
+  // long as this page is mounted (handed back to the default on leave).
+  useEffect(() => {
+    if (!theme) return undefined;
+    setSiteTheme(theme);
+    return () => setSiteTheme(null);
+  }, [theme, setSiteTheme]);
 
   return (
-    <div className="min-h-screen bg-canvas" data-theme={themeForExperience(experience)}>
+    <div className="min-h-screen bg-canvas" data-theme={theme}>
       <main className="mx-auto max-w-6xl px-6 py-10">
         <Link to="/" className="text-sm text-ink-muted hover:text-ink">
           ← Retour aux expériences
