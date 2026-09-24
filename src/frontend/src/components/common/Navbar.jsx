@@ -45,7 +45,7 @@ function Navbar() {
             Admin
           </Link>
         )}
-        {token && !isAdmin && (
+        {token && (
           <Link to="/dashboard" className="text-sm text-gray-300 no-underline hover:text-white">
             Mes réservations
           </Link>
