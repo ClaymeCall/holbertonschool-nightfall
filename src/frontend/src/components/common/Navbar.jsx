@@ -34,7 +34,7 @@ function Navbar() {
   }
 
   return (
-    <nav className="flex justify-between items-center min-h-[64px] px-8 bg-deep-black" aria-label="Navigation principale">
+    <nav className="flex justify-between items-center min-h-[64px] px-8 bg-canvas" aria-label="Navigation principale">
       <a className="flex items-center justify-center h-10 w-10 text-night-mauve text-3xl font-bold no-underline" href="/" aria-label="Nightfall, accueil">
         N
       </a>
