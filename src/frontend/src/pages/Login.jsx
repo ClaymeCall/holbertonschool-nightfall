@@ -3,6 +3,7 @@ import useAuth from "../hooks/useAuth";
 import { Link } from "react-router-dom";
 import { apiRequest } from "../lib/api";
 import AuthLayout from "../components/common/AuthLayout";
+import Button from "../components/ui/Button";
 
 export default function Login() {
   const { login } = useAuth();
@@ -95,20 +96,20 @@ export default function Login() {
           </div>
 
           <div className="grid grid-cols-2 gap-3 mt-2">
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-3 px-4 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+              size="lg"
             >
               {loading ? "Connexion…" : "Se connecter"}
-            </button>
+            </Button>
 
-            <Link
+            <Button as={Link}
               to="/register"
-              className="border border-night-mauve text-night-mauve rounded-md font-bold py-3 px-4 text-center no-underline hover:bg-night-mauve hover:text-white"
+              variant="secondary"
             >
               Inscription
-            </Link>
+            </Button>
           </div>
         </form>
 

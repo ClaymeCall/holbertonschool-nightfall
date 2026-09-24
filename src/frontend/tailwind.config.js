@@ -26,16 +26,17 @@ export default {
         },
         highlight: themeColor('highlight'),
 
-        // Warm neutrals keep the account and administration screens consistent.
-        gray: colors.stone,
+        // Blue neutrals match the original Nightfall palette.
+        gray: colors.slate,
 
         // Legacy names, still used by pages not migrated to the roles above yet.
-        'night-mauve': '#ec995b',
-        'blood-red': '#a94234',
-        'deep-black': '#0c0d0e',
+        'night-mauve': '#7689f5',
+        'blood-red': '#c34e63',
+        'deep-black': '#020415',
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'Georgia', '"Times New Roman"', 'serif'],
+        display: ['"Metal Mania"', 'Georgia', 'serif'],
+        story: ['"Special Elite"', '"Courier New"', 'monospace'],
       },
       keyframes: {
         'fade-up': {

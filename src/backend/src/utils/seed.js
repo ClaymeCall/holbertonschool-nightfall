@@ -1,6 +1,7 @@
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
+const experienceDescriptions = require('../content/experienceDescriptions.json');
 
 // Load environment variables
 dotenv.config();
@@ -182,7 +183,7 @@ const seedDatabase = async () => {
                 'INSERT INTO experiences (name, description, image, category, duration, intensity_level, max_participants, price, is_archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     experience.name,
-                    experience.description,
+                    experienceDescriptions[experience.image]?.description ?? experience.description,
                     experience.image,
                     experience.category,
                     experience.duration,

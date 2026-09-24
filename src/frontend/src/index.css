@@ -8,21 +8,22 @@
   :root {
     color-scheme: dark;
 
-    --color-canvas: 12 13 14;
-    --color-surface: 21 22 23;
-    --color-line: 53 51 47;
-    --color-ink: 242 236 224;
-    --color-ink-muted: 174 171 163;
-    --color-accent: 227 126 61;
-    --color-accent-fg: 20 13 8;
-    --color-highlight: 236 153 91;
+    --color-canvas: 2 4 21;
+    --color-surface: 10 14 38;
+    --color-line: 45 53 91;
+    --color-ink: 241 242 251;
+    --color-ink-muted: 175 182 214;
+    --color-accent: 118 137 245;
+    --color-accent-fg: 255 255 255;
+    --color-action: 65 80 175;
+    --color-highlight: 151 167 255;
+    --font-display: 'Metal Mania', Georgia, serif;
+    --font-story: 'Special Elite', 'Courier New', monospace;
+    --font-ui: 'Manrope', 'Trebuchet MS', sans-serif;
 
-    /* Nightfall logo colors (see components/ui/NightfallLogo.tsx). Referencing
-       the theme variables here — instead of hardcoding a color — means the
-       logo picks up whichever ambiance is active on <html data-theme="...">,
-       including card previews and experience details from SiteThemeContext. */
-    --nf-accent: rgb(var(--color-highlight));
-    --nf-ink: rgb(var(--color-ink));
+    /* Preserve the original blue eclipse logo even during experience previews. */
+    --nf-accent: #7689f5;
+    --nf-ink: #f1f2fb;
   }
 
   /* Ambiances, set with data-theme on a wrapper (see src/lib/themes.js). */
@@ -33,6 +34,7 @@
     --color-ink: 242 237 230;
     --color-ink-muted: 176 171 181;
     --color-accent: 185 28 28;
+    --color-action: 153 27 27;
     --color-accent-fg: 255 255 255;
     --color-highlight: 192 128 85;
   }
@@ -44,6 +46,7 @@
     --color-ink: 241 234 251;
     --color-ink-muted: 185 174 201;
     --color-accent: 124 58 237;
+    --color-action: 109 40 217;
     --color-accent-fg: 255 255 255;
     --color-highlight: 232 121 249;
   }
@@ -55,6 +58,7 @@
     --color-ink: 238 242 230;
     --color-ink-muted: 173 188 174;
     --color-accent: 163 230 53;
+    --color-action: 63 98 18;
     --color-accent-fg: 12 18 16;
     --color-highlight: 212 184 76;
   }
@@ -66,6 +70,7 @@
     --color-ink: 236 233 218;
     --color-ink-muted: 180 178 155;
     --color-accent: 168 153 104;
+    --color-action: 100 83 40;
     --color-accent-fg: 17 18 13;
     --color-highlight: 216 197 138;
   }
@@ -77,6 +82,7 @@
     --color-ink: 246 238 221;
     --color-ink-muted: 191 179 155;
     --color-accent: 255 106 19;
+    --color-action: 154 52 18;
     --color-accent-fg: 18 14 8;
     --color-highlight: 255 214 10;
   }
@@ -88,6 +94,7 @@
     --color-ink: 230 238 240;
     --color-ink-muted: 168 185 189;
     --color-accent: 53 182 174;
+    --color-action: 15 101 99;
     --color-accent-fg: 12 18 20;
     --color-highlight: 224 115 107;
   }
@@ -99,6 +106,7 @@
     --color-ink: 235 241 224;
     --color-ink-muted: 171 190 169;
     --color-accent: 159 195 113;
+    --color-action: 53 94 54;
     --color-accent-fg: 10 19 15;
     --color-highlight: 183 214 142;
   }
@@ -131,9 +139,21 @@
 body {
   @apply bg-canvas text-ink;
   margin: 0;
-  font-family: 'Manrope', 'Trebuchet MS', sans-serif;
+  font-family: var(--font-story);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* DaisyUI sets its own foreground on every data-theme wrapper. Explicitly
+   pair our own theme colors so cards never inherit its light-theme black. */
+:root, [data-theme] {
+  color-scheme: dark;
+  color: rgb(var(--color-ink));
+  background-color: rgb(var(--color-canvas));
+}
+
+button, input, select, textarea, label, output, table {
+  font-family: var(--font-ui);
 }
 
 code {

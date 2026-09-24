@@ -4,8 +4,8 @@ const BASE =
   'nightfall-button inline-flex items-center justify-center gap-3 rounded-sm font-bold no-underline transition disabled:cursor-not-allowed disabled:opacity-50';
 
 const VARIANTS = {
-  primary: 'bg-accent text-accent-fg hover:brightness-110',
-  secondary: 'border border-highlight text-highlight hover:bg-highlight hover:text-canvas',
+  primary: 'nightfall-button--primary',
+  secondary: 'nightfall-button--secondary',
   ghost: 'border border-line text-ink-muted hover:border-accent hover:text-ink',
   danger: 'border border-red-400/70 text-red-300 hover:bg-red-400/10',
   dangerSolid: 'bg-red-400 text-red-950 hover:brightness-110',

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { apiRequest } from "../lib/api";
 import AuthLayout from "../components/common/AuthLayout";
 import useAuth from "../hooks/useAuth";
+import Button from "../components/ui/Button";
 
 export default function Register() {
   const { login } = useAuth();
@@ -128,15 +129,16 @@ export default function Register() {
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-3 px-4 mt-2 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            size="lg"
+            className="mt-2"
           >
             {loading
               ? "Création du compte..."
               : "Créer mon compte"}
-          </button>
+          </Button>
         </form>
 
         <p
@@ -150,7 +152,7 @@ export default function Register() {
           Déjà inscrit ?{" "}
           <Link
             to="/login"
-            className="text-night-mauve font-bold hover:underline"
+            className="text-highlight font-bold underline underline-offset-4"
           >
             Se connecter
           </Link>

@@ -84,7 +84,7 @@ function ReservationPanel({ experience }) {
       <p className="eyebrow mb-3">Votre billet pour l’inconnu</p>
       <h2 className="mb-6 font-display text-3xl text-ink">Osez entrer.</h2>
       <p className="flex items-baseline gap-2">
-        <span className="font-display text-5xl font-bold leading-none text-highlight lining-nums">{formatPrice(unitPrice)}</span>
+        <span className="font-sans text-5xl font-bold leading-none text-highlight tabular-nums">{formatPrice(unitPrice)}</span>
         <span className="text-sm text-ink-muted">par personne</span>
       </p>
 

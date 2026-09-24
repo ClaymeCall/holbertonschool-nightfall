@@ -1,0 +1,26 @@
+{
+  "laboratoire-contamine.jpg": {
+    "previous": "Infiltrez un laboratoire secret où une expérience a mal tourné. Retrouvez l'antidote avant que la contamination ne se propage.",
+    "description": "Les portes du laboratoire viennent de se verrouiller. À l’intérieur, les recherches sur un mystérieux agent biologique ont tourné court… et votre équipe est le dernier espoir de retrouver l’antidote.\n\nExplorez les salles de recherche, rassemblez les indices et confrontez vos découvertes pour reconstituer le protocole. Entre observation et esprit d’équipe, cette aventure vous plonge dans un univers de science-fiction horrifique où chaque décision peut faire basculer la mission."
+  },
+  "bunker-abandonne.jpg": {
+    "previous": "Descendez dans un bunker militaire oublié depuis des décennies. Percez ses secrets avant que les lumières ne s'éteignent pour de bon.",
+    "description": "Un dernier message radio vous conduit aux portes d’un bunker oublié. Sous terre, les équipements sont encore en place, mais l’équipe qui occupait les lieux a disparu sans laisser d’explication.\n\nEn groupe, explorez les installations, recoupez les informations et découvrez ce qui s’est passé avant de retrouver la sortie. Une expérience de survie immersive qui mise sur le suspense, l’exploration et la coopération, dans l’atmosphère confinée d’un abri militaire."
+  },
+  "asile-abandonne.jpg": {
+    "previous": "Pénétrez dans un ancien asile psychiatrique où les cris des patients résonnent encore. Découvrez ce qui a provoqué leur folie et échappez aux entités qui errent dans les couloirs.",
+    "description": "L’établissement est fermé depuis des années. Pourtant, une lumière brille encore au bout du couloir et des bruits de pas résonnent derrière les portes. Votre équipe est venue éclaircir les circonstances de sa fermeture. Quelqu’un semble vous attendre.\n\nSuivez les traces du passé, explorez les pièces abandonnées et rassemblez les éléments d’une histoire restée inachevée. Un parcours d’horreur surnaturelle où l’observation et l’entraide seront vos meilleurs alliés face aux présences qui habitent les lieux."
+  },
+  "invasion-extraterrestre.jpg": {
+    "previous": "Une forme de vie inconnue s'est écrasée près de la base. Traquez-la dans l'obscurité avant qu'elle ne prenne le dessus.",
+    "description": "Un objet non identifié s’est écrasé à proximité de la base. Depuis, les communications sont brouillées et les relevés indiquent une présence qui ne ressemble à rien de connu. Votre équipe est envoyée sur place pour comprendre la situation.\n\nInspectez les installations, interprétez les indices et coordonnez vos recherches pour retrouver la créature avant qu’elle ne vous trouve. Une aventure de science-fiction sous tension, à vivre en équipe entre enquête, exploration et menace extraterrestre."
+  },
+  "zone-radioactive.jpg": {
+    "previous": "Franchissez le périmètre d'une centrale évacuée en urgence pour récupérer des données critiques, sans dépasser votre seuil d'exposition.",
+    "description": "La centrale a été évacuée, mais des données essentielles sont restées à l’intérieur. Votre équipe doit franchir le périmètre de sécurité et mener une dernière opération de récupération avant la fermeture de la zone.\n\nRepérez votre itinéraire, rassemblez les informations et organisez votre progression pour accomplir la mission. Ce scénario de catastrophe fictive fait de la gestion du temps et de la coopération les clés de votre sortie : ici, le danger se joue, les décisions se prennent ensemble."
+  },
+  "foret-maudite.jpg": {
+    "previous": "Une forêt où les arbres murmurent et les ombres prennent vie. Trouvez la sortie avant que la nuit ne vous engloutisse, mais méfiez-vous des légendes locales...",
+    "description": "À la tombée de la nuit, le sentier disparaît et les repères deviennent incertains. On raconte que cette forêt garde la mémoire de ceux qui s’y sont aventurés. Votre groupe va devoir démêler la légende pour retrouver son chemin.\n\nObservez les traces, échangez vos découvertes et restez unis pour progresser dans ce parcours aux frontières du fantastique. Une aventure d’exploration et de suspense où chaque détour vous entraîne un peu plus loin dans le mystère."
+  }
+}
