@@ -34,18 +34,26 @@ export default {
         'deep-black': '#020415',
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'Georgia', '"Times New Roman"', 'serif'],
+        display: ['"Metal Mania"', 'Georgia', '"Times New Roman"', 'serif'],
+        sans: ['"Special Elite"', '"Courier New"', 'monospace'],
+        ui: ['"Trebuchet MS"', '"Segoe UI"', 'sans-serif'],
       },
       keyframes: {
         'fade-up': {
           '0%': { opacity: '0', transform: 'translateY(8px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        // Neon sign: brief dips in brightness, well under 3 flashes per second.
+        flicker: {
+          '0%, 19%, 21%, 23%, 25%, 54%, 56%, 100%': { opacity: '1' },
+          '20%, 24%, 55%': { opacity: '0.72' },
+        },
       },
       // "backwards" (not "both"): once finished, the element goes back to its own
       // styles, so hover transforms keep working.
       animation: {
         'fade-up': 'fade-up 0.5s ease-out backwards',
+        flicker: 'flicker 6s infinite',
       },
     },
   },

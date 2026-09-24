@@ -113,7 +113,7 @@ function ReservationCard({ reservation, now, confirming, busy, onAskCancel, onKe
         <div>
           {unitPrice != null && (
             <>
-              <p className="font-display text-3xl font-bold text-highlight lining-nums">{formatPrice(unitPrice * participants)}</p>
+              <p className="text-3xl text-highlight lining-nums">{formatPrice(unitPrice * participants)}</p>
               <p className="text-xs text-ink-muted">
                 {participants} × {formatPrice(unitPrice)}
               </p>

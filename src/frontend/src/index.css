@@ -100,9 +100,21 @@
 body {
   @apply bg-canvas text-ink;
   margin: 0;
-  font-family: 'Trebuchet MS', sans-serif;
+  @apply font-sans;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Special Elite and Metal Mania ship a single weight: without this the
+     browser fakes bold/italic and smears the glyphs. */
+  font-synthesis: none;
+}
+
+/* Form controls stay in a plain sans: the distressed body font is hard to
+   read at input size. */
+input,
+select,
+textarea,
+button {
+  @apply font-ui;
 }
 
 code {
