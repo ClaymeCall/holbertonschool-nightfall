@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import useApiResource from '../../hooks/useApiResource';
 import { apiRequest } from '../../lib/api';
+import Alert from '../ui/Alert';
+import Button from '../ui/Button';
+import Skeleton from '../ui/Skeleton';
+import { useToast } from '../ui/ToastProvider';
+import ConfirmDelete, { focusLater } from './ConfirmDelete';
 import NewReservationForm from './NewReservationForm';
 
 const dateTimeFormatter = new Intl.DateTimeFormat('fr-FR', {
@@ -16,14 +21,14 @@ function formatDateTime(value) {
 
 function ReservationsList({ reservations }) {
   if (reservations.length === 0) {
-    return <p className="pl-4 text-sm text-gray-500">No reservations.</p>;
+    return <p className="pl-4 text-sm text-ink-muted">Aucune réservation.</p>;
   }
 
   return (
-    <ul className="ml-4 space-y-1.5 border-l border-gray-800 pl-4">
+    <ul className="ml-4 space-y-1.5 border-l border-line pl-4">
       {reservations.map((reservation) => (
-        <li key={reservation.id} className="text-sm text-gray-300">
-          <span className="font-medium text-gray-200">{reservation.experience?.name}</span>
+        <li key={reservation.id} className="text-sm text-ink-muted">
+          <span className="text-ink">{reservation.experience?.name}</span>
           {' — '}
           {formatDateTime(reservation.date_time)}
           {' · '}
@@ -39,107 +44,140 @@ function UsersPanel({ token }) {
     token,
     enabled: Boolean(token),
   });
+  const { notify } = useToast();
   const [busyUserId, setBusyUserId] = useState(null);
+  const [confirmingId, setConfirmingId] = useState(null);
   const [rowErrors, setRowErrors] = useState({});
   const [openReservationFormFor, setOpenReservationFormFor] = useState(null);
 
-  async function handleDelete(user) {
-    if (!window.confirm(`Delete ${user.email}? This cannot be undone.`)) {
-      return;
-    }
+  function cancelDelete(user) {
+    setConfirmingId(null);
+    focusLater(`delete-user-${user.id}`);
+  }
 
+  async function handleDelete(user) {
     setBusyUserId(user.id);
     setRowErrors((prev) => ({ ...prev, [user.id]: null }));
     try {
       await apiRequest(`/users/${user.id}`, { method: 'DELETE', token });
+      notify({ variant: 'success', title: 'Utilisateur supprimé', message: user.email });
+      setConfirmingId(null);
       refetch();
     } catch (err) {
       setRowErrors((prev) => ({ ...prev, [user.id]: err.message }));
+      cancelDelete(user);
     } finally {
       setBusyUserId(null);
     }
   }
 
   return (
-    <section aria-labelledby="users-heading" className="mb-10">
-      <h2 id="users-heading" className="mb-3 text-xl font-bold text-white">
-        Users &amp; reservations
+    <section aria-labelledby="users-heading" className="mb-12">
+      <h2 id="users-heading" className="mb-4 font-display text-3xl text-ink">
+        Utilisateurs et réservations
       </h2>
 
       {!token && (
-        <p className="text-sm text-gray-500">Provide an admin token above to load users.</p>
+        <p className="text-sm text-ink-muted">Connectez-vous en administrateur pour voir les utilisateurs.</p>
       )}
 
-      {token && loading && <p className="text-sm text-gray-400">Loading users…</p>}
+      {token && loading && (
+        <div role="status" className="space-y-3">
+          <span className="sr-only">Chargement des utilisateurs…</span>
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+        </div>
+      )}
 
       {token && error && (
-        <p role="alert" className="text-sm text-red-400">
-          Failed to load users: {error.message}
-          {error.status === 401 && ' (token missing or expired)'}
-          {error.status === 403 && ' (this token is not an admin account)'}
-        </p>
+        <Alert variant="error">
+          Impossible de charger les utilisateurs : {error.message}
+          {error.status === 401 && ' (jeton manquant ou expiré)'}
+          {error.status === 403 && " (ce compte n'est pas administrateur)"}
+        </Alert>
       )}
 
       {token && users && users.length === 0 && (
-        <p className="text-sm text-gray-400">No users yet.</p>
+        <p className="text-sm text-ink-muted">Aucun utilisateur pour le moment.</p>
       )}
 
       {token && users && users.length > 0 && (
-        <ul className="space-y-4">
-          {users.map((user) => (
-            <li key={user.id} className="rounded-lg border border-gray-800 bg-gray-900/30 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium text-white">{user.email}</span>
-                  {Boolean(user.is_admin) && (
-                    <span className="rounded-full bg-night-mauve/30 px-2 py-0.5 text-xs font-semibold text-night-mauve">
-                      Admin
-                    </span>
-                  )}
-                  <span className="text-xs text-gray-500">
-                    Joined {formatDateTime(user.created_at)}
-                  </span>
+        <ul className="space-y-3">
+          {users.map((user) => {
+            const confirming = confirmingId === user.id;
+
+            return (
+              <li
+                key={user.id}
+                className={`rounded-xl border bg-surface p-4 ${confirming ? 'border-red-400/60' : 'border-line'}`}
+              >
+                {confirming ? (
+                  <ConfirmDelete
+                    title={`Supprimer ${user.email} ?`}
+                    detail="Action définitive. Ses réservations seront supprimées aussi."
+                    busy={busyUserId === user.id}
+                    onCancel={() => cancelDelete(user)}
+                    onConfirm={() => handleDelete(user)}
+                  />
+                ) : (
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-lg text-ink">{user.email}</span>
+                        {Boolean(user.is_admin) && (
+                          <span className="rounded-full border border-highlight/50 bg-highlight/10 px-2.5 py-0.5 text-[11px] uppercase tracking-widest text-highlight">
+                            Admin
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1 text-sm text-ink-muted">Inscrit le {formatDateTime(user.created_at)}</p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="ghost"
+                        className="min-h-10"
+                        onClick={() =>
+                          setOpenReservationFormFor((current) => (current === user.id ? null : user.id))
+                        }
+                      >
+                        {openReservationFormFor === user.id ? 'Fermer le formulaire' : 'Nouvelle réservation'}
+                      </Button>
+                      <Button
+                        id={`delete-user-${user.id}`}
+                        variant="danger"
+                        className="min-h-10"
+                        onClick={() => {
+                          setOpenReservationFormFor(null);
+                          setConfirmingId(user.id);
+                        }}
+                        disabled={busyUserId === user.id}
+                      >
+                        Supprimer
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {rowErrors[user.id] && (
+                  <Alert variant="error" className="mt-3">
+                    {rowErrors[user.id]}
+                  </Alert>
+                )}
+
+                {openReservationFormFor === user.id && !confirming && (
+                  <NewReservationForm user={user} token={token} />
+                )}
+
+                <div className="mt-4">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-ink-muted">
+                    Réservations ({user.reservations.length})
+                  </p>
+                  <ReservationsList reservations={user.reservations} />
                 </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setOpenReservationFormFor((current) => (current === user.id ? null : user.id))
-                    }
-                    className="rounded-md border border-gray-700 px-2.5 py-1 text-xs font-semibold text-gray-300 hover:bg-gray-800"
-                  >
-                    {openReservationFormFor === user.id ? 'Cancel booking' : 'New reservation'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(user)}
-                    disabled={busyUserId === user.id}
-                    className="rounded-md border border-blood-red/60 px-2.5 py-1 text-xs font-semibold text-red-300 hover:bg-blood-red/20 disabled:opacity-50"
-                  >
-                    {busyUserId === user.id ? 'Deleting…' : 'Delete'}
-                  </button>
-                </div>
-              </div>
-
-              {rowErrors[user.id] && (
-                <p role="alert" className="mt-2 text-sm text-red-400">
-                  {rowErrors[user.id]}
-                </p>
-              )}
-
-              {openReservationFormFor === user.id && (
-                <NewReservationForm user={user} token={token} />
-              )}
-
-              <div className="mt-3">
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Reservations ({user.reservations.length})
-                </p>
-                <ReservationsList reservations={user.reservations} />
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>
