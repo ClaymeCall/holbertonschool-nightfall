@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 
 const TOKEN_MAX_AGE_HOURS = 168;
@@ -33,7 +34,7 @@ async function login(db, { email, password }) {
       is_admin: user.is_admin === 1
     },
     process.env.JWT_SECRET,
-    { expiresIn: `${TOKEN_MAX_AGE_HOURS}h` }
+    { expiresIn: `${TOKEN_MAX_AGE_HOURS}h`, jwtid: crypto.randomUUID() }
   );
 
   await db.execute(
