@@ -38,6 +38,22 @@ function useExperienceFilters(allExperiences) {
     };
   }, [allExperiences]);
 
+  const priceLimits = useMemo(() => {
+    if (!allExperiences || allExperiences.length === 0) {
+      return {
+        min: 0,
+        max: 1000
+      };
+    }
+
+    const prices = allExperiences.map((experience) => Number(experience.price));
+
+    return {
+      min: Math.min(...prices),
+      max: Math.max(...prices)
+    };
+  }, [allExperiences]);
+
   /*
    * Catégories uniques présentes dans les expériences, triées par ordre
    * alphabétique pour un menu stable.
@@ -73,6 +89,46 @@ function useExperienceFilters(allExperiences) {
       )
     ].sort((a, b) => a - b);
   }, [allExperiences]);
+
+  function updateMinDuration(value) {
+    const currentMax = maxDuration === ''
+      ? durationLimits.max
+      : Number(maxDuration);
+
+    setMinDuration(String(Math.min(Number(value), currentMax)));
+  }
+
+  function updateMinPrice(value) {
+    if (value === '') {
+      setMinPrice('');
+      return;
+    }
+
+    const currentMax = maxPrice === '' ? priceLimits.max : Number(maxPrice);
+    const nextValue = Math.max(priceLimits.min, Number(value));
+
+    setMinPrice(String(Math.min(nextValue, currentMax)));
+  }
+
+  function updateMaxPrice(value) {
+    if (value === '') {
+      setMaxPrice('');
+      return;
+    }
+
+    const currentMin = minPrice === '' ? priceLimits.min : Number(minPrice);
+    const nextValue = Math.min(priceLimits.max, Number(value));
+
+    setMaxPrice(String(Math.max(nextValue, currentMin)));
+  }
+
+  function updateMaxDuration(value) {
+    const currentMin = minDuration === ''
+      ? durationLimits.min
+      : Number(minDuration);
+
+    setMaxDuration(String(Math.max(Number(value), currentMin)));
+  }
 
   const debouncedFilters = useDebouncedValue(
     { search, minPrice, maxPrice, category, intensity, minDuration, maxDuration },
@@ -142,20 +198,21 @@ function useExperienceFilters(allExperiences) {
     search,
     setSearch,
     minPrice,
-    setMinPrice,
+    setMinPrice: updateMinPrice,
     maxPrice,
-    setMaxPrice,
+    setMaxPrice: updateMaxPrice,
     category,
     setCategory,
     intensity,
     setIntensity,
     minDuration,
-    setMinDuration,
+    setMinDuration: updateMinDuration,
     maxDuration,
-    setMaxDuration,
+    setMaxDuration: updateMaxDuration,
     categories,
     intensities,
     durationLimits,
+    priceLimits,
     path,
     hasFilters,
     resetFilters

@@ -1,4 +1,5 @@
 import colors from 'tailwindcss/colors';
+import daisyui from 'daisyui';
 
 // Colors backed by CSS variables (src/index.css). The `<alpha-value>` placeholder
 // keeps opacity modifiers working (e.g. `bg-accent/60`).
@@ -49,5 +50,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [daisyui],
 }

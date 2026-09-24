@@ -1,43 +1,15 @@
 import React from 'react';
 import { INTENSITY_LABELS } from '../../lib/intensity';
 import { ChevronDownIcon, SearchIcon } from '../ui/icons';
+import RangeSlider from './RangeSlider';
 
 const FIELD_LABEL = 'text-xs font-semibold uppercase tracking-[0.15em] text-ink-muted';
 
 const INPUT =
-  'w-full rounded-lg border border-line bg-canvas px-3.5 py-3 text-base text-ink placeholder:text-ink-muted/50 focus:border-highlight focus:outline-none focus:ring-2 focus:ring-highlight/40';
+  'input input-bordered w-full border-line bg-canvas text-base text-ink placeholder:text-ink-muted/50 focus:border-highlight focus:outline-none focus:ring-2 focus:ring-highlight/40';
 
-const SELECT = `${INPUT} appearance-none pr-10`;
-
-function RangeField({ label, value, limits, onChange }) {
-  const percent =
-    limits.max > limits.min
-      ? ((value - limits.min) / (limits.max - limits.min)) * 100
-      : 0;
-
-  return (
-    <div>
-      <div className="flex items-baseline justify-between">
-        <span className={FIELD_LABEL}>{label}</span>
-        <span className="font-display text-lg font-semibold text-ink lining-nums">
-          {value} min
-        </span>
-      </div>
-
-      <input
-        type="range"
-        min={limits.min}
-        max={limits.max}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="nf-range mt-3"
-        style={{
-          background: `linear-gradient(to right, rgb(var(--color-accent)) ${percent}%, rgb(var(--color-line)) ${percent}%)`
-        }}
-      />
-    </div>
-  );
-}
+const SELECT =
+  'select select-bordered w-full border-line bg-canvas text-base text-ink focus:border-highlight focus:outline-none focus:ring-2 focus:ring-highlight/40 appearance-none pr-10';
 
 function ExperienceFilters({
   search,
@@ -46,6 +18,7 @@ function ExperienceFilters({
   onMinPriceChange,
   maxPrice,
   onMaxPriceChange,
+  priceLimits,
   category,
   onCategoryChange,
   categories,
@@ -76,7 +49,7 @@ function ExperienceFilters({
           <button
             type="button"
             onClick={onReset}
-            className="text-xs font-semibold uppercase tracking-widest text-ink-muted transition hover:text-accent"
+            className="btn btn-ghost btn-sm text-xs font-semibold uppercase tracking-widest text-ink-muted hover:bg-transparent hover:text-accent"
           >
             Réinitialiser
           </button>
@@ -163,7 +136,22 @@ function ExperienceFilters({
         </div>
       </div>
 
-      <div className="mt-5 grid gap-5 sm:grid-cols-2">
+      <div className="mt-5 grid gap-5 lg:grid-cols-2">
+      <div className="rounded-xl border border-line bg-canvas/40 p-4">
+        <p className={FIELD_LABEL}>Prix</p>
+
+        <RangeSlider
+          minValue={minPrice}
+          onMinChange={onMinPriceChange}
+          maxValue={maxPrice}
+          onMaxChange={onMaxPriceChange}
+          limits={priceLimits}
+          unit="€"
+          minLabel="Prix minimum"
+          maxLabel="Prix maximum"
+        />
+
+        <div className="mt-4 grid gap-5 sm:grid-cols-2">
         {/* Prix minimum */}
         <div className="flex flex-col gap-2">
           <label htmlFor="min-price" className={FIELD_LABEL}>
@@ -207,27 +195,24 @@ function ExperienceFilters({
             </span>
           </div>
         </div>
+        </div>
       </div>
 
       {/* Durée */}
-      <div className="mt-6 border-t border-dashed border-line pt-6">
+      <div className="rounded-xl border border-line bg-canvas/40 p-4">
         <p className={FIELD_LABEL}>Durée</p>
 
-        <div className="mt-4 grid gap-6 sm:grid-cols-2">
-          <RangeField
-            label="Minimum"
-            value={Number(minDuration || durationLimits.min)}
-            limits={durationLimits}
-            onChange={onMinDurationChange}
-          />
-
-          <RangeField
-            label="Maximum"
-            value={Number(maxDuration || durationLimits.max)}
-            limits={durationLimits}
-            onChange={onMaxDurationChange}
-          />
-        </div>
+        <RangeSlider
+          minValue={minDuration}
+          onMinChange={onMinDurationChange}
+          maxValue={maxDuration}
+          onMaxChange={onMaxDurationChange}
+          limits={durationLimits}
+          unit="min"
+          minLabel="Durée minimum"
+          maxLabel="Durée maximum"
+        />
+      </div>
       </div>
     </section>
   );

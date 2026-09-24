@@ -31,6 +31,7 @@ function Home() {
     categories,
     intensities,
     durationLimits,
+    priceLimits,
     path,
     hasFilters,
     resetFilters
@@ -65,6 +66,7 @@ function Home() {
           onMinPriceChange={setMinPrice}
           maxPrice={maxPrice}
           onMaxPriceChange={setMaxPrice}
+          priceLimits={priceLimits}
           category={category}
           onCategoryChange={setCategory}
           categories={categories}
