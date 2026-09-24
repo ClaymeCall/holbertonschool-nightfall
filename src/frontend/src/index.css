@@ -16,6 +16,13 @@
     --color-accent: 195 78 99;
     --color-accent-fg: 255 255 255;
     --color-highlight: 118 137 245;
+
+    /* Nightfall logo colors (see components/ui/NightfallLogo.tsx). Referencing
+       the theme variables here — instead of hardcoding a color — means the
+       logo picks up whichever ambiance is active on <html data-theme="...">,
+       including the hover-driven one from SiteThemeContext. */
+    --nf-accent: rgb(var(--color-highlight));
+    --nf-ink: rgb(var(--color-ink));
   }
 
   /* Ambiances, set with data-theme on a wrapper (see src/lib/themes.js). */

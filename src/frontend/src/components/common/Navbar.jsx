@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { apiRequest } from '../../lib/api';
+import NightfallLogo from '../ui/NightfallLogo';
 
 function Navbar() {
 
@@ -35,8 +36,8 @@ function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 flex justify-between items-center min-h-[64px] px-8 bg-canvas" aria-label="Navigation principale">
-      <a className="flex items-center justify-center h-10 w-10 text-highlight text-3xl font-bold no-underline" href="/" aria-label="Nightfall, accueil">
-        N
+      <a className="flex items-center no-underline" href="/" aria-label="Nightfall, accueil">
+        <NightfallLogo className="h-10 w-10" title="" />
       </a>
       <div className="flex items-center gap-4">
         {token && isAdmin && (
