@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS experiences (
     image VARCHAR(255),
     category VARCHAR(255) NOT NULL,
     duration INT NOT NULL,
-    intensity_level VARCHAR(50) NOT NULL,
+    intensity_level TINYINT NOT NULL CHECK (intensity_level BETWEEN 1 AND 5),
     max_participants INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     is_archived BOOLEAN NOT NULL DEFAULT FALSE,

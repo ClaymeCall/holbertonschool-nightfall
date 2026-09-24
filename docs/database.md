@@ -26,7 +26,7 @@ erDiagram
         texte description
         texte image
         entier duree_minutes
-        texte niveau_intensite
+        entier niveau_intensite "1 à 5"
         entier capacite_maximale
         decimal prix
         booleen archive
