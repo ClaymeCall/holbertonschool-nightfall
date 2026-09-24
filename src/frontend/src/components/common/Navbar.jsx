@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { apiRequest } from '../../lib/api';
+import NightfallLogo from '../ui/NightfallLogo';
 
 function Navbar() {
 
@@ -34,9 +35,9 @@ function Navbar() {
   }
 
   return (
-    <nav className="flex justify-between items-center min-h-[64px] px-8 bg-deep-black" aria-label="Navigation principale">
-      <a className="flex items-center justify-center h-10 w-10 text-night-mauve text-3xl font-bold no-underline" href="/" aria-label="Nightfall, accueil">
-        N
+    <nav className="sticky top-0 z-50 flex justify-between items-center min-h-[64px] px-8 bg-canvas" aria-label="Navigation principale">
+      <a className="flex items-center no-underline" href="/" aria-label="Nightfall, accueil">
+        <NightfallLogo className="h-10 w-10" title="" />
       </a>
       <div className="flex items-center gap-4">
         {token && isAdmin && (
@@ -54,14 +55,14 @@ function Navbar() {
           <button
             type="button"
             onClick={handleLogout}
-            className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-2 px-4"
+            className="bg-accent text-accent-fg border-0 rounded-md cursor-pointer font-bold py-2 px-4"
           >
             Déconnexion
           </button>
         ) : (
           <Link
             to="/login"
-            className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-2 px-4 no-underline inline-block"
+            className="bg-accent text-accent-fg border-0 rounded-md cursor-pointer font-bold py-2 px-4 no-underline inline-block"
           >
             Connexion
           </Link>

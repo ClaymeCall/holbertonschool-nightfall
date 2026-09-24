@@ -1,78 +1,89 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ReservationCard from '../components/feature/ReservationCard';
+import Alert from '../components/ui/Alert';
+import Skeleton from '../components/ui/Skeleton';
+import { useToast } from '../components/ui/ToastProvider';
 import useAuth from '../hooks/useAuth';
 import useApiResource from '../hooks/useApiResource';
-import { apiRequest, API_ORIGIN } from '../lib/api';
+import { apiRequest } from '../lib/api';
+import { formatDateTime } from '../lib/format';
 
-const dateTimeFormatter = new Intl.DateTimeFormat('fr-FR', {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-});
-
-const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
-
-const IMAGE_BASE_URL = `${API_ORIGIN}/images/experiences/`;
-
-function formatDateTime(value) {
-  if (!value) return '—';
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : dateTimeFormatter.format(date);
+function ReservationsSkeleton() {
+  return (
+    <div role="status" className="space-y-4">
+      <span className="sr-only">Chargement de tes réservations…</span>
+      <Skeleton className="h-44 rounded-2xl" />
+      <Skeleton className="h-44 rounded-2xl" />
+    </div>
+  );
 }
 
 function UserDashboard() {
   const { token, user } = useAuth();
+  const { notify } = useToast();
   const { data: reservations, loading, error, refetch } = useApiResource('/reservations', {
     token,
     enabled: Boolean(token),
   });
-  const [busyReservationId, setBusyReservationId] = useState(null);
-  const [rowErrors, setRowErrors] = useState({});
+  const [confirmingId, setConfirmingId] = useState(null);
+  const [busyId, setBusyId] = useState(null);
 
   async function handleCancel(reservation) {
-    if (!window.confirm(`Annuler la réservation pour ${reservation.experience?.name} ?`)) {
-      return;
-    }
-
-    setBusyReservationId(reservation.id);
-    setRowErrors((prev) => ({ ...prev, [reservation.id]: null }));
+    setBusyId(reservation.id);
     try {
       await apiRequest(`/reservations/${reservation.id}`, { method: 'DELETE', token });
+      notify({
+        variant: 'success',
+        title: 'Réservation annulée',
+        message: `${reservation.experience?.name}, ${formatDateTime(reservation.date_time)}.`,
+      });
       refetch();
     } catch (err) {
-      setRowErrors((prev) => ({ ...prev, [reservation.id]: err.message }));
+      notify({
+        variant: 'error',
+        title: 'Annulation impossible',
+        message: err.status === 401 ? 'Ta session a expiré, reconnecte-toi.' : err.message,
+      });
     } finally {
-      setBusyReservationId(null);
+      setBusyId(null);
+      setConfirmingId(null);
     }
   }
 
+  const now = new Date();
+
   return (
-    <div className="min-h-screen bg-deep-black">
-      <main className="mx-auto max-w-5xl px-6 py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-white">Mon espace</h1>
-          <p className="mt-1 text-sm text-gray-400">
-            Connecté en tant que <span className="text-gray-200">{user?.email}</span>
+    <div className="min-h-screen bg-canvas">
+      <main className="mx-auto max-w-5xl px-6 py-10">
+        <div className="mb-8">
+          <h1 className="font-display text-4xl font-semibold text-ink">Mon espace</h1>
+          <p className="mt-1 text-sm text-ink-muted">
+            Connecté en tant que <span className="text-ink">{user?.email}</span>
           </p>
         </div>
 
         <section aria-labelledby="my-reservations-heading">
-          <h2 id="my-reservations-heading" className="mb-3 text-xl font-bold text-white">
+          <h2
+            id="my-reservations-heading"
+            className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-highlight"
+          >
             Mes réservations
           </h2>
 
-          {loading && <p className="text-sm text-gray-400">Chargement de tes réservations…</p>}
+          {loading && <ReservationsSkeleton />}
 
           {error && (
-            <p role="alert" className="text-sm text-red-400">
+            <Alert variant="error">
               Impossible de charger tes réservations : {error.message}
               {error.status === 401 && ' (session expirée, reconnecte-toi)'}
-            </p>
+            </Alert>
           )}
 
           {reservations && reservations.length === 0 && (
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-ink-muted">
               Tu n&apos;as pas encore de réservation.{' '}
-              <Link to="/" className="text-night-mauve hover:underline">
+              <Link to="/" className="text-highlight hover:underline">
                 Découvrir les expériences
               </Link>
             </p>
@@ -80,67 +91,18 @@ function UserDashboard() {
 
           {reservations && reservations.length > 0 && (
             <ul className="space-y-4">
-              {reservations.map((reservation) => {
-                const { experience } = reservation;
-                const imageUrl = experience?.image ? `${IMAGE_BASE_URL}${experience.image}` : null;
-
-                return (
-                  <li
-                    key={reservation.id}
-                    className="flex gap-4 rounded-lg border border-gray-800 bg-gray-900/30 p-4"
-                  >
-                    <div
-                      className="h-20 w-20 flex-shrink-0 rounded-md bg-cover bg-center"
-                      style={{
-                        backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
-                        backgroundColor: '#111',
-                      }}
-                      aria-hidden="true"
-                    />
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          {experience?.category && (
-                            <span className="mb-1 inline-block rounded-full border border-blood-red/60 bg-black/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-blood-red">
-                              {experience.category}
-                            </span>
-                          )}
-                          <p className="truncate font-medium text-white">{experience?.name}</p>
-                          <p className="mt-1 text-sm text-gray-400">
-                            {formatDateTime(reservation.date_time)}
-                            {' · '}
-                            {reservation.participants} participant{reservation.participants > 1 ? 's' : ''}
-                            {experience?.duration ? ` · ${experience.duration} min` : ''}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-shrink-0 flex-col items-end gap-2">
-                          {experience?.price != null && (
-                            <span className="text-sm font-bold text-white">
-                              {currencyFormatter.format(Number(experience.price))}
-                            </span>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => handleCancel(reservation)}
-                            disabled={busyReservationId === reservation.id}
-                            className="rounded-md border border-gray-700 px-3 py-1.5 text-xs font-semibold text-gray-300 transition-colors hover:border-blood-red hover:text-blood-red disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            {busyReservationId === reservation.id ? 'Annulation…' : 'Annuler la réservation'}
-                          </button>
-                        </div>
-                      </div>
-
-                      {rowErrors[reservation.id] && (
-                        <p role="alert" className="mt-2 text-xs text-red-400">
-                          {rowErrors[reservation.id]}
-                        </p>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
+              {reservations.map((reservation) => (
+                <ReservationCard
+                  key={reservation.id}
+                  reservation={reservation}
+                  now={now}
+                  confirming={confirmingId === reservation.id}
+                  busy={busyId === reservation.id}
+                  onAskCancel={() => setConfirmingId(reservation.id)}
+                  onKeep={() => setConfirmingId(null)}
+                  onConfirm={() => handleCancel(reservation)}
+                />
+              ))}
             </ul>
           )}
         </section>
