@@ -1,19 +1,23 @@
 import { useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { apiRequest } from "../lib/api";
+import Alert from "../components/ui/Alert";
+import Button from "../components/ui/Button";
+import Field from "../components/ui/Field";
 
 export default function Login() {
-  const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setMessage("");
+    setError("");
+    setSuccess("");
     setLoading(true);
 
     try {
@@ -23,97 +27,78 @@ export default function Login() {
       });
 
       if (typeof data.token !== "string" || !data.token) {
-        setMessage(
-          "La réponse du serveur ne contient pas de token valide"
-        );
+        setError("La réponse du serveur ne contient pas de token valide");
         return;
       }
 
       login(data.token, data.user);
       setPassword("");
-      setMessage("Connexion réussie !");
+      setSuccess("Connexion réussie !");
       window.location.assign(data.user?.is_admin ? "/admin" : "/dashboard")
     } catch (err) {
-      setMessage(err.message || "Connexion refusée");
+      setError(err.message || "Connexion refusée");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-deep-black text-white flex items-center justify-center px-4 py-12">
+    <main className="relative isolate flex min-h-[calc(100vh-64px)] items-center justify-center overflow-hidden bg-canvas px-4 py-12 text-ink">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgb(var(--color-accent)/0.22),transparent_55%)]"
+      />
+
       <section
-        className="w-full max-w-md rounded-xl border border-gray-700 bg-gray-900 p-8 shadow-xl"
+        className="w-full max-w-md rounded-2xl border border-t-[3px] border-line border-t-accent bg-surface p-8 shadow-2xl shadow-black/50"
         aria-labelledby="login-title"
       >
-        <h1
-          id="login-title"
-          className="text-night-mauve text-3xl font-bold text-center mb-2"
-        >
-          Connexion NIGHTFALL
+        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-highlight">
+          Bon retour
+        </p>
+        <h1 id="login-title" className="mt-2 font-display text-4xl leading-tight text-ink">
+          Connexion
         </h1>
-
-        <p className="text-gray-300 text-center mb-8">
-          Connecte-toi à ton compte.
+        <p className="mt-3 text-ink-muted">
+          Retrouvez vos réservations et réservez votre prochaine nuit.
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="email" className="text-white font-medium">
-              Email
-            </label>
+        <Alert variant="error" className="mt-6">{error}</Alert>
+        <Alert variant="success" className="mt-6">{success}</Alert>
 
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="username"
-              placeholder="ton@email.fr"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-              className="w-full rounded-md border border-gray-500 bg-white text-gray-900 placeholder-gray-500 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-night-mauve"
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
+          <Field
+            label="Email"
+            name="email"
+            type="email"
+            autoComplete="username"
+            placeholder="ton@email.fr"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
 
-          <div className="flex flex-col gap-2">
-            <label htmlFor="password" className="text-white font-medium">
-              Mot de passe
-            </label>
+          <Field
+            label="Mot de passe"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            placeholder="Ton mot de passe"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            required
+          />
 
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              placeholder="Ton mot de passe"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-              className="w-full rounded-md border border-gray-500 bg-white text-gray-900 placeholder-gray-500 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-night-mauve"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 mt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-blood-red text-white border-0 rounded-md cursor-pointer font-bold py-3 px-4 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Connexion…" : "Se connecter"}
-            </button>
-
-            <Link
-              to="/register"
-              className="border border-night-mauve text-night-mauve rounded-md font-bold py-3 px-4 text-center no-underline hover:bg-night-mauve hover:text-white"
-            >
-              Inscription
-            </Link>
-          </div>
+          <Button type="submit" size="lg" disabled={loading} className="mt-1 w-full">
+            {loading ? "Connexion…" : "Se connecter"}
+          </Button>
         </form>
 
-        <p role="status" className="text-white text-center mt-6">
-          {message}
+        <p className="mt-6 text-center text-ink-muted">
+          Pas encore de compte ?{" "}
+          <Link to="/register" className="font-bold text-highlight underline hover:brightness-125">
+            Créer un compte
+          </Link>
         </p>
       </section>
     </main>
