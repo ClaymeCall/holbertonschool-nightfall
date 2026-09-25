@@ -11,6 +11,15 @@ Cette application web permet aux visiteurs de :
 - Consulter et annuler leurs réservations
 - Permettre aux administrateurs du parc de gérer le contenu (expériences, utilisateurs, réservations)
 
+## Aperçu
+![Hero section](screenshots/hero-section.png)
+![About page](screenshots/about-page.png)
+![Experience list](screenshots/experience-list.png)
+![Experience filters](screenshots/experience-filters.png)
+![Register screen](screenshots/register-screen.png)
+![User dashboard](screenshots/user-dashboard.png)
+![Admin dashboard](screenshots/admin-dashboard.png)
+
 ## Membres de l'équipe
 - Haitu
 - Clement
