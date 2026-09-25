@@ -6,6 +6,7 @@ import RequireAuth from './components/common/RequireAuth';
 import ToastProvider from './components/ui/ToastProvider';
 import SiteThemeProvider from './context/SiteThemeContext';
 import Home from './pages/Home';
+import About from './pages/About';
 import AdminDashboard from './pages/AdminDashboard';
 import UserDashboard from './pages/UserDashboard';
 import Login from './pages/Login.jsx';
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
               <Route path="/experiences/:id" element={<ExperienceDetails />} />
               <Route
                 path="/dashboard"

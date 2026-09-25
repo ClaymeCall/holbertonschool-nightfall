@@ -11,10 +11,33 @@ Cette application web permet aux visiteurs de :
 - Consulter et annuler leurs réservations
 - Permettre aux administrateurs du parc de gérer le contenu (expériences, utilisateurs, réservations)
 
+## Aperçu
+
+### Page d'accueil
+![Hero section](screenshots/hero-section.png)
+
+### Page à propos
+![About page](screenshots/about-page.png)
+
+### Liste des expériences
+![Experience list](screenshots/experience-list.png)
+
+### Filtres de recherche
+![Experience filters](screenshots/experience-filters.png)
+
+### Inscription
+![Register screen](screenshots/register-screen.png)
+
+### Espace membre
+![User dashboard](screenshots/user-dashboard.png)
+
+### Espace administrateur
+![Admin dashboard](screenshots/admin-dashboard.png)
+
 ## Membres de l'équipe
-- Haitu
-- Clement
-- Thomas
+- **Clément Callejon** — Développeur full-stack ([@ClaymeCall](https://github.com/ClaymeCall)) : architecture du projet, majeure partie de l'API (expériences, réservations, utilisateurs, authentification) et du frontend, environnement Docker et déploiement des trois services.
+- **Thomas Rousseau** — Développeur authentification ([@Tomsonne](https://github.com/Tomsonne)) : système d'authentification (inscription, connexion, gestion des sessions côté backend) et pages de connexion/inscription côté frontend.
+- **Haitu Nguyen** — Développeur interface & réservations ([@N-Haitu31](https://github.com/N-Haitu31)) : parcours de réservation (création, consultation, annulation) côté backend et frontend, et une bonne partie des composants d'interface réutilisables.
 
 ## Fonctionnalités réalisées
 

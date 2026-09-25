@@ -53,6 +53,14 @@ function UserDashboard() {
 
   const now = new Date();
 
+  // Nearest to farthest: rank by how close each reservation's date is to now,
+  // whether upcoming or past.
+  const sortedReservations = reservations
+    ? [...reservations].sort(
+        (a, b) => Math.abs(new Date(a.date_time) - now) - Math.abs(new Date(b.date_time) - now)
+      )
+    : null;
+
   return (
     <div className="min-h-screen bg-canvas">
       <main className="mx-auto max-w-5xl px-6 py-10">
@@ -89,9 +97,9 @@ function UserDashboard() {
             </p>
           )}
 
-          {reservations && reservations.length > 0 && (
+          {sortedReservations && sortedReservations.length > 0 && (
             <ul className="space-y-4">
-              {reservations.map((reservation) => (
+              {sortedReservations.map((reservation) => (
                 <ReservationCard
                   key={reservation.id}
                   reservation={reservation}
