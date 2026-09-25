@@ -79,15 +79,15 @@ router.get('/', optionalAuthenticate, async (req, res) => {
  * @queryparam {string} category - Exact category match.
  * @queryparam {number} min_duration - Minimum duration, in minutes.
  * @queryparam {number} max_duration - Maximum duration, in minutes.
- * @queryparam {number} max_intensity_level - Integer from 1 to 5. Matches experiences
- *   with an intensity_level at or below this value.
+ * @queryparam {number} intensity_level - Integer from 1 to 5. Matches experiences
+ *   with exactly this intensity_level.
  * @queryparam {number} participants - Minimum max_participants an experience must support.
  * @queryparam {number} min_price - Minimum price.
  * @queryparam {number} max_price - Maximum price.
  * @access Public
  */
 router.get('/search', optionalAuthenticate, async (req, res) => {
-  const { q, category, min_duration, max_duration, max_intensity_level, participants, min_price, max_price } = req.query;
+  const { q, category, min_duration, max_duration, intensity_level, participants, min_price, max_price } = req.query;
 
   const conditions = [];
   const params = [];
@@ -138,14 +138,14 @@ router.get('/search', optionalAuthenticate, async (req, res) => {
     return res.status(400).json({ error: 'min_duration must not be greater than max_duration' });
   }
 
-  if (max_intensity_level !== undefined) {
-    const value = Number(max_intensity_level);
+  if (intensity_level !== undefined) {
+    const value = Number(intensity_level);
     if (!Number.isInteger(value) || value < MIN_INTENSITY_LEVEL || value > MAX_INTENSITY_LEVEL) {
       return res.status(400).json({
-        error: `max_intensity_level must be an integer between ${MIN_INTENSITY_LEVEL} and ${MAX_INTENSITY_LEVEL}`,
+        error: `intensity_level must be an integer between ${MIN_INTENSITY_LEVEL} and ${MAX_INTENSITY_LEVEL}`,
       });
     }
-    conditions.push('intensity_level <= ?');
+    conditions.push('intensity_level = ?');
     params.push(value);
   }
 

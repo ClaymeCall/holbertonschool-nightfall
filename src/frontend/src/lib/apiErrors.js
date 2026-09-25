@@ -51,7 +51,7 @@ const PATTERNS = [
     (match) => `Le mot de passe doit contenir au moins ${match[1]} caractères.`,
   ],
   [
-    /^max_intensity_level must be an integer between (\d+) and (\d+)$/,
+    /^intensity_level must be an integer between (\d+) and (\d+)$/,
     (match) => `L'intensité doit être un entier entre ${match[1]} et ${match[2]}.`,
   ],
 ];

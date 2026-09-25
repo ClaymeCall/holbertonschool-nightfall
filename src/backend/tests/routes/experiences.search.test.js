@@ -122,21 +122,21 @@ describe('GET /api/experiences/search', () => {
     expect(res.status).toBe(400);
   });
 
-  it('filters by max_intensity_level', async () => {
+  it('filters by intensity_level', async () => {
     const db = createMockDb();
     db.query.mockResolvedValueOnce([[ACTIVE_EXPERIENCE]]);
 
     const app = buildApp(db);
-    const res = await request(app).get('/api/experiences/search').query({ max_intensity_level: '3' });
+    const res = await request(app).get('/api/experiences/search').query({ intensity_level: '3' });
 
     expect(res.status).toBe(200);
-    expect(db.query.mock.calls[0][0]).toMatch(/intensity_level <= \?/);
+    expect(db.query.mock.calls[0][0]).toMatch(/intensity_level = \?/);
     expect(db.query.mock.calls[0][1]).toEqual([3]);
   });
 
-  it('rejects a max_intensity_level outside 1-5', async () => {
+  it('rejects an intensity_level outside 1-5', async () => {
     const app = buildApp(createMockDb());
-    const res = await request(app).get('/api/experiences/search').query({ max_intensity_level: '6' });
+    const res = await request(app).get('/api/experiences/search').query({ intensity_level: '6' });
     expect(res.status).toBe(400);
   });
 
@@ -184,7 +184,7 @@ describe('GET /api/experiences/search', () => {
       q: 'bunker',
       category: 'Survie',
       max_duration: '90',
-      max_intensity_level: '3',
+      intensity_level: '3',
       participants: '4',
       min_price: '10',
       max_price: '90',

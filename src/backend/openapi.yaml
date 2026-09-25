@@ -95,11 +95,10 @@ paths:
           schema:
             type: integer
             minimum: 1
-        - name: max_intensity_level
+        - name: intensity_level
           in: query
           description: >-
-            Maximum intensity level. Matches experiences with an
-            intensity_level at or below this value.
+            Exact intensity level to match.
           schema:
             type: integer
             minimum: 1

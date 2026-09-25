@@ -167,7 +167,7 @@ function useExperienceFilters(allExperiences) {
     }
 
     if (debouncedFilters.intensity) {
-      params.set('max_intensity_level', debouncedFilters.intensity);
+      params.set('intensity_level', debouncedFilters.intensity);
     }
 
     const query = params.toString();
