@@ -35,9 +35,9 @@ Cette application web permet aux visiteurs de :
 ![Admin dashboard](screenshots/admin-dashboard.png)
 
 ## Membres de l'équipe
-- Haitu
-- Clement
-- Thomas
+- **Clément Callejon** — Développeur full-stack ([@ClaymeCall](https://github.com/ClaymeCall)) : architecture du projet, majeure partie de l'API (expériences, réservations, utilisateurs, authentification) et du frontend, environnement Docker et déploiement des trois services.
+- **Thomas Rousseau** — Développeur authentification ([@Tomsonne](https://github.com/Tomsonne)) : système d'authentification (inscription, connexion, gestion des sessions côté backend) et pages de connexion/inscription côté frontend.
+- **Haitu Nguyen** — Développeur interface & réservations ([@N-Haitu31](https://github.com/N-Haitu31)) : parcours de réservation (création, consultation, annulation) côté backend et frontend, et une bonne partie des composants d'interface réutilisables.
 
 ## Fonctionnalités réalisées
 
