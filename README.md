@@ -12,12 +12,26 @@ Cette application web permet aux visiteurs de :
 - Permettre aux administrateurs du parc de gérer le contenu (expériences, utilisateurs, réservations)
 
 ## Aperçu
+
+### Page d'accueil
 ![Hero section](screenshots/hero-section.png)
+
+### Page à propos
 ![About page](screenshots/about-page.png)
+
+### Liste des expériences
 ![Experience list](screenshots/experience-list.png)
+
+### Filtres de recherche
 ![Experience filters](screenshots/experience-filters.png)
+
+### Inscription
 ![Register screen](screenshots/register-screen.png)
+
+### Espace membre
 ![User dashboard](screenshots/user-dashboard.png)
+
+### Espace administrateur
 ![Admin dashboard](screenshots/admin-dashboard.png)
 
 ## Membres de l'équipe
