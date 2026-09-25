@@ -11,6 +11,12 @@ const dateTimeFormatter = new Intl.DateTimeFormat('fr-FR', {
   minute: '2-digit',
 });
 
+// Compact form for tables and lists (admin): "3 oct. 2026, 20:00".
+const shortDateTimeFormatter = new Intl.DateTimeFormat('fr-FR', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+});
+
 const IMAGE_BASE_URL = `${API_ORIGIN}/images/experiences/`;
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -22,6 +28,12 @@ export function formatPrice(value) {
 export function formatDateTime(value) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? '—' : dateTimeFormatter.format(date);
+}
+
+export function formatDateTimeShort(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : shortDateTimeFormatter.format(date);
 }
 
 export function formatTimeUntil(ms) {

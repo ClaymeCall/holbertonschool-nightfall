@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-
-const FIELD_LABEL = 'text-xs font-semibold uppercase tracking-[0.15em] text-ink-muted';
+import { LABEL_CLASS } from '../ui/Field';
 
 function RangeSlider({
   minValue,
@@ -107,7 +106,7 @@ function RangeSlider({
   return (
     <div className="mt-4">
       <div className="flex items-baseline justify-between">
-        <span className={FIELD_LABEL}>Intervalle sélectionné</span>
+        <span className={LABEL_CLASS}>Intervalle sélectionné</span>
         <span className="font-display text-lg font-semibold text-ink lining-nums">
           {currentMin} - {currentMax} {unit}
         </span>

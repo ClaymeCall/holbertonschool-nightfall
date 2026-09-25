@@ -2,8 +2,8 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 const { authenticate, requireAdmin } = require('../middleware/auth');
+const { EMAIL_REGEX, parseIdParam } = require('../utils/validation');
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
 
 /**
@@ -134,10 +134,8 @@ router.put('/:id', async (req, res) => {
  * @access Private (Admin)
  */
 router.delete('/:id', authenticate, requireAdmin, async (req, res) => {
-  const id = Number(req.params.id);
-  if (!Number.isInteger(id) || id <= 0) {
-    return res.status(400).json({ error: 'id must be a positive integer' });
-  }
+  const id = parseIdParam(req, res);
+  if (id === null) return;
 
   try {
     const [existing] = await req.db.query('SELECT id FROM users WHERE id = ?', [id]);

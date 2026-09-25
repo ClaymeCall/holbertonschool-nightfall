@@ -1,23 +1,13 @@
 import React, { useState } from 'react';
 import useApiResource from '../../hooks/useApiResource';
 import { apiRequest } from '../../lib/api';
+import { formatDateTimeShort } from '../../lib/format';
 import Alert from '../ui/Alert';
 import Button from '../ui/Button';
-import Skeleton from '../ui/Skeleton';
 import { useToast } from '../ui/ToastProvider';
 import ConfirmDelete, { focusLater } from './ConfirmDelete';
 import NewReservationForm from './NewReservationForm';
-
-const dateTimeFormatter = new Intl.DateTimeFormat('fr-FR', {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-});
-
-function formatDateTime(value) {
-  if (!value) return '—';
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : dateTimeFormatter.format(date);
-}
+import PanelStatus from './PanelStatus';
 
 function ReservationsList({ reservations }) {
   if (reservations.length === 0) {
@@ -30,7 +20,7 @@ function ReservationsList({ reservations }) {
         <li key={reservation.id} className="text-sm text-ink-muted">
           <span className="text-ink">{reservation.experience?.name}</span>
           {' — '}
-          {formatDateTime(reservation.date_time)}
+          {formatDateTimeShort(reservation.date_time)}
           {' · '}
           {reservation.participants} participant{reservation.participants > 1 ? 's' : ''}
         </li>
@@ -77,29 +67,16 @@ function UsersPanel({ token }) {
         Utilisateurs et réservations
       </h2>
 
-      {!token && (
-        <p className="text-sm text-ink-muted">Connectez-vous en administrateur pour voir les utilisateurs.</p>
-      )}
-
-      {token && loading && (
-        <div role="status" className="space-y-3">
-          <span className="sr-only">Chargement des utilisateurs…</span>
-          <Skeleton className="h-24" />
-          <Skeleton className="h-24" />
-        </div>
-      )}
-
-      {token && error && (
-        <Alert variant="error">
-          Impossible de charger les utilisateurs : {error.message}
-          {error.status === 401 && ' (jeton manquant ou expiré)'}
-          {error.status === 403 && " (ce compte n'est pas administrateur)"}
-        </Alert>
-      )}
-
-      {token && users && users.length === 0 && (
-        <p className="text-sm text-ink-muted">Aucun utilisateur pour le moment.</p>
-      )}
+      <PanelStatus
+        token={token}
+        loading={loading}
+        error={error}
+        isEmpty={users?.length === 0}
+        name="utilisateurs"
+        emptyText="Aucun utilisateur pour le moment."
+        skeletonCount={2}
+        skeletonClass="h-24"
+      />
 
       {token && users && users.length > 0 && (
         <ul className="space-y-3">
@@ -130,7 +107,7 @@ function UsersPanel({ token }) {
                           </span>
                         )}
                       </div>
-                      <p className="mt-1 text-sm text-ink-muted">Inscrit le {formatDateTime(user.created_at)}</p>
+                      <p className="mt-1 text-sm text-ink-muted">Inscrit le {formatDateTimeShort(user.created_at)}</p>
                     </div>
 
                     <div className="flex flex-wrap gap-2">

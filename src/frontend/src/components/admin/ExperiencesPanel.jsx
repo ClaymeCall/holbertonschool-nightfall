@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import useApiResource from '../../hooks/useApiResource';
 import { apiRequest } from '../../lib/api';
+import { formatPrice } from '../../lib/format';
 import { INTENSITY_OPTIONS } from '../../lib/intensity';
 import { themeForExperience } from '../../lib/themes';
 import Alert from '../ui/Alert';
 import Button from '../ui/Button';
 import Field from '../ui/Field';
-import Skeleton from '../ui/Skeleton';
 import { useToast } from '../ui/ToastProvider';
 import ConfirmDelete, { focusLater } from './ConfirmDelete';
-
-const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
+import PanelStatus from './PanelStatus';
 
 const BLANK_FORM = {
   name: '',
@@ -221,10 +220,6 @@ function ExperiencesPanel({ token }) {
         )}
       </div>
 
-      {!token && (
-        <p className="text-sm text-ink-muted">Connectez-vous en administrateur pour voir les expériences.</p>
-      )}
-
       {creating && (
         <ExperienceForm
           submitLabel="Créer"
@@ -234,26 +229,16 @@ function ExperiencesPanel({ token }) {
         />
       )}
 
-      {token && loading && (
-        <div role="status" className="space-y-3">
-          <span className="sr-only">Chargement des expériences…</span>
-          <Skeleton className="h-20" />
-          <Skeleton className="h-20" />
-          <Skeleton className="h-20" />
-        </div>
-      )}
-
-      {token && error && (
-        <Alert variant="error">
-          Impossible de charger les expériences : {error.message}
-          {error.status === 401 && ' (jeton manquant ou expiré)'}
-          {error.status === 403 && " (ce compte n'est pas administrateur)"}
-        </Alert>
-      )}
-
-      {token && experiences && experiences.length === 0 && (
-        <p className="text-sm text-ink-muted">Aucune expérience pour le moment.</p>
-      )}
+      <PanelStatus
+        token={token}
+        loading={loading}
+        error={error}
+        isEmpty={experiences?.length === 0}
+        name="expériences"
+        emptyText="Aucune expérience pour le moment."
+        skeletonCount={3}
+        skeletonClass="h-20"
+      />
 
       {token && experiences && experiences.length > 0 && (
         <ul className="mt-4 space-y-3">
@@ -289,7 +274,7 @@ function ExperiencesPanel({ token }) {
                       </div>
                       <p className="mt-1 text-sm text-ink-muted">
                         {experience.category} · {experience.duration} min ·{' '}
-                        {currencyFormatter.format(Number(experience.price))}
+                        {formatPrice(experience.price)}
                       </p>
                     </div>
 

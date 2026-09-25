@@ -1,9 +1,8 @@
 import React from 'react';
 import { INTENSITY_LABELS } from '../../lib/intensity';
+import { LABEL_CLASS } from '../ui/Field';
 import { ChevronDownIcon, SearchIcon } from '../ui/icons';
 import RangeSlider from './RangeSlider';
-
-const FIELD_LABEL = 'text-xs font-semibold uppercase tracking-[0.15em] text-ink-muted';
 
 const INPUT =
   'input input-bordered w-full border-line bg-canvas text-base text-ink placeholder:text-ink-muted/50 focus:border-highlight focus:outline-none focus:ring-2 focus:ring-highlight/40';
@@ -59,7 +58,7 @@ function ExperienceFilters({
       <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {/* Recherche par nom */}
         <div className="flex flex-col gap-2 lg:col-span-2">
-          <label htmlFor="search" className={FIELD_LABEL}>
+          <label htmlFor="search" className={LABEL_CLASS}>
             Rechercher
           </label>
 
@@ -81,7 +80,7 @@ function ExperienceFilters({
 
         {/* Catégorie */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="category" className={FIELD_LABEL}>
+          <label htmlFor="category" className={LABEL_CLASS}>
             Catégorie
           </label>
 
@@ -109,7 +108,7 @@ function ExperienceFilters({
 
         {/* Intensité */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="intensity" className={FIELD_LABEL}>
+          <label htmlFor="intensity" className={LABEL_CLASS}>
             Intensité
           </label>
 
@@ -138,7 +137,7 @@ function ExperienceFilters({
 
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
       <div className="rounded-xl border border-line bg-canvas/40 p-4">
-        <p className={FIELD_LABEL}>Prix</p>
+        <p className={LABEL_CLASS}>Prix</p>
 
         <RangeSlider
           minValue={minPrice}
@@ -154,7 +153,7 @@ function ExperienceFilters({
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
         {/* Prix minimum */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="min-price" className={FIELD_LABEL}>
+          <label htmlFor="min-price" className={LABEL_CLASS}>
             Prix minimum
           </label>
 
@@ -176,7 +175,7 @@ function ExperienceFilters({
 
         {/* Prix maximum */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="max-price" className={FIELD_LABEL}>
+          <label htmlFor="max-price" className={LABEL_CLASS}>
             Prix maximum
           </label>
 
@@ -200,7 +199,7 @@ function ExperienceFilters({
 
       {/* Durée */}
       <div className="rounded-xl border border-line bg-canvas/40 p-4">
-        <p className={FIELD_LABEL}>Durée</p>
+        <p className={LABEL_CLASS}>Durée</p>
 
         <RangeSlider
           minValue={minDuration}
